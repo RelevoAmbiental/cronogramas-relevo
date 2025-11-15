@@ -1,6 +1,6 @@
 const Busboy = require("busboy");
 const pdf = require("pdf-parse");
-const { parseDocx } = require("docx-parser");
+const mammoth = require("mammoth");
 
 // =======================================================
 // Lê PDF ou DOCX do upload e retorna texto bruto
@@ -9,8 +9,11 @@ exports.extrairArquivo = (req) =>
   new Promise((resolve, reject) => {
     const busboy = Busboy({ headers: req.headers });
     let fileBuffer = Buffer.from([]);
+    let fileName = "";
 
-    busboy.on("file", (fieldname, file, filename) => {
+    busboy.on("file", (fieldname, file, info) => {
+      fileName = info.filename;
+
       file.on("data", (data) => {
         fileBuffer = Buffer.concat([fileBuffer, data]);
       });
@@ -19,11 +22,16 @@ exports.extrairArquivo = (req) =>
         try {
           let texto = "";
 
-          if (filename.endsWith(".pdf")) {
+          // PDF
+          if (fileName.endsWith(".pdf")) {
             const data = await pdf(fileBuffer);
             texto = data.text;
-          } else if (filename.endsWith(".docx")) {
-            texto = await parseDocx(fileBuffer);
+
+          // DOCX
+          } else if (fileName.endsWith(".docx")) {
+            const result = await mammoth.extractRawText({ buffer: fileBuffer });
+            texto = result.value;
+
           } else {
             reject("Formato não suportado");
           }
