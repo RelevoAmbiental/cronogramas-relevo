@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relevo • Gerador de Cronogramas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header>
+    <h1>Gerador de Cronogramas</h1>
+  </header>
+
+  <main>
+    <section class="upload-section">
+      <h2>1. Enviar Proposta (PDF ou DOCX)</h2>
+
+      <input type="file" id="fileInput" accept=".pdf,.docx" />
+      <button id="btnExtrair">Extrair Texto</button>
+
+      <textarea id="textoExtraido" placeholder="O texto extraído aparecerá aqui..."></textarea>
+    </section>
+
+    <section class="interpret-section">
+      <h2>2. Interpretar Proposta</h2>
+      <button id="btnInterpretar">Gerar Estrutura JSON</button>
+
+      <textarea id="jsonInterpretado" placeholder="A estrutura da proposta aparecerá aqui..."></textarea>
+    </section>
+
+    <section class="cronograma-section">
+      <h2>3. Gerar Cronograma</h2>
+      <button id="btnCronograma">Criar Cronograma</button>
+
+      <textarea id="cronogramaFinal" placeholder="O cronograma estruturado aparecerá aqui..."></textarea>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
