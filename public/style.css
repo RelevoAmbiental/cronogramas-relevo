@@ -1,59 +1,196 @@
+/* ============================================================
+   1. VARIÁVEIS GLOBAIS (IDENTIDADE RELEVO)
+   ============================================================ */
+:root {
+    --primary-color: #00B050;        /* Verde Relevo */
+    --secondary-color: #007BFF;      /* Azul Hero */
+    --accent-color: #00A0B0;         /* Turquesa */
+
+    --text-dark: #2D4132;
+    --text-color: #444;
+    --background-light: #f8f9fa;
+    --white: #ffffff;
+
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.12);
+    --shadow-hover: 0 8px 25px rgba(0, 176, 80, 0.25);
+
+    --border-radius: 10px;
+    --transition: all 0.3s ease;
+    --font-family: 'Montserrat', sans-serif;
+}
+
+/* ============================================================
+   2. BASE
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f4f4;
+    background: #ffffff;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding-bottom: 80px;
 }
 
-header {
-  background: #2d2d2d;
-  color: white;
-  padding: 16px;
-  text-align: center;
+.container {
+    max-width: 1200px;
+    width: 90%;
+    margin: auto;
+    padding-top: 40px;
 }
 
-h2 {
-  margin-top: 0;
+/* ============================================================
+   3. TÍTULO DA APLICAÇÃO
+   ============================================================ */
+.page-title {
+    font-size: 2.2rem;
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 18px;
 }
 
-main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+.page-title::after {
+    content: "";
+    width: 120px;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 3px;
 }
 
-section {
-  background: white;
-  border-radius: 6px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+/* ============================================================
+   4. GRID DOS CARDS
+   ============================================================ */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 40px;
 }
 
-input[type="file"] {
-  margin-bottom: 10px;
+/* ============================================================
+   5. CARDS (PADRÃO RELEVO)
+   ============================================================ */
+.card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    border-left: 5px solid var(--secondary-color);
+    transition: var(--transition);
+    overflow: hidden;
 }
 
-button {
-  background: #036b52;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 10px;
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+    border-left-color: var(--accent-color);
 }
 
-button:hover {
-  background: #024f3c;
+/* Cabeçalho */
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: #fff;
+    padding: 20px;
+    text-align: center;
 }
 
+.card-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+/* Conteúdo */
+.card-content {
+    padding: 22px;
+}
+
+/* ============================================================
+   6. BOTÕES (GRADIENTE VERDE → AZUL)
+   ============================================================ */
+.btn {
+    padding: 12px 25px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 176, 80, 0.25);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 176, 80, 0.45);
+}
+
+/* ============================================================
+   7. TEXTAREAS E INPUTS (PADRÃO LIMPO)
+   ============================================================ */
 textarea {
-  width: 100%;
-  height: 150px;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  resize: vertical;
+    width: 100%;
+    height: 180px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    border: 1px solid #dcdcdc;
+    resize: vertical;
+    font-size: 0.95rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 176, 80, 0.25);
+}
+
+/* Upload de arquivo */
+input[type="file"] {
+    background: var(--background-light);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid #dcdcdc;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+/* ============================================================
+   8. FOOTER
+   ============================================================ */
+footer {
+    margin-top: 60px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 25px;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ============================================================
+   9. RESPONSIVIDADE
+   ============================================================ */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    .grid-cards {
+        grid-template-columns: 1fr;
+    }
 }
