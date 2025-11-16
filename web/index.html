@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cronogramas Relevo | Console</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <h1>Cronogramas Relevo – Painel Integrado</h1>
+  </header>
+
+  <main>
+
+    <section class="card">
+      <h2>Extrair Texto (PDF/DOCX)</h2>
+      <p>Envie um arquivo para extrair o conteúdo bruto.</p>
+
+      <input type="file" id="fileExtrair" />
+      <button onclick="extrairTexto()">Enviar</button>
+
+      <pre id="resultadoExtrair" class="resultado"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Processar Proposta</h2>
+      <p>Envia o texto de orçamento para normalização e extração.</p>
+
+      <textarea id="textoProposta" placeholder="Cole o texto aqui"></textarea>
+      <button onclick="processarProposta()">Processar</button>
+
+      <pre id="resultadoProposta" class="resultado"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Gerar Cronograma</h2>
+      <p>Envia dados estruturados para gerar o cronograma final.</p>
+
+      <textarea id="dadosCronograma" placeholder='{"atividade": "..."}'></textarea>
+      <button onclick="gerarCronograma()">Gerar</button>
+
+      <pre id="resultadoCronograma" class="resultado"></pre>
+    </section>
+
+  </main>
+
+</body>
+<script src="app.js"></script>
+</html>
