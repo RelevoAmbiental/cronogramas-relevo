@@ -21,13 +21,16 @@
 <body>
 
     <!-- ============================================================
-         HEADER — Estilo semelhante ao site oficial Relevo
+         HEADER — alinhado ao padrão do site Relevo
          ============================================================ -->
     <header>
-        <div class="container header-container">
+        <div class="header-wrapper">
+
             <a href="https://relevo.eco.br" class="logo-link">
-                <img src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_vertical.png"
-                     alt="Logo Relevo" style="height: 70px;">
+                <div class="header-logo">
+                    <img src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_vertical.png"
+                         alt="Logo Relevo">
+                </div>
             </a>
 
             <nav>
@@ -37,6 +40,7 @@
                     <li><a href="https://portal.relevo.eco.br/">Portal</a></li>
                 </ul>
             </nav>
+
         </div>
     </header>
 
@@ -47,20 +51,18 @@
     <div class="container">
         <h1 class="page-title">Assistente IA • Cronogramas Relevo</h1>
 
-        <p style="text-align:center; margin-top:-20px; margin-bottom:40px; color:#555;">
+        <p class="subtitle">
             Fluxo completo: <strong>Extrair arquivo → Interpretar proposta → Gerar cronograma estruturado</strong>
         </p>
     </div>
 
 
     <!-- ============================================================
-         GRID COM OS 3 CARDS PRINCIPAIS
+         GRID DOS CARDS
          ============================================================ -->
     <div class="container grid-cards">
 
-        <!-- ========================================================
-             CARD 1 — EXTRAIR TEXTO
-             ======================================================== -->
+        <!-- CARD 1 — EXTRAIR TEXTO -->
         <div class="card">
             <div class="card-header">
                 <h3>1. Extrair Texto (PDF / DOCX)</h3>
@@ -78,10 +80,7 @@
             </div>
         </div>
 
-
-        <!-- ========================================================
-             CARD 2 — INTERPRETAR PROPOSTA (IA)
-             ======================================================== -->
+        <!-- CARD 2 — INTERPRETAR PROPOSTA -->
         <div class="card">
             <div class="card-header">
                 <h3>2. Interpretar Proposta</h3>
@@ -97,10 +96,7 @@
             </div>
         </div>
 
-
-        <!-- ========================================================
-             CARD 3 — GERAR CRONOGRAMA
-             ======================================================== -->
+        <!-- CARD 3 — GERAR CRONOGRAMA -->
         <div class="card">
             <div class="card-header">
                 <h3>3. Gerar Cronograma Estruturado</h3>
@@ -116,7 +112,7 @@
             </div>
         </div>
 
-    </div> <!-- /grid-cards -->
+    </div>
 
 
     <!-- ============================================================
