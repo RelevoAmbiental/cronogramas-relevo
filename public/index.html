@@ -1,43 +1,133 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relevo • Gerador de Cronogramas</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Relevo | IA de Cronogramas</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png"
+          href="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/favicon_menos.png" />
+
+    <!-- Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <header>
-    <h1>Gerador de Cronogramas</h1>
-  </header>
+    <!-- ============================================================
+         HEADER — Estilo semelhante ao site oficial Relevo
+         ============================================================ -->
+    <header>
+        <div class="container header-container">
+            <a href="https://relevo.eco.br" class="logo-link">
+                <img src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_vertical.png"
+                     alt="Logo Relevo" style="height: 70px;">
+            </a>
 
-  <main>
-    <section class="upload-section">
-      <h2>1. Enviar Proposta (PDF ou DOCX)</h2>
+            <nav>
+                <ul>
+                    <li><a href="https://relevo.eco.br/">Início</a></li>
+                    <li><a href="https://relevo.eco.br/servicos.html">Serviços</a></li>
+                    <li><a href="https://portal.relevo.eco.br/">Portal</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-      <input type="file" id="fileInput" accept=".pdf,.docx" />
-      <button id="btnExtrair">Extrair Texto</button>
 
-      <textarea id="textoExtraido" placeholder="O texto extraído aparecerá aqui..."></textarea>
-    </section>
+    <!-- ============================================================
+         TÍTULO PRINCIPAL
+         ============================================================ -->
+    <div class="container">
+        <h1 class="page-title">Assistente IA • Cronogramas Relevo</h1>
 
-    <section class="interpret-section">
-      <h2>2. Interpretar Proposta</h2>
-      <button id="btnInterpretar">Gerar Estrutura JSON</button>
+        <p style="text-align:center; margin-top:-20px; margin-bottom:40px; color:#555;">
+            Fluxo completo: <strong>Extrair arquivo → Interpretar proposta → Gerar cronograma estruturado</strong>
+        </p>
+    </div>
 
-      <textarea id="jsonInterpretado" placeholder="A estrutura da proposta aparecerá aqui..."></textarea>
-    </section>
 
-    <section class="cronograma-section">
-      <h2>3. Gerar Cronograma</h2>
-      <button id="btnCronograma">Criar Cronograma</button>
+    <!-- ============================================================
+         GRID COM OS 3 CARDS PRINCIPAIS
+         ============================================================ -->
+    <div class="container grid-cards">
 
-      <textarea id="cronogramaFinal" placeholder="O cronograma estruturado aparecerá aqui..."></textarea>
-    </section>
-  </main>
+        <!-- ========================================================
+             CARD 1 — EXTRAIR TEXTO
+             ======================================================== -->
+        <div class="card">
+            <div class="card-header">
+                <h3>1. Extrair Texto (PDF / DOCX)</h3>
+            </div>
 
-  <script src="app.js"></script>
+            <div class="card-content">
+                <input type="file" id="arquivoInput" accept=".pdf,.docx" />
+
+                <button class="btn btn-primary" onclick="extrairTexto()">
+                    Extrair Conteúdo
+                </button>
+
+                <h4 style="margin-top:20px;">Resultado:</h4>
+                <textarea id="textoExtraido" placeholder="O texto extraído aparecerá aqui..."></textarea>
+            </div>
+        </div>
+
+
+        <!-- ========================================================
+             CARD 2 — INTERPRETAR PROPOSTA (IA)
+             ======================================================== -->
+        <div class="card">
+            <div class="card-header">
+                <h3>2. Interpretar Proposta</h3>
+            </div>
+
+            <div class="card-content">
+                <button class="btn btn-primary" onclick="interpretarProposta()">
+                    Interpretar Texto via IA
+                </button>
+
+                <h4 style="margin-top:20px;">Estrutura Identificada:</h4>
+                <textarea id="estruturaProposta" placeholder="JSON interpretado aparecerá aqui..."></textarea>
+            </div>
+        </div>
+
+
+        <!-- ========================================================
+             CARD 3 — GERAR CRONOGRAMA
+             ======================================================== -->
+        <div class="card">
+            <div class="card-header">
+                <h3>3. Gerar Cronograma Estruturado</h3>
+            </div>
+
+            <div class="card-content">
+                <button class="btn btn-primary" onclick="gerarCronograma()">
+                    Gerar Cronograma com a IA
+                </button>
+
+                <h4 style="margin-top:20px;">Cronograma Final:</h4>
+                <textarea id="cronogramaFinal" placeholder="O cronograma será exibido aqui..."></textarea>
+            </div>
+        </div>
+
+    </div> <!-- /grid-cards -->
+
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer>
+        Relevo Consultoria Ambiental • Inteligência Aplicada a Projetos Ambientais
+    </footer>
+
+    <!-- JS -->
+    <script src="app.js"></script>
+
 </body>
 </html>
