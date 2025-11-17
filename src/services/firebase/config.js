@@ -1,7 +1,8 @@
 // src/services/firebase/config.js
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 
+// ==== CONFIGURAÇÃO FIREBASE DO PORTAL ====
+// (autenticação unificada — aprovada na etapa anterior)
 const firebaseConfig = {
   apiKey: "AIzaSyBcQi5nToMOGVDBWprhhOY0NSJX4qE100w",
   authDomain: "portal-relevo.firebaseapp.com",
@@ -13,7 +14,4 @@ const firebaseConfig = {
 };
 
 // Inicializa Firebase
-const app = initializeApp(firebaseConfig);
-
-// Exporta Firestore para uso nos serviços
-export const db = getFirestore(app);
+export const app = initializeApp(firebaseConfig);
