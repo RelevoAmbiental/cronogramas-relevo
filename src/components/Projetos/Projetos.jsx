@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
 import ProjetoLista from "./ProjetoLista.jsx";
-import ProjetoForm from "./ProjetoForm";
+import ProjetoForm from "./ProjetoForm.jsx";
 
 export default function Projetos() {
   const { projetos, loading } = useCronograma();
