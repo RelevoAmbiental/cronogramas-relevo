@@ -1,8 +1,9 @@
 export default function Dashboard() {
   return (
-    <div>
-      <h2>Dashboard do Cronograma</h2>
-      <p>Visão geral dos projetos e tarefas.</p>
+    <div className="content">
+      <h1>Dashboard</h1>
+      <p>Bem-vindo ao sistema de cronogramas Relevo.</p>
+      <p>Em breve: KPIs, progresso dos projetos, tarefas críticas e previsões.</p>
     </div>
   );
 }
