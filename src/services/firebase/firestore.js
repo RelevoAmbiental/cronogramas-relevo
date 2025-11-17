@@ -1,4 +1,4 @@
-// src/services/firebase/firestore.js
-import { db } from "./config";
+import { getFirestore } from "firebase/firestore";
+import { app } from "./config";
 
-export { db };
+export const db = getFirestore(app);
