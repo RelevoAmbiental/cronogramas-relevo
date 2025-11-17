@@ -1,6 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { db } from "../services/firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
 
 const UserContext = createContext();
 
@@ -17,19 +15,15 @@ export function UserProvider({ children }) {
       return;
     }
 
-    const session = JSON.parse(raw);
-    setUser(session);
-
-    async function loadTipo() {
-      const ref = doc(db, "users", session.uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        setTipo(snap.data().tipo);
-      }
+    try {
+      const session = JSON.parse(raw);
+      setUser(session);
+      setTipo(session.tipo || null); // 👈 Usa o tipo vindo da sessão
+    } catch (err) {
+      console.error("Erro ao ler relevoSession:", err);
+    } finally {
       setLoading(false);
     }
-
-    loadTipo();
   }, []);
 
   return (
