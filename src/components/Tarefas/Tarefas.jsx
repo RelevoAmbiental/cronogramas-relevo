@@ -1,3 +1,8 @@
 export default function Tarefas() {
-  return <h2>Tarefas e Etapas</h2>;
+  return (
+    <div>
+      <h2>Tarefas</h2>
+      <p>Lista de tarefas vinculadas aos projetos.</p>
+    </div>
+  );
 }
