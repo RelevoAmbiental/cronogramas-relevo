@@ -5,7 +5,7 @@ import App from "./App";
 import { UserProvider } from "./context/UserContext";
 import { CronogramaProvider } from "./context/CronogramaContext";
 
-import "./styles/global.css";     // 👈 agora EXISTE
+import "./styles/globals.css";     // 👈 agora EXISTE
 import "./styles/layout.css";     // 👈 opcional
 
 ReactDOM.createRoot(document.getElementById("root")).render(
