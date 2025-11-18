@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import "./importar.css";
 import { useCronograma } from "../../context/CronogramaContext";
-import * as pdfjsLib from "pdfjs-dist/build/pdf";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+// PDF.js — solução universal e compatível com Vite
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
+
 import mammoth from "mammoth";
 
 export default function ImportarCronograma() {
