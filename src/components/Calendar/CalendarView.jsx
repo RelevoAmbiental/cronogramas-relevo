@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MonthView from "./MonthView";
 import WeekView from "./WeekView";
 import DayView from "./DayView";
-import { useCronograma } from "../../contexts/CronogramaContext";
+import { useCronograma } from "../../context/CronogramaContext";
 import { expandTarefasPorDia } from "./utils";
 import "./calendar.css";
 
