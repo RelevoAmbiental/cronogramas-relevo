@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function MonthView({ dataBase, tarefasExpandida }) {
+export default function MonthView({
+  dataBase,
+  tarefasExpandida,
+  onDiaClick,
+  onTarefaClick,
+  getCorProjeto,
+}) {
   const ano = dataBase.getFullYear();
   const mes = dataBase.getMonth();
 
@@ -12,12 +18,10 @@ export default function MonthView({ dataBase, tarefasExpandida }) {
 
   const dias = [];
 
-  // Preenche células vazias antes do 1°
   for (let i = 0; i < indicePrimeiroDia; i++) {
-    dias.push({ data: null });
+    dias.push({ data: null, tarefas: [] });
   }
 
-  // Dias reais
   for (let d = 1; d <= diasNoMes; d++) {
     const data = new Date(ano, mes, d);
     const chave = data.toISOString().substring(0, 10);
@@ -31,16 +35,36 @@ export default function MonthView({ dataBase, tarefasExpandida }) {
   return (
     <div className="mes-grid">
       {dias.map((dia, i) => (
-        <div key={i} className="mes-celula">
+        <div
+          key={i}
+          className="mes-celula"
+          onClick={() => dia.data && onDiaClick && onDiaClick(dia.data)}
+        >
           {dia.data && (
             <>
-              <strong>{dia.data.getDate()}</strong>
+              <div className="mes-celula-header">
+                <strong>{dia.data.getDate()}</strong>
+              </div>
 
-              {dia.tarefas.map((t) => (
-                <div key={t.id} className="tag-tarefa">
-                  {t.nome}
-                </div>
-              ))}
+              <div className="mes-celula-tarefas">
+                {dia.tarefas.map((t) => (
+                  <div
+                    key={t.id}
+                    className="tag-tarefa"
+                    style={{
+                      backgroundColor: getCorProjeto
+                        ? getCorProjeto(t.projetoId)
+                        : undefined,
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTarefaClick && onTarefaClick(t);
+                    }}
+                  >
+                    {t.nome}
+                  </div>
+                ))}
+              </div>
             </>
           )}
         </div>
