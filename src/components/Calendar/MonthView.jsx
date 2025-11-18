@@ -1,75 +1,50 @@
-import { useCronograma } from "../../context/CronogramaContext";
+import React from "react";
 
-export default function MonthView({ data }) {
-  const { tarefas } = useCronograma();
+export default function MonthView({ dataBase, tarefasExpandida }) {
+  const ano = dataBase.getFullYear();
+  const mes = dataBase.getMonth();
 
-  const ano = data.getFullYear();
-  const mes = data.getMonth();
-
-  // Primeira célula do calendário
   const primeiroDia = new Date(ano, mes, 1);
-  const inicio = new Date(primeiroDia);
-  inicio.setDate(primeiroDia.getDate() - primeiroDia.getDay());
+  const ultimoDia = new Date(ano, mes + 1, 0);
 
-  // Gerar 42 dias (grade fixa 6x7)
+  const diasNoMes = ultimoDia.getDate();
+  const indicePrimeiroDia = primeiroDia.getDay(); // 0 DOM → 6 SAB
+
   const dias = [];
-  for (let i = 0; i < 42; i++) {
-    const d = new Date(inicio);
-    d.setDate(inicio.getDate() + i);
-    dias.push(d);
+
+  // Preenche células vazias antes do 1°
+  for (let i = 0; i < indicePrimeiroDia; i++) {
+    dias.push({ data: null });
   }
 
-  function tarefasDoDia(dia) {
-    return tarefas.filter((t) => {
-      const ini = new Date(t.inicio);
-      const fim = new Date(t.fim);
-      return ini <= dia && fim >= dia;
+  // Dias reais
+  for (let d = 1; d <= diasNoMes; d++) {
+    const data = new Date(ano, mes, d);
+    const chave = data.toISOString().substring(0, 10);
+
+    dias.push({
+      data,
+      tarefas: tarefasExpandida[chave] || [],
     });
   }
 
   return (
-    <div>
-      <h2>
-        {data.toLocaleDateString("pt-BR", {
-          month: "long",
-          year: "numeric",
-        })}
-      </h2>
+    <div className="mes-grid">
+      {dias.map((dia, i) => (
+        <div key={i} className="mes-celula">
+          {dia.data && (
+            <>
+              <strong>{dia.data.getDate()}</strong>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(7, 1fr)",
-          gap: "5px",
-        }}
-      >
-        {dias.map((d, idx) => {
-          const lista = tarefasDoDia(d);
-
-          return (
-            <div
-              key={idx}
-              style={{
-                padding: "10px",
-                background: d.getMonth() === mes ? "#fff" : "#eee",
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                minHeight: "80px",
-              }}
-            >
-              <strong>{d.getDate()}</strong>
-
-              {lista.length > 0 && (
-                <ul style={{ fontSize: "12px", paddingLeft: "16px" }}>
-                  {lista.map((t) => (
-                    <li key={t.id}>{t.nome}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          );
-        })}
-      </div>
+              {dia.tarefas.map((t) => (
+                <div key={t.id} className="tag-tarefa">
+                  {t.nome}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
