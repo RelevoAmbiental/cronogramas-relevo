@@ -1,36 +1,27 @@
-import { useCronograma } from "../../context/CronogramaContext";
+import React from "react";
 
-export default function DayView({ data }) {
-  const { tarefas } = useCronograma();
-
-  const dia = new Date(data);
-
-  function tarefasDoDia() {
-    return tarefas.filter((t) => {
-      const ini = new Date(t.inicio);
-      const fim = new Date(t.fim);
-      return ini <= dia && fim >= dia;
-    });
-  }
+export default function DayView({ dataBase, tarefasExpandida }) {
+  const chave = dataBase.toISOString().substring(0, 10);
+  const tarefas = tarefasExpandida[chave] || [];
 
   return (
-    <div>
-      <h2>
-        {dia.toLocaleDateString("pt-BR", {
+    <div className="dia-container">
+      <h3>
+        {dataBase.toLocaleDateString("pt-BR", {
           weekday: "long",
           day: "numeric",
           month: "long",
-          year: "numeric",
         })}
-      </h2>
+      </h3>
 
-      <ul>
-        {tarefasDoDia().map((t) => (
-          <li key={t.id}>{t.nome}</li>
-        ))}
-      </ul>
+      {tarefas.length === 0 && <p>Nenhuma tarefa neste dia.</p>}
 
-      {tarefasDoDia().length === 0 && <p>Nenhuma tarefa neste dia.</p>}
+      {tarefas.map((t) => (
+        <div key={t.id} className="tag-tarefa grande">
+          <strong>{t.nome}</strong>
+          <p>{t.descricao || ""}</p>
+        </div>
+      ))}
     </div>
   );
 }
