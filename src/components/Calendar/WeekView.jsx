@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function WeekView({ dataBase, tarefasExpandida }) {
+export default function WeekView({
+  dataBase,
+  tarefasExpandida,
+  onDiaClick,
+  onTarefaClick,
+  getCorProjeto,
+}) {
   const semana = [];
   const inicio = new Date(dataBase);
   inicio.setDate(inicio.getDate() - inicio.getDay()); // Domingo
@@ -20,14 +26,30 @@ export default function WeekView({ dataBase, tarefasExpandida }) {
   return (
     <div className="semana-grid">
       {semana.map((dia, i) => (
-        <div key={i} className="semana-celula">
+        <div
+          key={i}
+          className="semana-celula"
+          onClick={() => onDiaClick && onDiaClick(dia.data)}
+        >
           <strong>
             {dia.data.toLocaleDateString("pt-BR", { weekday: "short" })}{" "}
             {dia.data.getDate()}
           </strong>
 
           {dia.tarefas.map((t) => (
-            <div key={t.id} className="tag-tarefa">
+            <div
+              key={t.id}
+              className="tag-tarefa"
+              style={{
+                backgroundColor: getCorProjeto
+                  ? getCorProjeto(t.projetoId)
+                  : undefined,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onTarefaClick && onTarefaClick(t);
+              }}
+            >
               {t.nome}
             </div>
           ))}
