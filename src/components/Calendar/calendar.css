@@ -1,0 +1,67 @@
+.calendar-container {
+  padding: 1rem;
+}
+
+.calendar-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-data {
+  margin-left: auto;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* GRID DO MÊS */
+.mes-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.mes-celula {
+  min-height: 110px;
+  background: #ffffffaa;
+  border-radius: 8px;
+  padding: 4px;
+  backdrop-filter: blur(4px);
+  border: 1px solid #ddd;
+}
+
+.tag-tarefa {
+  margin-top: 4px;
+  background: #26c04c;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.tag-tarefa.grande {
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+/* SEMANA */
+.semana-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.semana-celula {
+  min-height: 180px;
+  background: #ffffffaa;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+/* DIA */
+.dia-container {
+  background: #ffffffaa;
+  padding: 1rem;
+  border-radius: 8px;
+}
