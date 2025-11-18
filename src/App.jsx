@@ -7,7 +7,11 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Projetos from "./components/Projetos/Projetos";
 import Tarefas from "./components/Tarefas/Tarefas";
 import CalendarView from "./components/Calendar/CalendarView";
-import ImportadorIA from "./components/Importador/ImportadorIA";
+
+// 🔥 Agora usamos o importador real
+import ImportarCronograma from "./components/Importador/ImportarCronograma";
+// (O ImportadorIA fica opcional, caso queira manter)
+// import ImportadorIA from "./components/Importador/ImportadorIA";
 
 import { useUser } from "./context/UserContext";
 
@@ -29,7 +33,12 @@ export default function App() {
           <Route path="/projetos" element={<Projetos />} />
           <Route path="/tarefas" element={<Tarefas />} />
           <Route path="/calendario" element={<CalendarView />} />
-          <Route path="/importar" element={<ImportadorIA />} />
+
+          {/* 🔥 Rota correta para o Importador com IA */}
+          <Route path="/importar" element={<ImportarCronograma />} />
+
+          {/* Se quiser expor a versão placeholder */}
+          {/* <Route path="/importar-ia" element={<ImportadorIA />} /> */}
         </Routes>
       </main>
 
