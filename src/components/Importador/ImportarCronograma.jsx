@@ -102,26 +102,110 @@ export default function ImportarCronograma() {
       </button>
 
       {tarefasExtraidas.length > 0 && (
-        <>
-          <h2>Pré-visualização do Cronograma</h2>
-
-          <div className="preview-list">
-            {tarefasExtraidas.map((t, i) => (
-              <div key={i} className="preview-item">
-                <strong>{t.nome}</strong>
-                <p>{t.descricao}</p>
-                <p>
-                  <b>Início:</b> {t.inicio} • <b>Fim:</b> {t.fim}
-                </p>
-              </div>
-            ))}
+    <>
+      <h2>Validação do Cronograma</h2>
+      <p>Ajuste as tarefas antes de salvar definitivamente.</p>
+  
+      <div className="preview-list">
+        {tarefasExtraidas.map((t, i) => (
+          <div key={i} className="preview-item">
+  
+            {/* Nome da tarefa */}
+            <label>
+              Nome:
+              <input
+                type="text"
+                value={t.nome}
+                onChange={(e) => {
+                  const clone = [...tarefasExtraidas];
+                  clone[i].nome = e.target.value;
+                  setTarefasExtraidas(clone);
+                }}
+              />
+            </label>
+  
+            {/* Descrição */}
+            <label>
+              Descrição:
+              <textarea
+                value={t.descricao}
+                onChange={(e) => {
+                  const clone = [...tarefasExtraidas];
+                  clone[i].descricao = e.target.value;
+                  setTarefasExtraidas(clone);
+                }}
+              />
+            </label>
+  
+            {/* Datas */}
+            <div className="datas-linha">
+              <label>
+                Início:
+                <input
+                  type="date"
+                  value={t.inicio}
+                  onChange={(e) => {
+                    const clone = [...tarefasExtraidas];
+                    clone[i].inicio = e.target.value;
+                    setTarefasExtraidas(clone);
+                  }}
+                />
+              </label>
+  
+              <label>
+                Fim:
+                <input
+                  type="date"
+                  value={t.fim}
+                  onChange={(e) => {
+                    const clone = [...tarefasExtraidas];
+                    clone[i].fim = e.target.value;
+                    setTarefasExtraidas(clone);
+                  }}
+                />
+              </label>
+            </div>
+  
+            {/* Remover tarefa */}
+            <button
+              className="btn-remover"
+              onClick={() => {
+                const filtrado = tarefasExtraidas.filter((_, idx) => idx !== i);
+                setTarefasExtraidas(filtrado);
+              }}
+            >
+              Remover tarefa
+            </button>
+  
           </div>
+        ))}
+      </div>
+  
+      {/* Adicionar nova tarefa manualmente */}
+      <button
+        className="btn-add"
+        onClick={() =>
+          setTarefasExtraidas([
+            ...tarefasExtraidas,
+            {
+              nome: "",
+              descricao: "",
+              inicio: new Date().toISOString().substring(0, 10),
+              fim: new Date().toISOString().substring(0, 10),
+            },
+          ])
+        }
+      >
+        + Adicionar tarefa
+      </button>
+  
+      {/* Salvar no Firestore */}
+      <button onClick={salvarNoFirestore} className="btn-salvar">
+        Salvar no Cronograma
+      </button>
+    </>
+  )}
 
-          <button onClick={salvarNoFirestore} className="btn-salvar">
-            Salvar no Cronograma
-          </button>
-        </>
-      )}
     </div>
   );
 }
