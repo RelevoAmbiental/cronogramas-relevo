@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./importar.css";
 import { useCronograma } from "../../context/CronogramaContext";
-import * as pdfjsLib from "pdfjs-dist/es5/build/pdf";
-import pdfjsWorker from "pdfjs-dist/es5/build/pdf.worker?url";
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import mammoth from "mammoth";
