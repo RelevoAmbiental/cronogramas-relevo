@@ -1,59 +1,38 @@
-import { useCronograma } from "../../context/CronogramaContext";
+import React from "react";
 
-export default function WeekView({ data }) {
-  const { tarefas } = useCronograma();
+export default function WeekView({ dataBase, tarefasExpandida }) {
+  const semana = [];
+  const inicio = new Date(dataBase);
+  inicio.setDate(inicio.getDate() - inicio.getDay()); // Domingo
 
-  const inicio = new Date(data);
-  inicio.setDate(data.getDate() - data.getDay());
-
-  const dias = [];
   for (let i = 0; i < 7; i++) {
-    const d = new Date(inicio);
-    d.setDate(inicio.getDate() + i);
-    dias.push(d);
-  }
+    const data = new Date(inicio);
+    data.setDate(inicio.getDate() + i);
 
-  function tarefasDoDia(dia) {
-    return tarefas.filter((t) => {
-      const ini = new Date(t.inicio);
-      const fim = new Date(t.fim);
-      return ini <= dia && fim >= dia;
+    const chave = data.toISOString().substring(0, 10);
+
+    semana.push({
+      data,
+      tarefas: tarefasExpandida[chave] || [],
     });
   }
 
   return (
-    <div>
-      <h2>
-        Semana de{" "}
-        {dias[0].toLocaleDateString("pt-BR")} até{" "}
-        {dias[6].toLocaleDateString("pt-BR")}
-      </h2>
+    <div className="semana-grid">
+      {semana.map((dia, i) => (
+        <div key={i} className="semana-celula">
+          <strong>
+            {dia.data.toLocaleDateString("pt-BR", { weekday: "short" })}{" "}
+            {dia.data.getDate()}
+          </strong>
 
-      <div>
-        {dias.map((d) => (
-          <div
-            key={d.toISOString()}
-            style={{
-              background: "#fff",
-              border: "1px solid #ddd",
-              padding: "10px",
-              marginBottom: "10px",
-              borderRadius: "6px",
-            }}
-          >
-            <strong>
-              {d.toLocaleDateString("pt-BR", { weekday: "long" })} —{" "}
-              {d.getDate()}/{d.getMonth() + 1}
-            </strong>
-
-            <ul style={{ marginLeft: "20px" }}>
-              {tarefasDoDia(d).map((t) => (
-                <li key={t.id}>{t.nome}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+          {dia.tarefas.map((t) => (
+            <div key={t.id} className="tag-tarefa">
+              {t.nome}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
