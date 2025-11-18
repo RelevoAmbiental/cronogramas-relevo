@@ -65,3 +65,58 @@
   padding: 1rem;
   border-radius: 8px;
 }
+.mes-celula {
+  min-height: 110px;
+  background: #ffffffaa;
+  border-radius: 8px;
+  padding: 4px;
+  backdrop-filter: blur(4px);
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.mes-celula-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.mes-celula-tarefas {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tag-tarefa {
+  margin-top: 4px;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.tag-tarefa.grande {
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+/* Modal */
+.tarefa-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.tarefa-modal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  min-width: 320px;
+  max-width: 480px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
