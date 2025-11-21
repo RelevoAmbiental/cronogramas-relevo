@@ -22,35 +22,59 @@ export function CronogramaProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   /**
-   * 🔥 Otimização 1 — Função estável (useCallback)
-   * Evita recriação e rerender desnecessário.
+   * 🔥 Função estável para carregar dados do Firestore
    */
   const carregarDados = useCallback(async () => {
     if (!user) return;
 
     setLoading(true);
 
-    /**
-     * 🔥 Otimização 2 — Carregar projetos e tarefas em paralelo
-     * 2–3× mais rápido que sequencial.
-     */
+    // Carrega projetos e tarefas em paralelo
     const [listaProjetos, listaTarefas] = await Promise.all([
       listarProjetos(user.uid),
       listarTarefas(user.uid),
     ]);
 
-    /**
-     * 🔥 Otimização 3 — Atualização atômica
-     * Atualiza tudo de uma vez e só rerender 1 vez.
-     */
+    // Atualiza estado de forma atômica
     setProjetos(listaProjetos);
     setTarefas(listaTarefas);
 
     setLoading(false);
   }, [user]);
 
+  // Ações que também atualizam o estado local após cada operação
+  const criarProjetoCtx = async (dados) => {
+    await criarProjeto(user.uid, dados);
+    await carregarDados();
+  };
+
+  const editarProjetoCtx = async (id, dados) => {
+    await editarProjeto(id, dados);
+    await carregarDados();
+  };
+
+  const removerProjetoCtx = async (id) => {
+    await removerProjeto(id);
+    await carregarDados();
+  };
+
+  const criarTarefaCtx = async (dados) => {
+    await criarTarefa(user.uid, dados);
+    await carregarDados();
+  };
+
+  const editarTarefaCtx = async (id, dados) => {
+    await editarTarefa(id, dados);
+    await carregarDados();
+  };
+
+  const removerTarefaCtx = async (id) => {
+    await removerTarefa(id);
+    await carregarDados();
+  };
+
   /**
-   * 🔥 Otimização 4 — useEffect limpo com função estável
+   * Carrega dados na montagem e quando o usuário mudar
    */
   useEffect(() => {
     carregarDados();
@@ -63,14 +87,14 @@ export function CronogramaProvider({ children }) {
         tarefas,
         loading,
 
-        // Operações com UID automático
-        criarProjeto: (dados) => criarProjeto(user.uid, dados),
-        editarProjeto,
-        removerProjeto,
+        // Operações com UID + atualização de estado
+        criarProjeto: criarProjetoCtx,
+        editarProjeto: editarProjetoCtx,
+        removerProjeto: removerProjetoCtx,
 
-        criarTarefa: (dados) => criarTarefa(user.uid, dados),
-        editarTarefa,
-        removerTarefa,
+        criarTarefa: criarTarefaCtx,
+        editarTarefa: editarTarefaCtx,
+        removerTarefa: removerTarefaCtx,
       }}
     >
       {children}
