@@ -1,8 +1,7 @@
-/* Fundo escurecido suave */
 .relevo-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
@@ -10,7 +9,7 @@
   z-index: 3000;
 }
 
-/* Card central glass */
+/* Card central glassmorphism */
 .relevo-modal-content {
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
@@ -21,20 +20,18 @@
   width: 90%;
   max-width: 650px;
 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.28);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
   color: #fff;
-  animation: fadeIn 0.35s ease;
-  border: 1px solid rgba(255,255,255,0.25);
+  animation: modalUp 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-/* Header com alinhamento */
 .relevo-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Botão fechar */
 .relevo-modal-close {
   background: transparent;
   border: none;
@@ -48,8 +45,22 @@
   margin-top: 15px;
 }
 
-/* Suavidade */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Animação de entrada */
+@keyframes modalUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modo claro – integra com tema light */
+@media (prefers-color-scheme: light) {
+  .relevo-modal-content {
+    background: rgba(255, 255, 255, 0.85);
+    color: #0a4723;
+  }
 }
