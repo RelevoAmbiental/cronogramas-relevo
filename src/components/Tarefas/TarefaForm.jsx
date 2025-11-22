@@ -103,6 +103,7 @@ export default function TarefaForm({ tarefaInicial, fechar }) {
             <option value="pendente">Pendente</option>
             <option value="andamento">Em andamento</option>
             <option value="concluida">Concluída</option>
+            <option value="atrasada">Atrasada</option>
           </select>
         </div>
       </div>
