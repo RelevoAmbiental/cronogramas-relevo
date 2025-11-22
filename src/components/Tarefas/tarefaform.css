@@ -1,5 +1,6 @@
 /* —————————————————————————————
    FORMULÁRIO DE TAREFA — RELEVO
+   Versão FINAL
    ————————————————————————————— */
 
 .relevo-form {
@@ -9,32 +10,34 @@
   box-sizing: border-box;
 }
 
-/* GRID PRINCIPAL */
+/* ——————— GRID PRINCIPAL ——————— */
 .relevo-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 24px; /* espaçamento vertical/horizontal */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* evita sobreposição */
+  gap: 20px 24px;
   width: 100%;
-  padding-right: 10px; /* evita encavalamento no lado direito */
   box-sizing: border-box;
+}
+
+.relevo-grid > div {
+  min-width: 0; /* ESSENCIAL para inputs caberem */
 }
 
 .relevo-grid .full {
   grid-column: span 2;
 }
 
-/* RESPONSIVIDADE — MOBILE */
+/* ——————— RESPONSIVIDADE ——————— */
 @media (max-width: 760px) {
   .relevo-grid {
     grid-template-columns: 1fr !important;
-    padding-right: 0;
   }
   .relevo-grid .full {
     grid-column: span 1;
   }
 }
 
-/* LABELS */
+/* ——————— LABELS ——————— */
 .relevo-form label {
   font-weight: 600;
   margin-bottom: 4px;
@@ -42,27 +45,31 @@
   color: #0a4723;
 }
 
-/* INPUTS E SELECTS */
+/* ——————— INPUTS E SELECTS ——————— */
 .relevo-form input,
 .relevo-form select {
   width: 100%;
   max-width: 100%;
-  box-sizing: border-box;
-  padding: 11px 12px;
+  box-sizing: border-box !important;
+  padding: 9px 10px; /* padding reduzido para evitar quebra */
   border-radius: 10px;
   border: 1px solid #ccc;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   color: #0a4723 !important;
   outline: none;
   transition: 0.25s ease;
 }
 
-/* RESERVA ESPAÇO PARA O ÍCONE DO CALENDÁRIO */
+/* ——————— INPUT DATE ——————— */
+/* Correção definitiva */
 .relevo-form input[type="date"] {
-  padding-right: 32px;
+  padding-right: 40px !important; /* espaço para o ícone */
+  min-width: 0 !important;        /* permite encolher */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* HOVER & FOCUS */
+/* ——————— FOCUS / INTERAÇÃO ——————— */
 .relevo-form input:focus,
 .relevo-form select:focus {
   background: #fff;
@@ -71,7 +78,7 @@
   transform: scale(1.015);
 }
 
-/* DROPDOWN ESTILIZADO COM SETA VERDE */
+/* ——————— DROPDOWN COM SETA VERDE ——————— */
 .relevo-form select {
   appearance: none;
   -webkit-appearance: none;
@@ -85,7 +92,7 @@
   background-repeat: no-repeat;
 }
 
-/* BOTÕES */
+/* ——————— AÇÕES ——————— */
 .relevo-actions {
   margin-top: 25px;
   display: flex;
@@ -122,7 +129,7 @@
   opacity: 0.9;
 }
 
-/* BOTÃO FLUTUANTE */
+/* ——————— BOTÃO FLUTUANTE ——————— */
 .btn-flutuante {
   position: fixed;
   bottom: 22px;
@@ -151,7 +158,7 @@
   background: #0c5a2c;
 }
 
-/* BOTÃO NO TOPO */
+/* ——————— BOTÃO "NOVA TAREFA" NO TOPO ——————— */
 .btn-nova-tarefa {
   background: #0a4723;
   color: white;
