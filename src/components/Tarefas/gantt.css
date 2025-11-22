@@ -1,0 +1,34 @@
+.gantt-container {
+  width: 100%;
+  margin-top: 25px;
+  color: white;
+  font-family: "Montserrat";
+}
+
+.gantt-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.gantt-label {
+  width: 180px;
+  font-size: 0.9rem;
+  padding-right: 10px;
+}
+
+.gantt-track {
+  flex: 1;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gantt-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
