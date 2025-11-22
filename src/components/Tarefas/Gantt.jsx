@@ -48,7 +48,7 @@ export default function Gantt({ tarefas }) {
               style={{
                 marginLeft: calcularOffset(tarefa.inicio) * 15 + "px",
                 width: calcLargura(tarefa.inicio, tarefa.fim) * 15 + "px",
-                background: statusColor[tarefa.status],
+                background: projetos.find(p => p.id === tarefa.projetoId)?.cor || "#0a4723",
               }}
             />
           </div>
