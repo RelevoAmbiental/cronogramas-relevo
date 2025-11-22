@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
+import "./tarefaform.css";
 
 export default function TarefaForm({ tarefaInicial, fechar }) {
   const { criarTarefa, editarTarefa, projetos } = useCronograma();
 
-  // Estados — carregando a tarefaInicial quando existir
   const [nome, setNome] = useState("");
   const [projetoId, setProjetoId] = useState("");
   const [inicio, setInicio] = useState("");
@@ -13,7 +13,6 @@ export default function TarefaForm({ tarefaInicial, fechar }) {
 
   const [salvando, setSalvando] = useState(false);
 
-  // Quando abrir o modal, preenche os campos corretamente
   useEffect(() => {
     if (tarefaInicial) {
       setNome(tarefaInicial.nome || "");
@@ -22,7 +21,6 @@ export default function TarefaForm({ tarefaInicial, fechar }) {
       setFim(tarefaInicial.fim?.slice(0, 10) || "");
       setStatus(tarefaInicial.status || "pendente");
     } else {
-      // formulário limpo para criação
       setNome("");
       setProjetoId("");
       setInicio("");
@@ -35,13 +33,7 @@ export default function TarefaForm({ tarefaInicial, fechar }) {
     e.preventDefault();
     setSalvando(true);
 
-    const dados = {
-      nome,
-      projetoId,
-      inicio,
-      fim,
-      status,
-    };
+    const dados = { nome, projetoId, inicio, fim, status };
 
     if (tarefaInicial) {
       await editarTarefa(tarefaInicial.id, dados);
@@ -50,106 +42,81 @@ export default function TarefaForm({ tarefaInicial, fechar }) {
     }
 
     setSalvando(false);
-    fechar(); // fecha modal
+    fechar();
   }
 
   return (
-    <div
-      style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "8px",
-      }}
-    >
-      <h2 style={{ marginBottom: "15px" }}>
-        {tarefaInicial ? "Editar Tarefa" : "Nova Tarefa"}
-      </h2>
-
-      <form onSubmit={salvar}>
-        <label>Nome</label>
-        <input
-          type="text"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
-          style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
-        />
-
-        <label>Projeto vinculado</label>
-        <select
-          value={projetoId}
-          onChange={(e) => setProjetoId(e.target.value)}
-          required
-          style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
-        >
-          <option value="">Selecione um projeto</option>
-          {projetos.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nome}
-            </option>
-          ))}
-        </select>
-
-        <label>Início</label>
-        <input
-          type="date"
-          value={inicio}
-          onChange={(e) => setInicio(e.target.value)}
-          required
-          style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
-        />
-
-        <label>Fim</label>
-        <input
-          type="date"
-          value={fim}
-          onChange={(e) => setFim(e.target.value)}
-          required
-          style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
-        />
-
-        <label>Status</label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          style={{ width: "100%", padding: "8px", marginBottom: "15px" }}
-        >
-          <option value="pendente">Pendente</option>
-          <option value="andamento">Em andamento</option>
-          <option value="concluida">Concluída</option>
-        </select>
-
-        <div style={{ marginTop: "10px" }}>
-          <button
-            type="submit"
-            disabled={salvando}
-            style={{
-              padding: "10px 16px",
-              background: "#0a4723",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              marginRight: "10px",
-            }}
-          >
-            {salvando ? "Salvando..." : "Salvar"}
-          </button>
-
-          <button
-            type="button"
-            onClick={fechar}
-            style={{
-              padding: "10px 16px",
-              background: "#777",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-            }}
-          >
-            Cancelar
-          </button>
+    <form className="relevo-form" onSubmit={salvar}>
+      <div className="relevo-grid">
+        
+        <div>
+          <label>Nome da Tarefa</label>
+          <input
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            required
+          />
         </div>
-      </form>
-    </div>
+
+        <div>
+          <label>Projeto Vinculado</label>
+          <select
+            value={projetoId}
+            onChange={(e) => setProjetoId(e.target.value)}
+            required
+          >
+            <option value="">Selecione...</option>
+            {projetos.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>Início</label>
+          <input
+            type="date"
+            value={inicio}
+            onChange={(e) => setInicio(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label>Fim</label>
+          <input
+            type="date"
+            value={fim}
+            onChange={(e) => setFim(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="full">
+          <label>Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option>
+            <option value="concluida">Concluída</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="relevo-actions">
+        <button type="submit" className="save" disabled={salvando}>
+          {salvando ? "Salvando..." : "Salvar"}
+        </button>
+
+        <button type="button" className="cancel" onClick={fechar}>
+          Cancelar
+        </button>
+      </div>
+    </form>
   );
 }
