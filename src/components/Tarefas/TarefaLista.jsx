@@ -76,7 +76,6 @@ export default function TarefaLista({ tarefas }) {
         </tbody>
       </table>
 
-      {/* MODAL DE EDIÇÃO */}
       <Modal
         open={modalAberto}
         onClose={() => setModalAberto(false)}
