@@ -8,6 +8,7 @@ import Modal from "../ui/Modal";
 import TimelineVertical from "./TimelineVertical";
 import Gantt from "./Gantt";
 
+import "./filtros.css";
 import "./tarefaform.css";
 import "./timeline.css";
 import "./gantt.css";
