@@ -2,57 +2,51 @@ import { useState } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
 import TarefaLista from "./TarefaLista";
 import TarefaForm from "./TarefaForm";
+import Modal from "../ui/Modal";
+import "./tarefaform.css";
 
 export default function Tarefas() {
   const { tarefas, loading } = useCronograma();
 
-  const [abrirForm, setAbrirForm] = useState(false);
-  const [tarefaEditando, setTarefaEditando] = useState(null);
+  const [modalNovaAberto, setModalNovaAberto] = useState(false);
 
   function novaTarefa() {
-    setTarefaEditando(null);
-    setAbrirForm(true);
+    setModalNovaAberto(true);
   }
 
-  function editar(tarefa) {
-    setTarefaEditando(tarefa);
-    setAbrirForm(true);
-  }
-
-  function fecharForm() {
-    setTarefaEditando(null);
-    setAbrirForm(false);
+  function fecharNova() {
+    setModalNovaAberto(false);
   }
 
   return (
-    <div className="content">
-      <h1>Tarefas</h1>
-      <p>Gerencie aqui as tarefas vinculadas aos projetos.</p>
+    <div className="tarefas-container">
+      <div className="tarefas-header">
+        <h1>Cronograma de Tarefas</h1>
 
-      <button
-        onClick={novaTarefa}
-        style={{
-          padding: "10px 16px",
-          background: "#0a4723",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          marginBottom: "20px",
-          cursor: "pointer",
-        }}
-      >
-        + Nova Tarefa
-      </button>
+        <button className="btn-nova-tarefa" onClick={novaTarefa}>
+          + Nova Tarefa
+        </button>
+      </div>
 
       {loading ? (
         <p>Carregando tarefas...</p>
       ) : (
-        <TarefaLista tarefas={tarefas} onEditar={editar} />
+        <TarefaLista tarefas={tarefas} />
       )}
 
-      {abrirForm && (
-        <TarefaForm tarefa={tarefaEditando} fechar={fecharForm} />
-      )}
+      {/* Botão flutuante para nova tarefa */}
+      <button className="btn-flutuante" onClick={novaTarefa}>
+        +
+      </button>
+
+      {/* Modal de criação de nova tarefa */}
+      <Modal
+        open={modalNovaAberto}
+        onClose={fecharNova}
+        title="Nova Tarefa"
+      >
+        <TarefaForm tarefaInicial={null} fechar={fecharNova} />
+      </Modal>
     </div>
   );
 }
