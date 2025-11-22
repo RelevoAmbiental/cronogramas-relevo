@@ -107,6 +107,7 @@ export default function Tarefas() {
           <option value="pendente">Pendente</option>
           <option value="andamento">Em andamento</option>
           <option value="concluida">Concluída</option>
+          <option value="atrasada">Atrasada</option>
         </select>
 
         <select value={filtroProjeto} onChange={(e) => setFiltroProjeto(e.target.value)}>
