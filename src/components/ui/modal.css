@@ -73,3 +73,13 @@
 .relevo-modal-content {
   animation: modalUp 0.25s ease;
 }
+.relevo-modal-body {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.relevo-modal-content {
+  max-width: 650px;
+  overflow: hidden;
+}
