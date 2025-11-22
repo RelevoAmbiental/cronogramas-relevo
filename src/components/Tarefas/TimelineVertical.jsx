@@ -15,6 +15,9 @@ export default function TimelineVertical({ tarefas }) {
     andamento: "#0aa3e8",
     concluida: "#0a8f3a",
   };
+  function corDoProjeto(id) {
+  return projetos.find((p) => p.id === id)?.cor || "#0a4723";
+  }
 
   return (
     <div className="timeline-container">
@@ -22,7 +25,7 @@ export default function TimelineVertical({ tarefas }) {
         <div className="timeline-item" key={tarefa.id}>
           <div
             className="timeline-dot"
-            style={{ background: statusColor[tarefa.status] }}
+            style={{ background: corDoProjeto(tarefa.projetoId) }}
           ></div>
 
           <div className="timeline-content">
