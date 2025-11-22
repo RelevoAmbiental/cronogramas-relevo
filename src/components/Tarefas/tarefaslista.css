@@ -1,0 +1,60 @@
+.tarefas-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* CARD */
+.tarefa-card {
+  background: #fff;
+  padding: 14px 16px;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* CABEÇALHO */
+.tarefa-cabeca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tarefa-cor {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.tarefa-cabeca h3 {
+  margin: 0;
+  color: #0a4723;
+}
+
+/* PROJETO */
+.tarefa-projeto {
+  margin: 4px 0;
+  color: #444;
+}
+
+/* BOTÕES */
+.tarefa-acoes {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.editar {
+  background: #0a4723;
+  padding: 6px 12px;
+  border: none;
+  color: white;
+  border-radius: 999px;
+}
+
+.excluir {
+  background: #c0392b;
+  padding: 6px 12px;
+  border: none;
+  color: white;
+  border-radius: 999px;
+}
