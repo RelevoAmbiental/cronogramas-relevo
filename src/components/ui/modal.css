@@ -1,37 +1,55 @@
-.modal-overlay {
+/* Fundo escurecido suave */
+.relevo-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 3000;
 }
 
-.modal-content {
-  background: #fff;
+/* Card central glass */
+.relevo-modal-content {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-radius: 20px;
+  padding: 25px;
   width: 90%;
-  max-width: 600px;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  animation: fadeIn .2s ease;
+  max-width: 650px;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.28);
+  color: #fff;
+  animation: fadeIn 0.35s ease;
+  border: 1px solid rgba(255,255,255,0.25);
 }
 
-.modal-header {
+/* Header com alinhamento */
+.relevo-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.modal-close {
+/* Botão fechar */
+.relevo-modal-close {
+  background: transparent;
   border: none;
-  background: none;
-  font-size: 24px;
+  font-size: 26px;
   cursor: pointer;
+  color: white;
+  font-weight: bold;
 }
 
+.relevo-modal-body {
+  margin-top: 15px;
+}
+
+/* Suavidade */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
 }
