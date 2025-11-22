@@ -17,12 +17,14 @@ export default function Tarefas() {
   const { tarefas, projetos, loading, removerTarefa } = useCronograma();
 
   const [modalNovaAberto, setModalNovaAberto] = useState(false);
+  const [tarefaEditando, setTarefaEditando] = useState(null);
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroProjeto, setFiltroProjeto] = useState("todos");
 
   // Abrir modal de nova tarefa
   function novaTarefa() {
+    setTarefaEditando(null);
     setModalNovaAberto(true);
   }
 
@@ -30,11 +32,13 @@ export default function Tarefas() {
     setModalNovaAberto(false);
   }
 
-  // Manipuladores de edição e exclusão
+  // Editar tarefa existente
   function handleEditar(tarefa) {
     setTarefaEditando(tarefa);
+    setModalNovaAberto(true);
   }
 
+  // Excluir tarefa
   async function handleExcluir(id) {
     if (confirm("Tem certeza que deseja excluir esta tarefa?")) {
       await removerTarefa(id);
@@ -89,7 +93,7 @@ export default function Tarefas() {
         </button>
       </div>
 
-      {/* FILTROS */}
+      {/* FILTROS ELEGANTES */}
       <div className="filtros-container">
         <input
           type="text"
@@ -97,21 +101,6 @@ export default function Tarefas() {
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
-      
-        <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
-          <option value="todos">Todos os status</option>
-          <option value="pendente">Pendente</option>
-          <option value="andamento">Em andamento</option>
-          <option value="concluida">Concluída</option>
-        </select>
-      
-        <select value={filtroProjeto} onChange={(e) => setFiltroProjeto(e.target.value)}>
-          <option value="todos">Todos os projetos</option>
-          {projetos.map((p) => (
-            <option key={p.id} value={p.id}>{p.nome}</option>
-          ))}
-        </select>
-      </div>
 
         <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
           <option value="todos">Todos os status</option>
@@ -162,8 +151,8 @@ export default function Tarefas() {
       )}
 
       {/* MODAL DE NOVA TAREFA */}
-      <Modal open={modalNovaAberto} onClose={fecharNova} title="Nova Tarefa">
-        <TarefaForm tarefaInicial={null} fechar={fecharNova} />
+      <Modal open={modalNovaAberto} onClose={fecharNova} title={tarefaEditando ? "Editar Tarefa" : "Nova Tarefa"}>
+        <TarefaForm tarefaInicial={tarefaEditando} fechar={fecharNova} />
       </Modal>
 
     </div>
