@@ -1,12 +1,22 @@
 import "./gantt.css";
 
-export default function Gantt({ tarefas, projetos }) {
+export default function Gantt({ tarefas }) {
   if (!tarefas?.length) return <p>Nenhuma tarefa encontrada.</p>;
 
+  // Ordenar tarefas por data
   const ordenadas = [...tarefas].sort(
     (a, b) => new Date(a.inicio) - new Date(b.inicio)
   );
 
+  // Cores fixas por status
+  const statusColor = {
+    pendente: "#c9c900",
+    andamento: "#0aa3e8",
+    concluida: "#0a8f3a",
+    atrasada: "#d62839", // 🔥 novo status
+  };
+
+  // Determinar a menor e maior data
   const inicioMin = new Date(
     Math.min(...ordenadas.map((t) => new Date(t.inicio)))
   );
@@ -28,10 +38,6 @@ export default function Gantt({ tarefas, projetos }) {
     );
   }
 
-  function corDoProjeto(id) {
-    return projetos.find((p) => p.id === id)?.cor || "#0a4723";
-  }
-
   return (
     <div className="gantt-container">
       {ordenadas.map((tarefa) => (
@@ -44,7 +50,7 @@ export default function Gantt({ tarefas, projetos }) {
               style={{
                 marginLeft: calcularOffset(tarefa.inicio) * 15 + "px",
                 width: calcLargura(tarefa.inicio, tarefa.fim) * 15 + "px",
-                background: corDoProjeto(tarefa.projetoId),
+                background: statusColor[tarefa.status] || "#555", // fallback
               }}
             />
           </div>
