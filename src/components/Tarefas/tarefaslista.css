@@ -1,60 +1,133 @@
-.tarefas-grupo {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* Container geral */
+.tarefas-lista-container {
+  width: 100%;
+  margin-top: 20px;
 }
 
-/* CARD */
-.tarefa-card {
-  background: #fff;
-  padding: 14px 16px;
-  border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+/* TABELA */
+.tarefas-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Montserrat", sans-serif;
 }
 
-/* CABEÇALHO */
-.tarefa-cabeca {
+.tarefas-tabela thead {
+  background: #f2f4f3;
+}
+
+.tarefas-tabela th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 15px;
+  color: #0a4723;
+}
+
+.tarefa-row {
+  border-bottom: 1px solid #ececec;
+}
+
+.tarefa-row:hover {
+  background: #f9f9f9;
+}
+
+/* CÉLULAS */
+.tarefas-tabela td {
+  padding: 12px 10px;
+  vertical-align: middle;
+  font-size: 15px;
+}
+
+/* COLUNA — Nome da tarefa + bolinha */
+.tarefa-col-nome {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  font-weight: 600;
+  color: #06371b;
 }
 
-.tarefa-cor {
+.tarefa-bolinha {
   width: 14px;
   height: 14px;
   border-radius: 50%;
 }
 
-.tarefa-cabeca h3 {
-  margin: 0;
-  color: #0a4723;
-}
-
-/* PROJETO */
-.tarefa-projeto {
-  margin: 4px 0;
+/* STATUS */
+.tarefa-col-status {
+  text-transform: capitalize;
+  font-weight: 600;
   color: #444;
 }
 
-/* BOTÕES */
-.tarefa-acoes {
-  margin-top: 12px;
+/* AÇÕES */
+.tarefa-col-acoes {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
-.editar {
+.btn-editar {
   background: #0a4723;
-  padding: 6px 12px;
-  border: none;
   color: white;
-  border-radius: 999px;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
 }
 
-.excluir {
-  background: #c0392b;
-  padding: 6px 12px;
-  border: none;
+.btn-excluir {
+  background: #c62828;
   color: white;
-  border-radius: 999px;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background: #06371b;
+}
+
+.btn-excluir:hover {
+  background: #a21010;
+}
+
+/* RESPONSIVO — No celular vira lista vertical */
+@media (max-width: 750px) {
+  .tarefas-tabela thead {
+    display: none;
+  }
+
+  .tarefas-tabela tr {
+    display: block;
+    margin-bottom: 18px;
+    padding: 12px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+  }
+
+  .tarefas-tabela td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 4px;
+  }
+
+  .tarefa-col-nome {
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: flex-start;
+  }
+
+  .tarefa-col-acoes {
+    justify-content: flex-end;
+  }
+
+  .btn-editar,
+  .btn-excluir {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
 }
