@@ -1,93 +1,41 @@
-import { useCronograma } from "../../context/CronogramaContext";
-import Modal from "../ui/Modal";
-import TarefaForm from "./TarefaForm";
-import { useState } from "react";
+import "./tarefaslista.css";
 
-export default function TarefaLista({ tarefas }) {
-  const { removerTarefa, projetos } = useCronograma();
-
-  const [modalAberto, setModalAberto] = useState(false);
-  const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
-
-  async function excluir(id) {
-    if (confirm("Tem certeza que deseja excluir esta tarefa?")) {
-      await removerTarefa(id);
-    }
+export default function TarefaLista({ tarefas, projetos, onEditar }) {
+  function corDoProjeto(id) {
+    return projetos.find((p) => p.id === id)?.cor || "#0a4723";
   }
 
-  function nomeProjeto(id) {
+  function nomeDoProjeto(id) {
     return projetos.find((p) => p.id === id)?.nome || "—";
   }
 
-  const abrirEdicao = (tarefa) => {
-    setTarefaSelecionada(tarefa);
-    setModalAberto(true);
-  };
-
-  if (!tarefas.length) {
-    return <p>Nenhuma tarefa cadastrada.</p>;
-  }
+  if (!tarefas.length) return <p>Nenhuma tarefa encontrada.</p>;
 
   return (
-    <>
-      <table>
-        <thead>
-          <tr>
-            <th>Tarefa</th>
-            <th>Projeto</th>
-            <th>Início</th>
-            <th>Fim</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
+    <div className="tarefas-grupo">
 
-        <tbody>
-          {tarefas.map((t) => (
-            <tr key={t.id}>
-              <td>{t.nome}</td>
-              <td>{nomeProjeto(t.projetoId)}</td>
-              <td>{new Date(t.inicio).toLocaleDateString()}</td>
-              <td>{new Date(t.fim).toLocaleDateString()}</td>
-              <td>{t.status}</td>
+      {tarefas.map((tarefa) => (
+        <div key={tarefa.id} className="tarefa-card">
+          <div className="tarefa-cabeca">
+            <span className="tarefa-cor" style={{ backgroundColor: corDoProjeto(tarefa.projetoId) }} />
+            <h3>{tarefa.nome}</h3>
+          </div>
 
-              <td>
-                <button
-                  onClick={() => abrirEdicao(t)}
-                  style={{ marginRight: "10px" }}
-                >
-                  Editar
-                </button>
+          <p className="tarefa-projeto">
+            Projeto: {nomeDoProjeto(tarefa.projetoId)}
+          </p>
 
-                <button
-                  onClick={() => excluir(t.id)}
-                  style={{
-                    color: "white",
-                    background: "red",
-                    border: "none",
-                    padding: "5px 10px",
-                  }}
-                >
-                  Excluir
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <p><strong>Início:</strong> {new Date(tarefa.inicio).toLocaleDateString()}</p>
+          <p><strong>Fim:</strong> {new Date(tarefa.fim).toLocaleDateString()}</p>
+          <p><strong>Status:</strong> {tarefa.status}</p>
 
-      <Modal
-        open={modalAberto}
-        onClose={() => setModalAberto(false)}
-        title="Editar Tarefa"
-      >
-        {tarefaSelecionada && (
-          <TarefaForm
-            tarefaInicial={tarefaSelecionada}
-            fechar={() => setModalAberto(false)}
-          />
-        )}
-      </Modal>
-    </>
+          <div className="tarefa-acoes">
+            <button onClick={() => onEditar(tarefa)} className="editar">Editar</button>
+            <button onClick={() => excluir(tarefa.id)} className="excluir">Excluir</button>
+          </div>
+        </div>
+      ))}
+
+    </div>
   );
 }
