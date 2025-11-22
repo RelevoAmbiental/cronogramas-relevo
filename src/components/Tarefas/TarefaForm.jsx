@@ -48,7 +48,6 @@ export default function TarefaForm({ tarefaInicial, fechar }) {
   return (
     <form className="relevo-form" onSubmit={salvar}>
       <div className="relevo-grid">
-        
         <div>
           <label>Nome da Tarefa</label>
           <input
