@@ -12,7 +12,9 @@ export default function Modal({ open, onClose, children, title }) {
       >
         <div className="relevo-modal-header">
           <h2>{title}</h2>
-          <button className="relevo-modal-close" onClick={onClose}>×</button>
+          <button className="relevo-modal-close" onClick={onClose}>
+            ×
+          </button>
         </div>
 
         <div className="relevo-modal-body">{children}</div>
