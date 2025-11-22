@@ -1,0 +1,61 @@
+.relevo-form {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+}
+
+.relevo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.relevo-grid .full {
+  grid-column: span 2;
+}
+
+.relevo-form label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.relevo-form input,
+.relevo-form select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  outline: none;
+  backdrop-filter: blur(6px);
+}
+
+.relevo-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.relevo-actions .save {
+  background: #0a4723;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.relevo-actions .cancel {
+  background: #777;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.relevo-actions button:hover {
+  opacity: 0.88;
+}
