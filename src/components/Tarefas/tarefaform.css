@@ -195,3 +195,11 @@
   transform: scale(1.12);
   background: #0c5a2c;
 }
+/* Tema escuro para a página de tarefas */
+.tarefas-container {
+  background: linear-gradient(145deg, #0f2917, #0a1e12);
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+  min-height: 100vh;
+}
