@@ -249,3 +249,18 @@
   font-size: 0.8rem;
   color: #333;
 }
+.projeto-form textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.85);
+  color: #0a4723;
+  font-family: "Montserrat", sans-serif;
+}
+.relevo-grid .full {
+  min-width: 0;
+}
