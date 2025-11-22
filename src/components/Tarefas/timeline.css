@@ -1,7 +1,7 @@
 .timeline-container {
   width: 100%;
   margin: 30px auto;
-  border-left: 3px solid rgba(255, 255, 255, 0.35);
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
   padding-left: 25px;
 }
 
@@ -10,6 +10,7 @@
   position: relative;
 }
 
+/* Pontinhos */
 .timeline-dot {
   position: absolute;
   left: -13px;
@@ -20,18 +21,19 @@
   border: 3px solid white;
 }
 
+/* Cards - agora em tema claro */
 .timeline-content {
-  background: rgba(255, 255, 255, 0.13);
+  background: white;
   padding: 15px;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(10px);
-  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  color: #0a4723 !important;
   font-family: "Montserrat";
 }
 
 .timeline-content h3 {
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
+  color: #0a4723 !important;
 }
 
 .tag {
