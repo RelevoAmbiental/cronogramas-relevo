@@ -1,16 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
 
-export default function TarefaForm({ tarefa, fechar }) {
+export default function TarefaForm({ tarefaInicial, fechar }) {
   const { criarTarefa, editarTarefa, projetos } = useCronograma();
 
-  const [nome, setNome] = useState(tarefa?.nome || "");
-  const [projetoId, setProjetoId] = useState(tarefa?.projetoId || "");
-  const [inicio, setInicio] = useState(tarefa?.inicio?.slice(0, 10) || "");
-  const [fim, setFim] = useState(tarefa?.fim?.slice(0, 10) || "");
-  const [status, setStatus] = useState(tarefa?.status || "pendente");
+  // Estados — carregando a tarefaInicial quando existir
+  const [nome, setNome] = useState("");
+  const [projetoId, setProjetoId] = useState("");
+  const [inicio, setInicio] = useState("");
+  const [fim, setFim] = useState("");
+  const [status, setStatus] = useState("pendente");
 
   const [salvando, setSalvando] = useState(false);
+
+  // Quando abrir o modal, preenche os campos corretamente
+  useEffect(() => {
+    if (tarefaInicial) {
+      setNome(tarefaInicial.nome || "");
+      setProjetoId(tarefaInicial.projetoId || "");
+      setInicio(tarefaInicial.inicio?.slice(0, 10) || "");
+      setFim(tarefaInicial.fim?.slice(0, 10) || "");
+      setStatus(tarefaInicial.status || "pendente");
+    } else {
+      // formulário limpo para criação
+      setNome("");
+      setProjetoId("");
+      setInicio("");
+      setFim("");
+      setStatus("pendente");
+    }
+  }, [tarefaInicial]);
 
   async function salvar(e) {
     e.preventDefault();
@@ -24,14 +43,14 @@ export default function TarefaForm({ tarefa, fechar }) {
       status,
     };
 
-    if (tarefa) {
-      await editarTarefa(tarefa.id, dados);
+    if (tarefaInicial) {
+      await editarTarefa(tarefaInicial.id, dados);
     } else {
       await criarTarefa(dados);
     }
 
     setSalvando(false);
-    fechar();
+    fechar(); // fecha modal
   }
 
   return (
@@ -40,11 +59,11 @@ export default function TarefaForm({ tarefa, fechar }) {
         background: "white",
         padding: "20px",
         borderRadius: "8px",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        marginTop: "20px",
       }}
     >
-      <h2>{tarefa ? "Editar Tarefa" : "Nova Tarefa"}</h2>
+      <h2 style={{ marginBottom: "15px" }}>
+        {tarefaInicial ? "Editar Tarefa" : "Nova Tarefa"}
+      </h2>
 
       <form onSubmit={salvar}>
         <label>Nome</label>
@@ -100,34 +119,36 @@ export default function TarefaForm({ tarefa, fechar }) {
           <option value="concluida">Concluída</option>
         </select>
 
-        <button
-          type="submit"
-          disabled={salvando}
-          style={{
-            padding: "10px 16px",
-            background: "#0a4723",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            marginRight: "10px",
-          }}
-        >
-          {salvando ? "Salvando..." : "Salvar"}
-        </button>
+        <div style={{ marginTop: "10px" }}>
+          <button
+            type="submit"
+            disabled={salvando}
+            style={{
+              padding: "10px 16px",
+              background: "#0a4723",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              marginRight: "10px",
+            }}
+          >
+            {salvando ? "Salvando..." : "Salvar"}
+          </button>
 
-        <button
-          type="button"
-          onClick={fechar}
-          style={{
-            padding: "10px 16px",
-            background: "#777",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-          }}
-        >
-          Cancelar
-        </button>
+          <button
+            type="button"
+            onClick={fechar}
+            style={{
+              padding: "10px 16px",
+              background: "#777",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );
