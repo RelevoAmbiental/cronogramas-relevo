@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
 import TarefaLista from "./TarefaLista";
 import TarefaForm from "./TarefaForm";
@@ -24,6 +24,31 @@ export default function Tarefas() {
     setModalNovaAberto(false);
   }
 
+  // 🔥 ORDENAR TAREFAS: (A) data → (B) nome → (C) id
+  const tarefasOrdenadas = useMemo(() => {
+    if (!tarefas) return [];
+
+    return [...tarefas].sort((a, b) => {
+      // A) ordena por data de início
+      const dataA = new Date(a.inicio);
+      const dataB = new Date(b.inicio);
+
+      if (dataA.getTime() !== dataB.getTime()) {
+        return dataA - dataB;
+      }
+
+      // B) ordena por nome
+      const nomeA = (a.nome || "").toLowerCase();
+      const nomeB = (b.nome || "").toLowerCase();
+
+      if (nomeA < nomeB) return -1;
+      if (nomeA > nomeB) return 1;
+
+      // C) ordena por id (garante estabilidade)
+      return (a.id || "").localeCompare(b.id || "");
+    });
+  }, [tarefas]);
+
   return (
     <div className="tarefas-container">
       {/* HEADER */}
@@ -39,7 +64,7 @@ export default function Tarefas() {
       {loading ? (
         <p>Carregando tarefas...</p>
       ) : (
-        <TarefaLista tarefas={tarefas} />
+        <TarefaLista tarefas={tarefasOrdenadas} />
       )}
 
       {/* BOTÃO FLUTUANTE */}
@@ -48,22 +73,22 @@ export default function Tarefas() {
       </button>
 
       {/* SEÇÃO: TIMELINE VERTICAL */}
-      {!loading && tarefas.length > 0 && (
+      {!loading && tarefasOrdenadas.length > 0 && (
         <>
           <hr style={{ margin: "40px 0", opacity: 0.3 }} />
 
           <h2 style={{ marginBottom: "10px" }}>Linha do Tempo</h2>
-          <TimelineVertical tarefas={tarefas} />
+          <TimelineVertical tarefas={tarefasOrdenadas} />
         </>
       )}
 
       {/* SEÇÃO: GANTT */}
-      {!loading && tarefas.length > 0 && (
+      {!loading && tarefasOrdenadas.length > 0 && (
         <>
           <hr style={{ margin: "40px 0", opacity: 0.3 }} />
 
           <h2 style={{ marginBottom: "10px" }}>Gantt Simplificado</h2>
-          <Gantt tarefas={tarefas} />
+          <Gantt tarefas={tarefasOrdenadas} />
         </>
       )}
 
