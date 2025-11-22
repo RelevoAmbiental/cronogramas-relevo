@@ -22,6 +22,24 @@ export function CronogramaProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   /**
+   * 🔥 Classificação automática de tarefas atrasadas
+   * - Se fim < hoje e status != concluída → atrasada
+   * - Não altera Firestore, apenas apresentação
+   */
+  function classificarAtraso(tarefa) {
+    const hoje = new Date();
+    const fim = new Date(tarefa.fim);
+
+    if (tarefa.status === "concluida") return tarefa;
+
+    if (fim < hoje) {
+      return { ...tarefa, status: "atrasada" };
+    }
+
+    return tarefa;
+  }
+
+  /**
    * 🔥 Função estável para carregar dados do Firestore
    */
   const carregarDados = useCallback(async () => {
@@ -30,12 +48,15 @@ export function CronogramaProvider({ children }) {
     setLoading(true);
 
     // Carrega projetos e tarefas em paralelo
-    const [listaProjetos, listaTarefas] = await Promise.all([
+    const [listaProjetos, listaTarefasRaw] = await Promise.all([
       listarProjetos(user.uid),
       listarTarefas(user.uid),
     ]);
 
-    // Atualiza estado de forma atômica
+    // Classificação automática de atraso
+    const listaTarefas = listaTarefasRaw.map(classificarAtraso);
+
+    // Atualiza estado
     setProjetos(listaProjetos);
     setTarefas(listaTarefas);
 
