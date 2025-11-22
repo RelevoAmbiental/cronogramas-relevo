@@ -1,6 +1,6 @@
 import "./timeline.css";
 
-export default function TimelineVertical({ tarefas }) {
+export default function TimelineVertical({ tarefas, projetos }) {
   if (!tarefas?.length) {
     return <p>Nenhuma tarefa encontrada.</p>;
   }
@@ -15,13 +15,15 @@ export default function TimelineVertical({ tarefas }) {
     andamento: "#0aa3e8",
     concluida: "#0a8f3a",
   };
+
+  // Função de cor do projeto
   function corDoProjeto(id) {
-  return projetos.find((p) => p.id === id)?.cor || "#0a4723";
+    return projetos.find((p) => p.id === id)?.cor || "#0a4723";
   }
 
   return (
     <div className="timeline-container">
-      {ordenadas.map((tarefa, i) => (
+      {ordenadas.map((tarefa) => (
         <div className="timeline-item" key={tarefa.id}>
           <div
             className="timeline-dot"
@@ -30,15 +32,21 @@ export default function TimelineVertical({ tarefas }) {
 
           <div className="timeline-content">
             <h3>{tarefa.nome}</h3>
+
             <p>
               <strong>Início:</strong>{" "}
               {new Date(tarefa.inicio).toLocaleDateString()}
             </p>
+
             <p>
               <strong>Fim:</strong>{" "}
               {new Date(tarefa.fim).toLocaleDateString()}
             </p>
-            <span className="tag" style={{ background: statusColor[tarefa.status] }}>
+
+            <span
+              className="tag"
+              style={{ background: statusColor[tarefa.status] }}
+            >
               {tarefa.status}
             </span>
           </div>
