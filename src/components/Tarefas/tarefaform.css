@@ -3,6 +3,7 @@
   font-family: "Montserrat", sans-serif;
 }
 
+/* Grid 2 colunas, com responsividade */
 .relevo-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -13,22 +14,55 @@
   grid-column: span 2;
 }
 
+@media (max-width: 600px) {
+  .relevo-grid {
+    grid-template-columns: 1fr;
+  }
+  .relevo-grid .full {
+    grid-column: span 1;
+  }
+}
+
 .relevo-form label {
   font-weight: 600;
   margin-bottom: 4px;
   display: block;
 }
 
+/* Inputs glassmorphism */
 .relevo-form input,
 .relevo-form select {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
   border: none;
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25);
   color: #fff;
   outline: none;
   backdrop-filter: blur(6px);
+  transition: 0.25s ease;
+}
+
+/* Placeholder escuro em modo claro */
+.relevo-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Focus premium */
+.relevo-form input:focus,
+.relevo-form select:focus {
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px rgba(9, 150, 70, 0.65);
+}
+
+/* Hover leve nos blocos */
+.relevo-grid > div {
+  transition: 0.22s ease;
+}
+
+.relevo-grid > div:hover {
+  transform: translateY(-2px);
 }
 
 .relevo-actions {
@@ -38,6 +72,41 @@
   gap: 12px;
 }
 
+/* Botões principais */
+.relevo-actions .save,
+.relevo-actions .cancel,
+.btn-flutuante,
+.btn-nova-tarefa {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efeito ripple local */
+.relevo-actions .save::after,
+.relevo-actions .cancel::after,
+.btn-flutuante::after,
+.btn-nova-tarefa::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.relevo-actions .save:active::after,
+.relevo-actions .cancel:active::after,
+.btn-flutuante:active::after,
+.btn-nova-tarefa:active::after {
+  transform: scale(12);
+  opacity: 1;
+  transition: transform 0.4s ease, opacity 0.8s ease;
+}
+
+/* Botões Save / Cancel */
 .relevo-actions .save {
   background: #0a4723;
   color: white;
@@ -59,14 +128,70 @@
 .relevo-actions button:hover {
   opacity: 0.88;
 }
-.relevo-form input,
+
+/* Select com seta customizada */
 .relevo-form select {
-  transition: 0.25s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, white 50%),
+    linear-gradient(135deg, white 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 6px),
+    calc(100% - 12px) calc(50% - 6px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
 }
 
-.relevo-form input:focus,
-.relevo-form select:focus {
-  transform: scale(1.02);
-  background: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 8px rgba(255,255,255,0.35);
+.relevo-form select:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Header da página de tarefas */
+.tarefas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.tarefas-header h1 {
+  margin: 0;
+}
+
+/* Botão "Nova Tarefa" no topo */
+.btn-nova-tarefa {
+  background: #0a4723;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Botão flutuante + */
+.btn-flutuante {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #0a4723;
+  color: white;
+  font-size: 32px;
+  border: none;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.32);
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-flutuante:hover {
+  transform: scale(1.12);
+  background: #0c5a2c;
 }
