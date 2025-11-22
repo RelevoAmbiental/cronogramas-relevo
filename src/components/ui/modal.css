@@ -1,7 +1,8 @@
+/* Fundo escurecido */
 .relevo-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
@@ -9,43 +10,55 @@
   z-index: 3000;
 }
 
-/* Card central glassmorphism */
+/* Modal principal – tema claro */
 .relevo-modal-content {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   border-radius: 20px;
   padding: 25px;
   width: 90%;
   max-width: 650px;
 
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
-  color: #fff;
-  animation: modalUp 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #0a4723;
 }
 
+/* Header */
 .relevo-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.relevo-modal-header h2 {
+  margin: 0;
+  color: #0a4723;
+  font-weight: 700;
+}
+
+/* X fechar */
 .relevo-modal-close {
   background: transparent;
   border: none;
   font-size: 26px;
   cursor: pointer;
-  color: white;
+  color: #444;
   font-weight: bold;
 }
 
-.relevo-modal-body {
-  margin-top: 15px;
+.relevo-modal-close:hover {
+  color: #000;
 }
 
-/* Animação de entrada */
+/* Corpo */
+.relevo-modal-body {
+  margin-top: 18px;
+}
+
+/* Animação */
 @keyframes modalUp {
   from {
     opacity: 0;
@@ -57,10 +70,6 @@
   }
 }
 
-/* Modo claro – integra com tema light */
-@media (prefers-color-scheme: light) {
-  .relevo-modal-content {
-    background: rgba(255, 255, 255, 0.85);
-    color: #0a4723;
-  }
+.relevo-modal-content {
+  animation: modalUp 0.25s ease;
 }
