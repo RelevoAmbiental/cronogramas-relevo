@@ -3,7 +3,13 @@ import { useCronograma } from "../../context/CronogramaContext";
 import TarefaLista from "./TarefaLista";
 import TarefaForm from "./TarefaForm";
 import Modal from "../ui/Modal";
+
+import TimelineVertical from "./TimelineVertical";
+import Gantt from "./Gantt";
+
 import "./tarefaform.css";
+import "./timeline.css";
+import "./gantt.css";
 
 export default function Tarefas() {
   const { tarefas, loading } = useCronograma();
@@ -20,6 +26,7 @@ export default function Tarefas() {
 
   return (
     <div className="tarefas-container">
+      {/* HEADER */}
       <div className="tarefas-header">
         <h1>Cronograma de Tarefas</h1>
 
@@ -28,18 +35,39 @@ export default function Tarefas() {
         </button>
       </div>
 
+      {/* LISTA PRINCIPAL */}
       {loading ? (
         <p>Carregando tarefas...</p>
       ) : (
         <TarefaLista tarefas={tarefas} />
       )}
 
-      {/* Botão flutuante para nova tarefa */}
+      {/* BOTÃO FLUTUANTE */}
       <button className="btn-flutuante" onClick={novaTarefa}>
         +
       </button>
 
-      {/* Modal de criação de nova tarefa */}
+      {/* SEÇÃO: TIMELINE VERTICAL */}
+      {!loading && tarefas.length > 0 && (
+        <>
+          <hr style={{ margin: "40px 0", opacity: 0.3 }} />
+
+          <h2 style={{ marginBottom: "10px" }}>Linha do Tempo</h2>
+          <TimelineVertical tarefas={tarefas} />
+        </>
+      )}
+
+      {/* SEÇÃO: GANTT */}
+      {!loading && tarefas.length > 0 && (
+        <>
+          <hr style={{ margin: "40px 0", opacity: 0.3 }} />
+
+          <h2 style={{ marginBottom: "10px" }}>Gantt Simplificado</h2>
+          <Gantt tarefas={tarefas} />
+        </>
+      )}
+
+      {/* MODAL: NOVA TAREFA */}
       <Modal
         open={modalNovaAberto}
         onClose={fecharNova}
