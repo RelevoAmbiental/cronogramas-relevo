@@ -89,13 +89,28 @@ export default function Tarefas() {
       </div>
 
       {/* FILTROS */}
-      <div className="tarefas-filtros">
+      <div className="filtros-container">
         <input
           type="text"
           placeholder="Buscar tarefa..."
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
+      
+        <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <option value="todos">Todos os status</option>
+          <option value="pendente">Pendente</option>
+          <option value="andamento">Em andamento</option>
+          <option value="concluida">Concluída</option>
+        </select>
+      
+        <select value={filtroProjeto} onChange={(e) => setFiltroProjeto(e.target.value)}>
+          <option value="todos">Todos os projetos</option>
+          {projetos.map((p) => (
+            <option key={p.id} value={p.id}>{p.nome}</option>
+          ))}
+        </select>
+      </div>
 
         <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
           <option value="todos">Todos os status</option>
