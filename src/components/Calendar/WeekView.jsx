@@ -9,7 +9,7 @@ export default function WeekView({
 }) {
   const semana = [];
   const inicio = new Date(dataBase);
-  inicio.setDate(inicio.getDate() - inicio.getDay()); // Domingo
+  inicio.setDate(inicio.getDate() - inicio.getDay()); // domingo
 
   const hoje = new Date();
 
@@ -27,27 +27,14 @@ export default function WeekView({
 
   return (
     <div className="semana-grid">
-      {semana.map((dia, i) => {
+      {semana.map((dia, idx) => {
         const isHoje = dia.data.toDateString() === hoje.toDateString();
-        const isSelecionado =
-          dia.data.toDateString() === dataBase.toDateString();
-
-        const qt = dia.tarefas.length;
-        let heatClass = "";
-        if (qt >= 1 && qt <= 2) heatClass = "celula-heatmap-1";
-        else if (qt >= 3 && qt <= 4) heatClass = "celula-heatmap-2";
-        else if (qt >= 5 && qt <= 7) heatClass = "celula-heatmap-3";
-        else if (qt >= 8) heatClass = "celula-heatmap-4";
+        const celulaClasses = `semana-celula ${isHoje ? "hoje" : ""}`;
 
         return (
           <div
-            key={i}
-            className={
-              "semana-celula " +
-              heatClass +
-              (isHoje ? " celula-hoje" : "") +
-              (isSelecionado ? " celula-selecionada" : "")
-            }
+            key={idx}
+            className={celulaClasses}
             onClick={() => onDiaClick && onDiaClick(dia.data)}
           >
             <strong>
@@ -55,24 +42,28 @@ export default function WeekView({
               {dia.data.getDate()}
             </strong>
 
-            {dia.tarefas.map((t) => {
-              const statusClass = t.status ? `status-${t.status}` : "";
+            {dia.tarefas.map((tarefa) => {
+              const status = tarefa.status || "";
+              let statusClass = "";
+              if (status === "concluida") statusClass = "concluida";
+              if (status === "atrasada") statusClass = "atrasada";
+
               return (
                 <div
-                  key={t.id}
+                  key={tarefa.id}
                   className={`tag-tarefa ${statusClass}`}
                   style={{
-                    borderLeft: getCorProjeto
-                      ? `6px solid ${getCorProjeto(t.projetoId)}`
-                      : undefined,
+                    borderLeftColor: getCorProjeto
+                      ? getCorProjeto(tarefa.projetoId)
+                      : "#0a4723",
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onTarefaClick && onTarefaClick(t);
+                    onTarefaClick && onTarefaClick(tarefa);
                   }}
-                  title={t.nome}
+                  title={tarefa.nome}
                 >
-                  {t.nome}
+                  {tarefa.nome}
                 </div>
               );
             })}
