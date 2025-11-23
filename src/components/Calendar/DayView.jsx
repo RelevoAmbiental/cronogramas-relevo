@@ -21,24 +21,27 @@ export default function DayView({
 
       {tarefas.length === 0 && <p>Nenhuma tarefa neste dia.</p>}
 
-      {tarefas.map((t) => (
-        <div
-          key={t.id}
-          className="tag-tarefa grande"
-          style={{
-            backgroundColor: getCorProjeto
-              ? getCorProjeto(t.projetoId)
-              : undefined,
-          }}
-          onClick={() => onTarefaClick && onTarefaClick(t)}
-        >
-          <strong>{t.nome}</strong>
-          {t.descricao && <p>{t.descricao}</p>}
-          <p>
-            {t.inicio} até {t.fim}
-          </p>
-        </div>
-      ))}
+      {tarefas.map((t) => {
+        const statusClass = t.status ? `status-${t.status}` : "";
+        return (
+          <div
+            key={t.id}
+            className={`tag-tarefa grande ${statusClass}`}
+            style={{
+              borderLeft: getCorProjeto
+                ? `4px solid ${getCorProjeto(t.projetoId)}`
+                : undefined,
+            }}
+            onClick={() => onTarefaClick && onTarefaClick(t)}
+          >
+            <strong>{t.nome}</strong>
+            {t.descricao && <p>{t.descricao}</p>}
+            <p>
+              {t.inicio} até {t.fim}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 }
