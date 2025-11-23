@@ -7,6 +7,8 @@ export default function Calendario() {
   const [view, setView] = useState("month");
   const [dataAtual, setDataAtual] = useState(new Date());
 
+  // ==== FUNÇÕES DE NAVEGAÇÃO DO CALENDÁRIO ====
+
   function mudarDia(delta) {
     const nova = new Date(dataAtual);
     nova.setDate(nova.getDate() + delta);
@@ -25,48 +27,81 @@ export default function Calendario() {
     setDataAtual(nova);
   }
 
+  function irHoje() {
+    setDataAtual(new Date());
+  }
+
   return (
-    <div className="content">
-      <h1>Calendário</h1>
+    <div className="calendar-container">
 
-      {/* NAV DE VISÕES */}
-      <div style={{ marginBottom: "20px" }}>
-        <button onClick={() => setView("month")}>Mensal</button>
-        <button onClick={() => setView("week")}>Semanal</button>
-        <button onClick={() => setView("day")}>Diário</button>
+      {/* ======== TOOLBAR SUPERIOR ======== */}
+      <div className="calendar-toolbar">
+
+        {/* Navegação (setas e hoje) */}
+        <div className="calendar-nav">
+          {view === "month" && (
+            <>
+              <button className="calendar-btn" onClick={() => mudarMes(-1)}>◀</button>
+              <button className="calendar-btn" onClick={irHoje}>Hoje</button>
+              <button className="calendar-btn" onClick={() => mudarMes(1)}>▶</button>
+            </>
+          )}
+
+          {view === "week" && (
+            <>
+              <button className="calendar-btn" onClick={() => mudarSemana(-1)}>◀</button>
+              <button className="calendar-btn" onClick={irHoje}>Hoje</button>
+              <button className="calendar-btn" onClick={() => mudarSemana(1)}>▶</button>
+            </>
+          )}
+
+          {view === "day" && (
+            <>
+              <button className="calendar-btn" onClick={() => mudarDia(-1)}>◀</button>
+              <button className="calendar-btn" onClick={irHoje}>Hoje</button>
+              <button className="calendar-btn" onClick={() => mudarDia(1)}>▶</button>
+            </>
+          )}
+        </div>
+
+        {/* ====== MÊS | SEMANA | DIA ====== */}
+        <div className="modo-toggle">
+          <button
+            className={`modo-item ${view === "month" ? "ativo" : ""}`}
+            onClick={() => setView("month")}
+          >
+            Mês
+          </button>
+
+          <button
+            className={`modo-item ${view === "week" ? "ativo" : ""}`}
+            onClick={() => setView("week")}
+          >
+            Semana
+          </button>
+
+          <button
+            className={`modo-item ${view === "day" ? "ativo" : ""}`}
+            onClick={() => setView("day")}
+          >
+            Dia
+          </button>
+        </div>
+
+        {/* Data do calendário (Alinhado à direita) */}
+        <span className="calendar-data">
+          {dataAtual.toLocaleDateString("pt-BR", {
+            year: "numeric",
+            month: "long",
+            ...(view === "day" && { day: "numeric" })
+          })}
+        </span>
       </div>
 
-      {/* NAV DE TEMPO */}
-      <div style={{ marginBottom: "20px" }}>
-        {view === "month" && (
-          <>
-            <button onClick={() => mudarMes(-1)}>◀ Mês anterior</button>
-            <button onClick={() => setDataAtual(new Date())}>Hoje</button>
-            <button onClick={() => mudarMes(1)}>Próximo mês ▶</button>
-          </>
-        )}
-
-        {view === "week" && (
-          <>
-            <button onClick={() => mudarSemana(-1)}>◀ Semana anterior</button>
-            <button onClick={() => setDataAtual(new Date())}>Hoje</button>
-            <button onClick={() => mudarSemana(1)}>Próxima semana ▶</button>
-          </>
-        )}
-
-        {view === "day" && (
-          <>
-            <button onClick={() => mudarDia(-1)}>◀ Dia anterior</button>
-            <button onClick={() => setDataAtual(new Date())}>Hoje</button>
-            <button onClick={() => mudarDia(1)}>Próximo dia ▶</button>
-          </>
-        )}
-      </div>
-
-      {/* VISÕES */}
-      {view === "month" && <MonthView data={dataAtual} />}
-      {view === "week" && <WeekView data={dataAtual} />}
-      {view === "day" && <DayView data={dataAtual} />}
+      {/* ======== VISÕES ======== */}
+      {view === "month" && <MonthView dataBase={dataAtual} />}
+      {view === "week" && <WeekView dataBase={dataAtual} />}
+      {view === "day" && <DayView dataBase={dataAtual} />}
     </div>
   );
 }
