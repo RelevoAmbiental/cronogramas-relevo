@@ -1,3 +1,5 @@
+// Expande cada tarefa em vários dias entre início e fim
+// Retorna um mapa: { "YYYY-MM-DD": [tarefas...] }
 export function expandTarefasPorDia(tarefas) {
   const mapa = {};
 
