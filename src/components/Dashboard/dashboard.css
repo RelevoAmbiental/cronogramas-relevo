@@ -1,0 +1,337 @@
+.dashboard-container {
+  padding: 24px;
+}
+
+/* HEADER */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h1 {
+  font-size: 1.9rem;
+  color: #0a4723;
+  margin: 0;
+}
+
+.dashboard-subtitle {
+  margin: 4px 0 0;
+  color: #455a64;
+  font-size: 0.95rem;
+}
+
+.dashboard-header-meta {
+  text-align: right;
+}
+
+.dashboard-date {
+  font-weight: 600;
+  color: #0a4723;
+}
+
+/* SEÇÕES */
+.dashboard-section {
+  margin-bottom: 28px;
+}
+
+.dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.dashboard-section-header h2 {
+  font-size: 1.2rem;
+  color: #0a4723;
+  margin: 0;
+}
+
+.dashboard-section-subtitle {
+  font-size: 0.85rem;
+  color: #607d8b;
+  margin: 0;
+}
+
+/* KPI CARDS */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+.kpi-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+}
+
+.kpi-label {
+  font-size: 0.85rem;
+  color: #607d8b;
+}
+
+.kpi-value {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0a4723;
+}
+
+.kpi-suffix {
+  font-size: 0.9rem;
+  margin-left: 3px;
+}
+
+.kpi-alert .kpi-value {
+  color: #b71c1c;
+}
+
+/* SAÚDE DO CRONOGRAMA */
+.saude-card {
+  border-radius: 14px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border-left: 6px solid #0a4723;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.saude-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: #0a4723;
+}
+
+.saude-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #455a64;
+}
+
+.saude-atencao {
+  border-left-color: #ff9800;
+}
+
+.saude-critico {
+  border-left-color: #d32f2f;
+}
+
+.saude-positivo {
+  border-left-color: #2e7d32;
+}
+
+/* PROJETOS GRID */
+.projetos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.projeto-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.projeto-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.projeto-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0a4723;
+}
+
+.projeto-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+}
+
+.projeto-metadata {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  color: #607d8b;
+}
+
+.projeto-progress-bar {
+  position: relative;
+  background: #eceff1;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.projeto-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.projeto-progress-label {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #455a64;
+}
+
+/* TAREFAS CRÍTICAS */
+.criticas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.critica-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.critica-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.critica-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.critica-main h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #0a4723;
+}
+
+.critica-projeto {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #607d8b;
+}
+
+.critica-meta {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.critica-data {
+  font-size: 0.8rem;
+  color: #455a64;
+}
+
+.critica-status {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.critica-status-atrasada {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.critica-status-pendente,
+.critica-status-andamento {
+  background: #fff8e1;
+  color: #f9a825;
+}
+
+/* MICRO-GANTT PROJETOS */
+.gantt-projetos {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.gantt-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #607d8b;
+  margin-bottom: 6px;
+}
+
+.gantt-linhas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gantt-linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gantt-label {
+  min-width: 120px;
+  font-size: 0.85rem;
+  color: #455a64;
+}
+
+.gantt-track {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: #eceff1;
+  overflow: hidden;
+}
+
+.gantt-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+}
+
+.gantt-track-vazio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gantt-sem-dados {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .dashboard-header-meta {
+    text-align: left;
+  }
+
+  .gantt-label {
+    min-width: 90px;
+  }
+}
