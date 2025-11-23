@@ -98,123 +98,45 @@ export default function CalendarView() {
 
   return (
     <div className="calendar-container">
+    
       {/* TOOLBAR SUPERIOR */}
-      <div className="calendar-toolbar">
-        {/* Navegação (◀ Hoje ▶) */}
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          {modo === "mes" && (
-            <>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={() => mudarMes(-1)}
-              >
-                ◀
-              </button>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={irHoje}
-              >
-                Hoje
-              </button>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={() => mudarMes(1)}
-              >
-                ▶
-              </button>
-            </>
-          )}
-
-          {modo === "semana" && (
-            <>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={() => mudarSemana(-1)}
-              >
-                ◀
-              </button>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={irHoje}
-              >
-                Hoje
-              </button>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={() => mudarSemana(1)}
-              >
-                ▶
-              </button>
-            </>
-          )}
-
-          {modo === "dia" && (
-            <>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={() => mudarDia(-1)}
-              >
-                ◀
-              </button>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={irHoje}
-              >
-                Hoje
-              </button>
-              <button
-                className="calendar-btn"
-                type="button"
-                onClick={() => mudarDia(1)}
-              >
-                ▶
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Segmented control Mês / Semana / Dia */}
-        <div className="modo-toggle">
-          <button
-            type="button"
-            className={`modo-item ${modo === "mes" ? "ativo" : ""}`}
-            onClick={() => setModo("mes")}
-          >
-            Mês
-          </button>
-          <button
-            type="button"
-            className={`modo-item ${modo === "semana" ? "ativo" : ""}`}
-            onClick={() => setModo("semana")}
-          >
-            Semana
-          </button>
-          <button
-            type="button"
-            className={`modo-item ${modo === "dia" ? "ativo" : ""}`}
-            onClick={() => setModo("dia")}
-          >
-            Dia
-          </button>
-        </div>
-
-        {/* Data atual */}
-        <span className="calendar-data">
-          {dataBase.toLocaleDateString("pt-BR", {
-            year: "numeric",
-            month: "long",
-            day: modo === "dia" ? "numeric" : undefined,
-          })}
-        </span>
+    <div className="calendar-toolbar">
+    
+      <button className="calendar-btn" onClick={() => mudarMes(-1)}>◀</button>
+      <button className="calendar-btn" onClick={irHoje}>Hoje</button>
+      <button className="calendar-btn" onClick={() => mudarMes(1)}>▶</button>
+    
+      <div className="calendar-view-switch">
+        <button
+          className={`calendar-btn ${modo === "mes" ? "active" : ""}`}
+          onClick={() => setModo("mes")}
+        >
+          Mês
+        </button>
+    
+        <button
+          className={`calendar-btn ${modo === "semana" ? "active" : ""}`}
+          onClick={() => setModo("semana")}
+        >
+          Semana
+        </button>
+    
+        <button
+          className={`calendar-btn ${modo === "dia" ? "active" : ""}`}
+          onClick={() => setModo("dia")}
+        >
+          Dia
+        </button>
       </div>
+    
+      <span className="calendar-data">
+        {dataBase.toLocaleDateString("pt-BR", {
+          year: "numeric",
+          month: "long",
+        })}
+      </span>
+    </div>
+
 
       {/* VISÕES */}
       {modo === "mes" && (
