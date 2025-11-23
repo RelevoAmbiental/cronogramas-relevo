@@ -9,9 +9,12 @@ export default function DayView({
   const chave = dataBase.toISOString().substring(0, 10);
   const tarefas = tarefasExpandida[chave] || [];
 
+  const hoje = new Date();
+  const isHoje = dataBase.toDateString() === hoje.toDateString();
+
   return (
     <div className="dia-container">
-      <h3>
+      <h3 className={isHoje ? "dia-header-hoje" : ""}>
         {dataBase.toLocaleDateString("pt-BR", {
           weekday: "long",
           day: "numeric",
@@ -29,7 +32,7 @@ export default function DayView({
             className={`tag-tarefa grande ${statusClass}`}
             style={{
               borderLeft: getCorProjeto
-                ? `4px solid ${getCorProjeto(t.projetoId)}`
+                ? `6px solid ${getCorProjeto(t.projetoId)}`
                 : undefined,
             }}
             onClick={() => onTarefaClick && onTarefaClick(t)}
