@@ -11,18 +11,18 @@ export default function CalendarView() {
   const { tarefas, projetos } = useCronograma();
   const navigate = useNavigate();
 
-  const [modo, setModo] = useState("mes"); // mes | semana | dia
+  const [modo, setModo] = useState("mes"); // "mes" | "semana" | "dia"
   const [dataBase, setDataBase] = useState(new Date());
   const [tarefasExpandida, setTarefasExpandida] = useState({});
   const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
 
-  // Expansão das tarefas por dia (mapa YYYY-MM-DD -> [tarefas])
+  // Expande tarefas em um mapa YYYY-MM-DD -> [tarefas]
   useEffect(() => {
     const mapa = expandTarefasPorDia(tarefas);
     setTarefasExpandida(mapa);
   }, [tarefas]);
 
-  // Mapa de cores por projeto (fallback caso o projeto não tenha cor própria)
+  // Mapa de cores por projeto (fallback)
   const coresProjetos = useMemo(() => {
     const coresBase = [
       "#2E7D32",
@@ -49,14 +49,13 @@ export default function CalendarView() {
   }, [projetos]);
 
   function getCorProjeto(projetoId) {
-    if (!projetoId) return "#26C04C";
-    // se o projeto tiver cor própria (aba Projetos), prioriza
+    if (!projetoId) return "#0a4723";
     const projeto = projetoPorId[projetoId];
     if (projeto && projeto.cor) return projeto.cor;
-    return coresProjetos[projetoId] || "#26C04C";
+    return coresProjetos[projetoId] || "#0a4723";
   }
 
-  // Navegação de tempo
+  // Navegação temporal
   function mudarDia(delta) {
     const nova = new Date(dataBase);
     nova.setDate(nova.getDate() + delta);
@@ -79,14 +78,12 @@ export default function CalendarView() {
     setDataBase(new Date());
   }
 
-  // Clicar em um dia (mês/semana) → ir para visão dia
   function abrirDia(data) {
     if (!data) return;
     setDataBase(data);
     setModo("dia");
   }
 
-  // Clicar em uma tarefa em qualquer visão
   function abrirTarefa(tarefa) {
     setTarefaSelecionada(tarefa);
   }
@@ -103,56 +100,113 @@ export default function CalendarView() {
     <div className="calendar-container">
       {/* TOOLBAR SUPERIOR */}
       <div className="calendar-toolbar">
-        {/* Navegação temporal */}
-        <div className="calendar-nav-group">
+        {/* Navegação (◀ Hoje ▶) */}
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           {modo === "mes" && (
             <>
-              <button className="nav-btn" onClick={() => mudarMes(-1)}>◀</button>
-              <button className="nav-btn" onClick={irHoje}>Hoje</button>
-              <button className="nav-btn" onClick={() => mudarMes(1)}>▶</button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={() => mudarMes(-1)}
+              >
+                ◀
+              </button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={irHoje}
+              >
+                Hoje
+              </button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={() => mudarMes(1)}
+              >
+                ▶
+              </button>
             </>
           )}
 
           {modo === "semana" && (
             <>
-              <button className="nav-btn" onClick={() => mudarSemana(-1)}>◀</button>
-              <button className="nav-btn" onClick={irHoje}>Hoje</button>
-              <button className="nav-btn" onClick={() => mudarSemana(1)}>▶</button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={() => mudarSemana(-1)}
+              >
+                ◀
+              </button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={irHoje}
+              >
+                Hoje
+              </button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={() => mudarSemana(1)}
+              >
+                ▶
+              </button>
             </>
           )}
 
           {modo === "dia" && (
             <>
-              <button className="nav-btn" onClick={() => mudarDia(-1)}>◀</button>
-              <button className="nav-btn" onClick={irHoje}>Hoje</button>
-              <button className="nav-btn" onClick={() => mudarDia(1)}>▶</button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={() => mudarDia(-1)}
+              >
+                ◀
+              </button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={irHoje}
+              >
+                Hoje
+              </button>
+              <button
+                className="calendar-btn"
+                type="button"
+                onClick={() => mudarDia(1)}
+              >
+                ▶
+              </button>
             </>
           )}
         </div>
 
-        {/* Segmented control: Mês | Semana | Dia */}
-        <div className="calendar-modo-toggle">
+        {/* Segmented control Mês / Semana / Dia */}
+        <div className="modo-toggle">
           <button
-            className={modo === "mes" ? "modo-btn ativo" : "modo-btn"}
+            type="button"
+            className={`modo-item ${modo === "mes" ? "ativo" : ""}`}
             onClick={() => setModo("mes")}
           >
             Mês
           </button>
           <button
-            className={modo === "semana" ? "modo-btn ativo" : "modo-btn"}
+            type="button"
+            className={`modo-item ${modo === "semana" ? "ativo" : ""}`}
             onClick={() => setModo("semana")}
           >
             Semana
           </button>
           <button
-            className={modo === "dia" ? "modo-btn ativo" : "modo-btn"}
+            type="button"
+            className={`modo-item ${modo === "dia" ? "ativo" : ""}`}
             onClick={() => setModo("dia")}
           >
             Dia
           </button>
         </div>
 
-        {/* Data atual formatada */}
+        {/* Data atual */}
         <span className="calendar-data">
           {dataBase.toLocaleDateString("pt-BR", {
             year: "numeric",
@@ -192,36 +246,33 @@ export default function CalendarView() {
         />
       )}
 
-      {/* MODAL DE DETALHES DA TAREFA */}
+      {/* MODAL DE DETALHE DA TAREFA */}
       {tarefaSelecionada && (
         <div className="tarefa-modal-overlay" onClick={fecharModalTarefa}>
           <div
             className="tarefa-modal"
             onClick={(e) => e.stopPropagation()}
             style={{
-              borderTop: `8px solid ${getCorProjeto(
-                tarefaSelecionada.projetoId
-              )}`,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+              borderTopColor: getCorProjeto(tarefaSelecionada.projetoId),
             }}
           >
             <h3>{tarefaSelecionada.nome}</h3>
 
             {tarefaSelecionada.projetoId && (
               <p>
-                <b>Projeto:</b>{" "}
+                <strong>Projeto:</strong>{" "}
                 {projetoPorId[tarefaSelecionada.projetoId]?.nome || "—"}
               </p>
             )}
 
             <p>
-              <b>Período:</b>{" "}
-              {tarefaSelecionada.inicio} até {tarefaSelecionada.fim}
+              <strong>Período:</strong> {tarefaSelecionada.inicio} até{" "}
+              {tarefaSelecionada.fim}
             </p>
 
             {tarefaSelecionada.status && (
               <p>
-                <b>Status:</b> {tarefaSelecionada.status}
+                <strong>Status:</strong> {tarefaSelecionada.status}
               </p>
             )}
 
@@ -231,11 +282,20 @@ export default function CalendarView() {
               </p>
             )}
 
-            <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
-              <button className="nav-btn" onClick={abrirTarefaNaTelaDeTarefas}>
+            <div className="modal-btns">
+              <button
+                type="button"
+                className="modal-btn"
+                onClick={abrirTarefaNaTelaDeTarefas}
+              >
                 Abrir na tela de Tarefas
               </button>
-              <button className="nav-btn" onClick={fecharModalTarefa}>
+              <button
+                type="button"
+                className="modal-btn"
+                onClick={fecharModalTarefa}
+                style={{ background: "#777" }}
+              >
                 Fechar
               </button>
             </div>
