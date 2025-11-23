@@ -93,8 +93,6 @@ export default function CalendarView() {
   }
 
   function abrirTarefaNaTelaDeTarefas() {
-    // Por enquanto, navega para /tarefas
-    // (no futuro podemos implementar foco direto na tarefa)
     navigate("/tarefas");
   }
 
@@ -102,40 +100,54 @@ export default function CalendarView() {
     <div className="calendar-container">
       {/* Toolbar */}
       <div className="calendar-toolbar">
+        {/* Navegação temporal */}
         {modo === "mes" && (
           <>
-            <button onClick={() => mudarMes(-1)}>◀</button>
-            <button onClick={irHoje}>Hoje</button>
-            <button onClick={() => mudarMes(1)}>▶</button>
+            <button className="nav-btn" onClick={() => mudarMes(-1)}>◀</button>
+            <button className="nav-btn" onClick={irHoje}>Hoje</button>
+            <button className="nav-btn" onClick={() => mudarMes(1)}>▶</button>
           </>
         )}
 
         {modo === "semana" && (
           <>
-            <button onClick={() => mudarSemana(-1)}>◀</button>
-            <button onClick={irHoje}>Hoje</button>
-            <button onClick={() => mudarSemana(1)}>▶</button>
+            <button className="nav-btn" onClick={() => mudarSemana(-1)}>◀</button>
+            <button className="nav-btn" onClick={irHoje}>Hoje</button>
+            <button className="nav-btn" onClick={() => mudarSemana(1)}>▶</button>
           </>
         )}
 
         {modo === "dia" && (
           <>
-            <button onClick={() => mudarDia(-1)}>◀</button>
-            <button onClick={irHoje}>Hoje</button>
-            <button onClick={() => mudarDia(1)}>▶</button>
+            <button className="nav-btn" onClick={() => mudarDia(-1)}>◀</button>
+            <button className="nav-btn" onClick={irHoje}>Hoje</button>
+            <button className="nav-btn" onClick={() => mudarDia(1)}>▶</button>
           </>
         )}
 
-        <select
-          value={modo}
-          onChange={(e) => setModo(e.target.value)}
-          style={{ marginLeft: "1rem" }}
-        >
-          <option value="mes">Mês</option>
-          <option value="semana">Semana</option>
-          <option value="dia">Dia</option>
-        </select>
+        {/* Segmented control de modo de visão */}
+        <div className="calendar-modo-toggle">
+          <button
+            className={modo === "mes" ? "modo-btn ativo" : "modo-btn"}
+            onClick={() => setModo("mes")}
+          >
+            Mês
+          </button>
+          <button
+            className={modo === "semana" ? "modo-btn ativo" : "modo-btn"}
+            onClick={() => setModo("semana")}
+          >
+            Semana
+          </button>
+          <button
+            className={modo === "dia" ? "modo-btn ativo" : "modo-btn"}
+            onClick={() => setModo("dia")}
+          >
+            Dia
+          </button>
+        </div>
 
+        {/* Data atual formatada */}
         <span className="calendar-data">
           {dataBase.toLocaleDateString("pt-BR", {
             year: "numeric",
@@ -202,14 +214,24 @@ export default function CalendarView() {
             </p>
 
             {tarefaSelecionada.descricao && (
-              <p style={{ marginTop: "0.5rem" }}>{tarefaSelecionada.descricao}</p>
+              <p style={{ marginTop: "0.5rem" }}>
+                {tarefaSelecionada.descricao}
+              </p>
+            )}
+
+            {tarefaSelecionada.status && (
+              <p style={{ marginTop: "0.5rem" }}>
+                <b>Status:</b> {tarefaSelecionada.status}
+              </p>
             )}
 
             <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
-              <button onClick={abrirTarefaNaTelaDeTarefas}>
+              <button className="nav-btn" onClick={abrirTarefaNaTelaDeTarefas}>
                 Abrir na tela de Tarefas
               </button>
-              <button onClick={fecharModalTarefa}>Fechar</button>
+              <button className="nav-btn" onClick={fecharModalTarefa}>
+                Fechar
+              </button>
             </div>
           </div>
         </div>
