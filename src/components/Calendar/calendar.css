@@ -1,21 +1,68 @@
+/* CONTAINER GERAL DO CALENDÁRIO */
 .calendar-container {
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
+/* TOOLBAR SUPERIOR */
 .calendar-toolbar {
   display: flex;
   gap: 1rem;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
+/* BOTÕES DE NAVEGAÇÃO (◀ Hoje ▶) */
+.nav-btn {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #ffffffcc;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.nav-btn:hover {
+  background: #0a4723;
+  color: #fff;
+}
+
+/* SEGMENTED CONTROL - MÊS | SEMANA | DIA */
+.calendar-modo-toggle {
+  margin-left: 1rem;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  padding: 4px;
+  display: inline-flex;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+.modo-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  color: #0a4723;
+}
+
+.modo-btn.ativo {
+  background: #0a4723;
+  color: #fff;
+}
+
+/* LABEL DA DATA ATUAL */
 .calendar-data {
   margin-left: auto;
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  font-family: "Montserrat", sans-serif;
 }
 
-/* GRID DO MÊS */
+/* =============== VISÃO MÊS =============== */
 .mes-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -25,27 +72,28 @@
 .mes-celula {
   min-height: 110px;
   background: #ffffffaa;
-  border-radius: 8px;
-  padding: 4px;
+  border-radius: 10px;
+  padding: 6px;
   backdrop-filter: blur(4px);
   border: 1px solid #ddd;
+  cursor: pointer;
 }
 
-.tag-tarefa {
-  margin-top: 4px;
-  background: #26c04c;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+.mes-celula-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: #06371b;
 }
 
-.tag-tarefa.grande {
-  padding: 10px;
-  font-size: 0.9rem;
+.mes-celula-tarefas {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-/* SEMANA */
+/* =============== VISÃO SEMANA =============== */
 .semana-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -56,52 +104,66 @@
   min-height: 180px;
   background: #ffffffaa;
   padding: 6px;
-  border-radius: 8px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
 }
 
-/* DIA */
+/* =============== VISÃO DIA =============== */
 .dia-container {
   background: #ffffffaa;
   padding: 1rem;
-  border-radius: 8px;
-}
-.mes-celula {
-  min-height: 110px;
-  background: #ffffffaa;
-  border-radius: 8px;
-  padding: 4px;
+  border-radius: 10px;
   backdrop-filter: blur(4px);
-  border: 1px solid #ddd;
-  cursor: pointer;
 }
 
-.mes-celula-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.mes-celula-tarefas {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
+/* =============== TAGS DE TAREFA =============== */
 .tag-tarefa {
   margin-top: 4px;
-  color: white;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  font-family: "Montserrat", sans-serif;
+  color: #06371b;
+  background: #eaf5ec;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .tag-tarefa.grande {
   padding: 10px;
   font-size: 0.9rem;
+  display: block;
 }
 
-/* Modal */
+/* STATUS: PENDENTE */
+.tag-tarefa.status-pendente {
+  background: #fff8d1;
+  color: #7a6a00;
+}
+
+/* STATUS: EM ANDAMENTO */
+.tag-tarefa.status-andamento {
+  background: #e3f3ff;
+  color: #0b4f84;
+}
+
+/* STATUS: CONCLUÍDA */
+.tag-tarefa.status-concluida {
+  background: #f3f3f3;
+  color: #9c9c9c;
+  opacity: 0.8;
+}
+
+/* STATUS: ATRASADA */
+.tag-tarefa.status-atrasada {
+  background: #ffe8eb;
+  color: #8b1020;
+  font-weight: 600;
+}
+
+/* =============== MODAL DE TAREFA =============== */
 .tarefa-modal-overlay {
   position: fixed;
   inset: 0;
@@ -119,4 +181,31 @@
   min-width: 320px;
   max-width: 480px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* =============== RESPONSIVO =============== */
+@media (max-width: 900px) {
+  .calendar-toolbar {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .calendar-modo-toggle {
+    margin-left: 0;
+  }
+
+  .calendar-data {
+    width: 100%;
+    text-align: right;
+  }
+}
+
+@media (max-width: 700px) {
+  .mes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .semana-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
