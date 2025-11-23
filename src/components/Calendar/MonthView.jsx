@@ -36,6 +36,13 @@ export default function MonthView({
   const hoje = new Date();
 
   return (
+    <div className="semana-header">
+      {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((dia) => (
+        <div key={dia} className="semana-header-item">
+          {dia}
+        </div>
+      ))}
+    </div>
     <div className="mes-grid">
       {dias.map((dia, idx) => {
         if (!dia.data) {
