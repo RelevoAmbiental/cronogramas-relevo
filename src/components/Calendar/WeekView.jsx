@@ -36,23 +36,26 @@ export default function WeekView({
             {dia.data.getDate()}
           </strong>
 
-          {dia.tarefas.map((t) => (
-            <div
-              key={t.id}
-              className="tag-tarefa"
-              style={{
-                backgroundColor: getCorProjeto
-                  ? getCorProjeto(t.projetoId)
-                  : undefined,
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onTarefaClick && onTarefaClick(t);
-              }}
-            >
-              {t.nome}
-            </div>
-          ))}
+          {dia.tarefas.map((t) => {
+            const statusClass = t.status ? `status-${t.status}` : "";
+            return (
+              <div
+                key={t.id}
+                className={`tag-tarefa ${statusClass}`}
+                style={{
+                  borderLeft: getCorProjeto
+                    ? `4px solid ${getCorProjeto(t.projetoId)}`
+                    : undefined,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTarefaClick && onTarefaClick(t);
+                }}
+              >
+                {t.nome}
+              </div>
+            );
+          })}
         </div>
       ))}
     </div>
