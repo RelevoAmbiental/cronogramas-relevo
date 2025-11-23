@@ -5,13 +5,15 @@ import "./header.css";
 export default function Header() {
   const location = useLocation();
 
-  // helper para aplicar classe ativa
-  const isActive = (path) => location.pathname.includes(path) ? "nav-btn active" : "nav-btn";
+  const isActive = (path) =>
+    location.pathname === path || location.pathname.startsWith(path)
+      ? "nav-btn active"
+      : "nav-btn";
 
   return (
     <header className="topbar">
       <div className="topbar-left">
-        <img 
+        <img
           src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_horizontal.png"
           alt="Relevo Consultoria Ambiental"
           className="topbar-logo"
