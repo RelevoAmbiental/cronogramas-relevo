@@ -1,4 +1,4 @@
-/* CONTAINER GERAL DO CALENDÁRIO */
+/* CONTAINER GERAL */
 .calendar-container {
   padding: 1.5rem;
 }
@@ -11,42 +11,54 @@
   margin-bottom: 1.2rem;
 }
 
-/* BOTÕES DE NAVEGAÇÃO (◀ Hoje ▶) */
+/* GRUPO DE NAVEGAÇÃO (◀ Hoje ▶) */
+.calendar-nav-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* BOTÕES DE NAVEGAÇÃO */
 .nav-btn {
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: none;
-  background: #ffffffcc;
+  border: 1px solid #d0d7d9;
+  background: #ffffff;
   font-family: "Montserrat", sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  color: #0a4723;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .nav-btn:hover {
-  background: #0a4723;
-  color: #fff;
+  background: #e6f2ec;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
 }
 
-/* SEGMENTED CONTROL - MÊS | SEMANA | DIA */
+/* SEGMENTED CONTROL: MÊS | SEMANA | DIA */
 .calendar-modo-toggle {
   margin-left: 1rem;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 999px;
   padding: 4px;
   display: inline-flex;
+  align-items: center;
   box-shadow: 0 3px 10px rgba(0,0,0,0.12);
 }
 
 .modo-btn {
   border: none;
   background: transparent;
-  padding: 6px 14px;
+  padding: 7px 16px;
   border-radius: 999px;
   cursor: pointer;
   font-family: "Montserrat", sans-serif;
   font-size: 0.9rem;
   color: #0a4723;
+  line-height: 1.2;
 }
 
 .modo-btn.ativo {
@@ -77,6 +89,13 @@
   backdrop-filter: blur(4px);
   border: 1px solid #ddd;
   cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.mes-celula-vazia {
+  background: transparent;
+  border: none;
+  cursor: default;
 }
 
 .mes-celula-header {
@@ -106,6 +125,8 @@
   padding: 6px;
   border-radius: 10px;
   backdrop-filter: blur(4px);
+  border: 1px solid #ddd;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
 
 /* =============== VISÃO DIA =============== */
@@ -114,6 +135,12 @@
   padding: 1rem;
   border-radius: 10px;
   backdrop-filter: blur(4px);
+  border: 1px solid #ddd;
+}
+
+.dia-header-hoje {
+  color: #0a4723;
+  font-weight: 700;
 }
 
 /* =============== TAGS DE TAREFA =============== */
@@ -129,12 +156,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
 
 .tag-tarefa.grande {
   padding: 10px;
   font-size: 0.9rem;
   display: block;
+}
+
+.tag-tarefa:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
 }
 
 /* STATUS: PENDENTE */
@@ -153,7 +186,7 @@
 .tag-tarefa.status-concluida {
   background: #f3f3f3;
   color: #9c9c9c;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* STATUS: ATRASADA */
@@ -161,6 +194,35 @@
   background: #ffe8eb;
   color: #8b1020;
   font-weight: 600;
+}
+
+/* =============== HOJE / SELEÇÃO / HEATMAP =============== */
+.celula-hoje {
+  position: relative;
+  border: 2px solid #0a4723 !important;
+  box-shadow: 0 0 0 3px rgba(10, 71, 35, 0.25);
+}
+
+.celula-selecionada {
+  outline: 3px solid #8bc34a;
+  outline-offset: -3px;
+}
+
+/* Heatmap por carga de tarefas */
+.celula-heatmap-1 {
+  background-color: #f3faf5 !important;
+}
+
+.celula-heatmap-2 {
+  background-color: #e0f2e8 !important;
+}
+
+.celula-heatmap-3 {
+  background-color: #c8e6c9 !important;
+}
+
+.celula-heatmap-4 {
+  background-color: #a5d6a7 !important;
 }
 
 /* =============== MODAL DE TAREFA =============== */
@@ -188,10 +250,6 @@
   .calendar-toolbar {
     flex-wrap: wrap;
     gap: 0.6rem;
-  }
-
-  .calendar-modo-toggle {
-    margin-left: 0;
   }
 
   .calendar-data {
