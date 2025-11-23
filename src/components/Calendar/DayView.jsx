@@ -14,7 +14,7 @@ export default function DayView({
 
   return (
     <div className="dia-container">
-      <h3 className={isHoje ? "dia-header-hoje" : ""}>
+      <h3 style={{ color: isHoje ? "#0a4723" : "#222" }}>
         {dataBase.toLocaleDateString("pt-BR", {
           weekday: "long",
           day: "numeric",
@@ -24,23 +24,27 @@ export default function DayView({
 
       {tarefas.length === 0 && <p>Nenhuma tarefa neste dia.</p>}
 
-      {tarefas.map((t) => {
-        const statusClass = t.status ? `status-${t.status}` : "";
+      {tarefas.map((tarefa) => {
+        const status = tarefa.status || "";
+        let statusClass = "";
+        if (status === "concluida") statusClass = "concluida";
+        if (status === "atrasada") statusClass = "atrasada";
+
         return (
           <div
-            key={t.id}
+            key={tarefa.id}
             className={`tag-tarefa grande ${statusClass}`}
             style={{
-              borderLeft: getCorProjeto
-                ? `6px solid ${getCorProjeto(t.projetoId)}`
-                : undefined,
+              borderLeftColor: getCorProjeto
+                ? getCorProjeto(tarefa.projetoId)
+                : "#0a4723",
             }}
-            onClick={() => onTarefaClick && onTarefaClick(t)}
+            onClick={() => onTarefaClick && onTarefaClick(tarefa)}
           >
-            <strong>{t.nome}</strong>
-            {t.descricao && <p>{t.descricao}</p>}
+            <strong>{tarefa.nome}</strong>
+            {tarefa.descricao && <p>{tarefa.descricao}</p>}
             <p>
-              {t.inicio} até {t.fim}
+              {tarefa.inicio} até {tarefa.fim}
             </p>
           </div>
         );
