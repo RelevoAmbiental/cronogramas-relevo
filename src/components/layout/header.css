@@ -1,12 +1,14 @@
 /* --- Barra fixa premium Relevo --- */
-
 .topbar {
-  position: sticky;
+  position: fixed;       /* FIXA DE VERDADE */
   top: 0;
-  z-index: 999;
+  left: 0;
   width: 100%;
+  z-index: 999;
+
   background: #0a4723;
   padding: 10px 22px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,8 +16,7 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.18);
 }
 
-/* --- Logo + Título: alinhados na esquerda --- */
-
+/* --- Logo + título --- */
 .topbar-left {
   display: flex;
   align-items: center;
@@ -23,58 +24,74 @@
 }
 
 .topbar-logo {
-  height: 38px;
+  height: 40px;
   width: auto;
 }
 
 .topbar-title {
-  font-size: 1.35rem;
-  font-weight: 600;
+  font-size: 1.55rem;
+  font-weight: 700;
   color: #ffffff;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 /* --- Navegação --- */
-
 .topbar-nav {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .nav-btn {
   color: #e8f5e9;
-  font-size: 0.95rem;
+  font-size: 1rem;
   text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: background 0.2s ease, opacity 0.2s ease;
-  opacity: 0.85;
+
+  padding: 8px 14px;
+  border-radius: 10px;
+
+  transition: background 0.2s ease;
+  opacity: 0.92;
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255,255,255,0.16);
   opacity: 1;
 }
 
 .nav-btn.active {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255,255,255,0.22);
   color: #ffffff;
   font-weight: 600;
   opacity: 1;
 }
 
-/* --- Responsividade --- */
+/* --- MOBILE --- */
 @media (max-width: 640px) {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    padding: 12px 16px;
+    gap: 10px;
+    padding: 12px 20px;
   }
 
   .topbar-nav {
-    gap: 8px;
     flex-wrap: wrap;
+    gap: 8px;
   }
+}
+
+/* --- CORAÇÃO DO PROBLEMA: PREVENIR OVERFLOW --- */
+body, html {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+#root {
+  overflow-x: hidden !important;
+}
+
+/* Garante que nenhum container tente ampliar além da tela */
+main, section, div {
+  max-width: 100% !important;
 }
