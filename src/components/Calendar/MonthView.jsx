@@ -14,11 +14,11 @@ export default function MonthView({
   const ultimoDia = new Date(ano, mes + 1, 0);
 
   const diasNoMes = ultimoDia.getDate();
-  const indicePrimeiroDia = primeiroDia.getDay(); // 0 DOM → 6 SAB
+  const indicePrimeiroDia = primeiroDia.getDay(); // 0 = domingo
 
   const dias = [];
 
-  // dias "em branco" antes do 1º
+  // espaços vazios antes do 1º dia
   for (let i = 0; i < indicePrimeiroDia; i++) {
     dias.push({ data: null, tarefas: [] });
   }
@@ -37,58 +37,47 @@ export default function MonthView({
 
   return (
     <div className="mes-grid">
-      {dias.map((dia, i) => {
+      {dias.map((dia, idx) => {
         if (!dia.data) {
-          return (
-            <div key={i} className="mes-celula mes-celula-vazia" />
-          );
+          return <div key={idx} className="mes-celula" />;
         }
 
         const isHoje = dia.data.toDateString() === hoje.toDateString();
-        const isSelecionado =
-          dia.data.toDateString() === dataBase.toDateString();
-
-        const qt = dia.tarefas.length;
-        let heatClass = "";
-        if (qt >= 1 && qt <= 2) heatClass = "celula-heatmap-1";
-        else if (qt >= 3 && qt <= 4) heatClass = "celula-heatmap-2";
-        else if (qt >= 5 && qt <= 7) heatClass = "celula-heatmap-3";
-        else if (qt >= 8) heatClass = "celula-heatmap-4";
+        const celulaClasses = `mes-celula ${isHoje ? "hoje" : ""}`;
 
         return (
           <div
-            key={i}
-            className={
-              "mes-celula " +
-              heatClass +
-              (isHoje ? " celula-hoje" : "") +
-              (isSelecionado ? " celula-selecionada" : "")
-            }
+            key={idx}
+            className={celulaClasses}
             onClick={() => onDiaClick && onDiaClick(dia.data)}
           >
             <div className="mes-celula-header">
-              <strong>{dia.data.getDate()}</strong>
+              <span>{dia.data.getDate()}</span>
             </div>
 
             <div className="mes-celula-tarefas">
-              {dia.tarefas.map((t) => {
-                const statusClass = t.status ? `status-${t.status}` : "";
+              {dia.tarefas.map((tarefa) => {
+                const status = tarefa.status || "";
+                let statusClass = "";
+                if (status === "concluida") statusClass = "concluida";
+                if (status === "atrasada") statusClass = "atrasada";
+
                 return (
                   <div
-                    key={t.id}
+                    key={tarefa.id}
                     className={`tag-tarefa ${statusClass}`}
                     style={{
-                      borderLeft: getCorProjeto
-                        ? `6px solid ${getCorProjeto(t.projetoId)}`
-                        : undefined,
+                      borderLeftColor: getCorProjeto
+                        ? getCorProjeto(tarefa.projetoId)
+                        : "#0a4723",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      onTarefaClick && onTarefaClick(t);
+                      onTarefaClick && onTarefaClick(tarefa);
                     }}
-                    title={t.nome}
+                    title={tarefa.nome}
                   >
-                    {t.nome}
+                    {tarefa.nome}
                   </div>
                 );
               })}
