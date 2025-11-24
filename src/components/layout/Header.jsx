@@ -5,13 +5,17 @@ import "./header.css";
 export default function Header() {
   const location = useLocation();
 
-  const isActive = (path) =>
-    location.pathname === path || location.pathname.startsWith(path)
-      ? "nav-btn active"
-      : "nav-btn";
+  // 🔥 Função aprimorada para detectar rota ativa corretamente
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/" ? "nav-btn active" : "nav-btn";
+    }
+    return location.pathname.startsWith(path) ? "nav-btn active" : "nav-btn";
+  };
 
   return (
     <header className="topbar">
+      {/* === ESQUERDA: Logo + Título === */}
       <div className="topbar-left">
         <img
           src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_horizontal.png"
@@ -22,12 +26,23 @@ export default function Header() {
         <span className="topbar-title">Cronograma</span>
       </div>
 
+      {/* === DIREITA: Navegação === */}
       <nav className="topbar-nav">
-        <Link to="/" className={isActive("/")}>Dashboard</Link>
-        <Link to="/projetos" className={isActive("/projetos")}>Projetos</Link>
-        <Link to="/tarefas" className={isActive("/tarefas")}>Tarefas</Link>
-        <Link to="/calendario" className={isActive("/calendario")}>Calendário</Link>
-        <Link to="/importar" className={isActive("/importar")}>Importar (IA)</Link>
+        <Link to="/" className={isActive("/")}>
+          Dashboard
+        </Link>
+        <Link to="/projetos" className={isActive("/projetos")}>
+          Projetos
+        </Link>
+        <Link to="/tarefas" className={isActive("/tarefas")}>
+          Tarefas
+        </Link>
+        <Link to="/calendario" className={isActive("/calendario")}>
+          Calendário
+        </Link>
+        <Link to="/importar" className={isActive("/importar")}>
+          Importar (IA)
+        </Link>
       </nav>
     </header>
   );
