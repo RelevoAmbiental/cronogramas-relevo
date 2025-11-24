@@ -95,3 +95,28 @@ body, html {
 main, section, div {
   max-width: 100% !important;
 }
+/* ---- NAV PRINCIPAL AJUSTADA ---- */
+.topbar {
+  padding: 10px 24px;
+  box-sizing: border-box;
+}
+
+/* Corrige corte dos botões */
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  overflow-x: auto;   /* permite deslizar se apertar */
+  padding-right: 10px; /* evita corte na borda */
+}
+
+/* Barra de rolagem some */
+.topbar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+/* Botões ajustados */
+.nav-btn {
+  white-space: nowrap;
+}
