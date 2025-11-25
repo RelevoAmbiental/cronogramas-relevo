@@ -1,25 +1,32 @@
-// vite.config.js
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+// ------------------------------------------------------
+//  VITE CONFIG — CRONOGRAMAS RELEVO
+//  Corrige paths quebrados ao rodar em:
+//  https://portal.relevo.eco.br/cronograma/
+// ------------------------------------------------------
 
 export default defineConfig({
   plugins: [react()],
 
-  // 🚀 Caminho base correto para rodar dentro do portal em /cronograma/
-  base: "/cronograma/",
+  // 🔥 ESSENCIAL — Corrige todos os assets quebrados
+  base: '/cronograma/',
 
   build: {
-    outDir: "dist",
-    emptyOutDir: true,
+    outDir: 'dist',
+    assetsDir: 'assets',
 
-    // Isso evita problemas de chunks quebrados no GitHub Pages
-    assetsDir: "assets",
-  },
+    // Garante que o Vite não gere paths absolutos
+    assetsInlineLimit: 0,
 
-  // Importante quando usado atrás de caminhos relativos
-  resolve: {
-    alias: {
-      "@": "/src",
+    rollupOptions: {
+      output: {
+        // Usa paths relativos — necessário dentro do portal
+        entryFileNames: `assets/[name]-[hash].js`,
+        chunkFileNames: `assets/[name]-[hash].js`,
+        assetFileNames: `assets/[name]-[hash].[ext]`,
+      },
     },
   },
 });
