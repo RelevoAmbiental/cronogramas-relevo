@@ -1,129 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Relevo | IA de Cronogramas</title>
+    <title>Relevo | Cronogramas</title>
 
-    <!-- Favicon -->
+    <!-- ===============================
+         FAVICON (USA O DO PORTAL)
+         =============================== -->
     <link rel="icon" type="image/png"
-          href="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/favicon_menos.png" />
+      href="/assets/icons/favicon_menos.png" />
 
-    <!-- Montserrat -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+    <!-- ===============================
+         FONTES
+         =============================== -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css" />
-</head>
+    <!-- ===============================
+         ESTILOS RESET
+         =============================== -->
+    <style>
+      body, html, #root {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Montserrat', sans-serif;
+        background: #f5f5f5;
+      }
+    </style>
 
-<body>
+    <!--
+      ⚠️ NÃO COLOCAR SCRIPTS AQUI.
+      O VITE VAI INSERIR OS BUNDLES AUTOMATICAMENTE.
+    -->
+  </head>
 
-    <!-- ============================================================
-         HEADER — alinhado ao padrão do site Relevo
-         ============================================================ -->
-    <header>
-        <div class="header-wrapper">
+  <body>
+    <div id="root"></div>
 
-            <a href="https://relevo.eco.br" class="logo-link">
-                <div class="header-logo">
-                    <img src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_vertical.png"
-                         alt="Logo Relevo">
-                </div>
-            </a>
-
-            <nav>
-                <ul>
-                    <li><a href="https://relevo.eco.br/">Início</a></li>
-                    <li><a href="https://relevo.eco.br/servicos.html">Serviços</a></li>
-                    <li><a href="https://portal.relevo.eco.br/">Portal</a></li>
-                </ul>
-            </nav>
-
-        </div>
-    </header>
-
-
-    <!-- ============================================================
-         TÍTULO PRINCIPAL
-         ============================================================ -->
-    <div class="container">
-        <h1 class="page-title">Assistente IA • Cronogramas Relevo</h1>
-
-        <p class="subtitle">
-            Fluxo completo: <strong>Extrair arquivo → Interpretar proposta → Gerar cronograma estruturado</strong>
-        </p>
-    </div>
-
-
-    <!-- ============================================================
-         GRID DOS CARDS
-         ============================================================ -->
-    <div class="container grid-cards">
-
-        <!-- CARD 1 — EXTRAIR TEXTO -->
-        <div class="card">
-            <div class="card-header">
-                <h3>1. Extrair Texto (PDF / DOCX)</h3>
-            </div>
-
-            <div class="card-content">
-                <input type="file" id="arquivoInput" accept=".pdf,.docx" />
-
-                <button class="btn btn-primary" onclick="extrairTexto()">
-                    Extrair Conteúdo
-                </button>
-
-                <h4 style="margin-top:20px;">Resultado:</h4>
-                <textarea id="textoExtraido" placeholder="O texto extraído aparecerá aqui..."></textarea>
-            </div>
-        </div>
-
-        <!-- CARD 2 — INTERPRETAR PROPOSTA -->
-        <div class="card">
-            <div class="card-header">
-                <h3>2. Interpretar Proposta</h3>
-            </div>
-
-            <div class="card-content">
-                <button class="btn btn-primary" onclick="interpretarProposta()">
-                    Interpretar Texto via IA
-                </button>
-
-                <h4 style="margin-top:20px;">Estrutura Identificada:</h4>
-                <textarea id="estruturaProposta" placeholder="JSON interpretado aparecerá aqui..."></textarea>
-            </div>
-        </div>
-
-        <!-- CARD 3 — GERAR CRONOGRAMA -->
-        <div class="card">
-            <div class="card-header">
-                <h3>3. Gerar Cronograma Estruturado</h3>
-            </div>
-
-            <div class="card-content">
-                <button class="btn btn-primary" onclick="gerarCronograma()">
-                    Gerar Cronograma com a IA
-                </button>
-
-                <h4 style="margin-top:20px;">Cronograma Final:</h4>
-                <textarea id="cronogramaFinal" placeholder="O cronograma será exibido aqui..."></textarea>
-            </div>
-        </div>
-
-    </div>
-
-
-    <!-- ============================================================
-         FOOTER
-         ============================================================ -->
-    <footer>
-        Relevo Consultoria Ambiental • Inteligência Aplicada a Projetos Ambientais
-    </footer>
-
-    <!-- JS -->
-    <script src="app.js"></script>
-
-</body>
+    <!-- O Vite injeta automaticamente o script JS e CSS finais -->
+  </body>
 </html>
