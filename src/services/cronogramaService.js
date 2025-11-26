@@ -5,9 +5,7 @@
 
 import { getFirestore } from "./firebase";
 
-//
-// FIRESTORE GLOBAL (compat do Portal Relevo)
-//
+// Firestore compat do Portal
 function db() {
   return getFirestore();
 }
@@ -18,17 +16,18 @@ function db() {
 
 // Listar todos os projetos do usuário
 export async function listarProjetos(uid) {
-  const snap = await db()
-    .collection("projetos")
-    .where("uid", "==", uid)
-    .get();
+  const ref = db().collection("projetos");
+  const snap = await ref.where("uid", "==", uid).get();
 
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return snap.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+  }));
 }
 
 // Criar novo projeto
 export async function criarProjeto(uid, dados) {
-  return await db().collection("projetos").add({
+  return db().collection("projetos").add({
     uid,
     nome: dados.nome,
     descricao: dados.descricao || "",
@@ -38,12 +37,12 @@ export async function criarProjeto(uid, dados) {
 
 // Editar projeto
 export async function editarProjeto(id, dados) {
-  return await db().collection("projetos").doc(id).update(dados);
+  return db().collection("projetos").doc(id).update(dados);
 }
 
 // Remover projeto
 export async function removerProjeto(id) {
-  return await db().collection("projetos").doc(id).delete();
+  return db().collection("projetos").doc(id).delete();
 }
 
 // ==========================
@@ -52,17 +51,18 @@ export async function removerProjeto(id) {
 
 // Listar tarefas do usuário
 export async function listarTarefas(uid) {
-  const snap = await db()
-    .collection("tarefas")
-    .where("uid", "==", uid)
-    .get();
+  const ref = db().collection("tarefas");
+  const snap = await ref.where("uid", "==", uid).get();
 
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return snap.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+  }));
 }
 
 // Criar tarefa
 export async function criarTarefa(uid, dados) {
-  return await db().collection("tarefas").add({
+  return db().collection("tarefas").add({
     uid,
     projetoId: dados.projetoId,
     nome: dados.nome,
@@ -75,10 +75,10 @@ export async function criarTarefa(uid, dados) {
 
 // Editar tarefa
 export async function editarTarefa(id, dados) {
-  return await db().collection("tarefas").doc(id).update(dados);
+  return db().collection("tarefas").doc(id).update(dados);
 }
 
 // Remover tarefa
 export async function removerTarefa(id) {
-  return await db().collection("tarefas").doc(id).delete();
+  return db().collection("tarefas").doc(id).delete();
 }
