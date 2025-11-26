@@ -1,4 +1,5 @@
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -10,23 +11,20 @@ import Tarefas from "./components/Tarefas/Tarefas";
 import CalendarView from "./components/Calendar/CalendarView";
 import ImportarCronograma from "./components/Importador/ImportarCronograma";
 
-import { useUser } from "./context/UserContext";
+import { UserProvider, useUser } from "./context/UserContext";
+import { isFirebaseReady } from "./services/firebase";
 
-export default function App() {
+function AppContent() {
   const { user, loading } = useUser();
 
   if (loading) return <p>Carregando sessão…</p>;
   if (!user) return <p>Acesso negado. Faça login pelo Portal.</p>;
 
   return (
-    <Router>
-      {/* Barra fixa superior */}
+    <>
       <Header />
-
-      {/* Sub-menu entre as abas */}
       <Navegacao />
 
-      {/* Conteúdo das páginas */}
       <main className="content" style={{ padding: "20px" }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
@@ -38,6 +36,25 @@ export default function App() {
       </main>
 
       <Footer />
-    </Router>
+    </>
+  );
+}
+
+export default function App() {
+  // Aguarda Firebase do Portal estar disponível
+  if (!isFirebaseReady()) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        <h3>Preparando ambiente Relevo…</h3>
+      </div>
+    );
+  }
+
+  return (
+    <UserProvider>
+      <Router basename="/cronograma">
+        <AppContent />
+      </Router>
+    </UserProvider>
   );
 }
