@@ -1,29 +1,43 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { getAuth, getCurrentUserRaw } from "../services/firebase";
 
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [tipo, setTipo] = useState(null); // gestao, colaborador, cliente
+  const [tipo, setTipo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const raw = localStorage.getItem("relevoSession");
+    const auth = getAuth();
 
-    if (!raw) {
-      setLoading(false);
-      return;
+    // Firebase ainda não inicializou no Portal
+    if (!auth) {
+      console.warn("⏳ Aguardando Firebase do Portal...");
+      const timer = setTimeout(() => setLoading(false), 300);
+      return () => clearTimeout(timer);
     }
 
-    try {
-      const session = JSON.parse(raw);
-      setUser(session);
-      setTipo(session.tipo || null); // 👈 Usa o tipo vindo da sessão
-    } catch (err) {
-      console.error("Erro ao ler relevoSession:", err);
-    } finally {
+    // Listener unificado do Portal
+    const unsubscribe = auth.onAuthStateChanged((raw) => {
+      if (raw) {
+        setUser({
+          uid: raw.uid,
+          email: raw.email,
+          provider: raw.providerData?.[0]?.providerId,
+        });
+
+        // Tipo do usuário pode vir depois da consulta no Firestore
+        setTipo(null);
+      } else {
+        setUser(null);
+        setTipo(null);
+      }
+
       setLoading(false);
-    }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
