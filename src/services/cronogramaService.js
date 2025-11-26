@@ -64,4 +64,21 @@ export async function listarTarefas(uid) {
 export async function criarTarefa(uid, dados) {
   return await db().collection("tarefas").add({
     uid,
-    projetoId:
+    projetoId: dados.projetoId,
+    nome: dados.nome,
+    inicio: dados.inicio,
+    fim: dados.fim,
+    status: dados.status || "pendente",
+    criadoEm: new Date(),
+  });
+}
+
+// Editar tarefa
+export async function editarTarefa(id, dados) {
+  return await db().collection("tarefas").doc(id).update(dados);
+}
+
+// Remover tarefa
+export async function removerTarefa(id) {
+  return await db().collection("tarefas").doc(id).delete();
+}
