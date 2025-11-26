@@ -41,7 +41,7 @@ function AppContent() {
 }
 
 export default function App() {
-  // Aguarda Firebase do Portal estar disponível
+  // Garante que o Portal já inicializou o Firebase
   if (!isFirebaseReady()) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
