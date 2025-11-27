@@ -17,14 +17,22 @@ import { isFirebaseReady } from "./services/firebase";
 function AppContent() {
   const { user, loading } = useUser();
 
-  if (loading) return <p>Carregando sessão…</p>;
-  if (!user) return <p>Acesso negado. Faça login pelo Portal.</p>;
+  if (loading) {
+    return <p style={{ padding: "20px" }}>Carregando sessão…</p>;
+  }
+
+  if (!user) {
+    return (
+      <p style={{ padding: "20px" }}>
+        Acesso negado. Faça login pelo Portal Relevo.
+      </p>
+    );
+  }
 
   return (
     <>
       <Header />
       <Navegacao />
-
       <main className="content" style={{ padding: "20px" }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
@@ -34,7 +42,6 @@ function AppContent() {
           <Route path="/importar" element={<ImportarCronograma />} />
         </Routes>
       </main>
-
       <Footer />
     </>
   );
