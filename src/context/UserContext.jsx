@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { getAuth, getCurrentUserRaw } from "../services/firebase";
 
 const UserContext = createContext();
 
@@ -8,28 +9,39 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1) Tenta pegar do namespace global (portal)
-    if (window.__RELEVO_USER__) {
-      setUser(window.__RELEVO_USER__);
-      setTipo(window.__RELEVO_USER__.tipo || null);
+    const auth = getAuth();
+
+    // Caso raro: Firebase ainda não pronto
+    if (!auth) {
+      const raw = getCurrentUserRaw();
+      if (raw) {
+        setUser({
+          uid: raw.uid,
+          email: raw.email,
+          provider: raw.provider || raw.providerId || null,
+        });
+        setTipo(raw.tipo || null);
+      }
       setLoading(false);
       return;
     }
 
-    // 2) Fallback para sessão persistida
-    const raw = localStorage.getItem("relevoSession");
-
-    if (raw) {
-      try {
-        const session = JSON.parse(raw);
-        setUser(session);
-        setTipo(session.tipo || null);
-      } catch (err) {
-        console.error("Erro ao ler relevoSession:", err);
+    // Listener oficial da sessão
+    const unsubscribe = auth.onAuthStateChanged((raw) => {
+      if (raw) {
+        setUser({
+          uid: raw.uid,
+          email: raw.email,
+          provider: raw.providerData?.[0]?.providerId || null,
+        });
+      } else {
+        setUser(null);
       }
-    }
+      setTipo(null); // reservado pra uso futuro (gestão/colaborador/cliente)
+      setLoading(false);
+    });
 
-    setLoading(false);
+    return () => unsubscribe();
   }, []);
 
   return (
