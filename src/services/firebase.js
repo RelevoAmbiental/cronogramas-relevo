@@ -1,24 +1,26 @@
-// ============================================
-//  Firebase Bridge — Cronograma Relevo
-//  Usa a instância inicializada pelo Portal
-// ============================================
+// ================================
+// Firebase Gateway do Cronograma
+// Usa a instância do Portal Relevo
+// ================================
 
-export function getFirebaseApp() {
-  return window.__RELEVO_FIREBASE__ || null;
+// Importa compat (necessário para tipos e serviços Vite)
+import "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+
+// Garante que o Firebase já foi carregado pelo Portal
+if (!window.__RELEVO_FIREBASE__) {
+  console.warn("⚠️ Firebase ainda não disponível — aguardando Portal.");
 }
 
-export function getAuth() {
-  return window.__RELEVO_AUTH__ || null;
-}
+// App herdado do Portal
+export const app = window.__RELEVO_FIREBASE__ || null;
 
-export function getFirestore() {
-  return window.__RELEVO_DB__ || null;
-}
+// Auth herdado do Portal
+export const auth =
+  (window.__RELEVO_FIREBASE__ && window.__RELEVO_FIREBASE__.auth()) || null;
 
-export function getCurrentUserRaw() {
-  return window.__RELEVO_USER__ || null;
-}
-
-export function isFirebaseReady() {
-  return Boolean(window.__RELEVO_FIREBASE__);
-}
+// Firestore herdado do Portal
+export const db =
+  (window.__RELEVO_FIREBASE__ && window.__RELEVO_FIREBASE__.firestore()) ||
+  null;
