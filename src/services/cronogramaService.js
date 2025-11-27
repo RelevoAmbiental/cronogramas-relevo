@@ -9,13 +9,13 @@ import {
   where
 } from "firebase/firestore";
 
-import { db } from "./firebase/firestore";
+import { db } from "./firebase"; // ← AGORA CORRETO
+
 
 // ==========================
 // PROJETOS
 // ==========================
 
-// Criar novo projeto (corrigido)
 export async function criarProjeto(uid, dados) {
   return await addDoc(collection(db, "projetos"), {
     uid,
@@ -29,24 +29,22 @@ export async function criarProjeto(uid, dados) {
   });
 }
 
-// Editar projeto
 export async function editarProjeto(id, dados) {
   const ref = doc(db, "projetos", id);
   return await updateDoc(ref, dados);
 }
 
-// Listar projetos
 export async function listarProjetos(uid) {
   const q = query(collection(db, "projetos"), where("uid", "==", uid));
   const snap = await getDocs(q);
   return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
-// Remover projeto
 export async function removerProjeto(id) {
   const ref = doc(db, "projetos", id);
   return await deleteDoc(ref);
 }
+
 
 // ==========================
 // TAREFAS
