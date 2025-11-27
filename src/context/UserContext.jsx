@@ -1,39 +1,35 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { getAuth } from "../services/firebase";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [tipo, setTipo] = useState(null); // reservado para futura regra per-user
+  const [tipo, setTipo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth();
-
-    // Firebase ainda não inicializou no Portal
-    if (!auth) {
-      console.warn("⏳ Aguardando Firebase do Portal…");
-      const t = setTimeout(() => setLoading(false), 300);
-      return () => clearTimeout(t);
+    // 1) Tenta pegar do namespace global (portal)
+    if (window.__RELEVO_USER__) {
+      setUser(window.__RELEVO_USER__);
+      setTipo(window.__RELEVO_USER__.tipo || null);
+      setLoading(false);
+      return;
     }
 
-    // Listener unificado baseado na sessão real do Firebase
-    const unsubscribe = auth.onAuthStateChanged((raw) => {
-      if (raw) {
-        setUser({
-          uid: raw.uid,
-          email: raw.email,
-          provider: raw.providerData?.[0]?.providerId,
-        });
-      } else {
-        setUser(null);
+    // 2) Fallback para sessão persistida
+    const raw = localStorage.getItem("relevoSession");
+
+    if (raw) {
+      try {
+        const session = JSON.parse(raw);
+        setUser(session);
+        setTipo(session.tipo || null);
+      } catch (err) {
+        console.error("Erro ao ler relevoSession:", err);
       }
+    }
 
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    setLoading(false);
   }, []);
 
   return (
