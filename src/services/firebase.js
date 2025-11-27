@@ -1,43 +1,43 @@
-// ============================================
-//  Firebase Gateway — Cronogramas Relevo
-//  Usa SOMENTE a instância exposta pelo Portal
-// ============================================
+// ==============================================
+//  Firebase inicializado via Portal Relevo
+//  cronogramas-relevo usa a sessão exposta
+// ==============================================
 
-// App herdado do Portal
-export function getFirebaseApp() {
-  return window.__RELEVO_FIREBASE__ || null;
+let app = null;
+let auth = null;
+let db = null;
+
+// O portal expõe estes valores globalmente quando carrega
+function loadFromPortal() {
+  if (window.__RELEVO_FIREBASE__ && window.__RELEVO_AUTH__ && window.__RELEVO_DB__) {
+    app = window.__RELEVO_FIREBASE__;
+    auth = window.__RELEVO_AUTH__;
+    db = window.__RELEVO_DB__;
+    return true;
+  }
+  return false;
 }
 
-// Auth herdado do Portal
-export function getAuth() {
-  if (window.__RELEVO_AUTH__) return window.__RELEVO_AUTH__;
-
-  const app = getFirebaseApp();
-  if (app && typeof app.auth === "function") {
-    return app.auth();
+// Fallback — caso o Guard ainda não tenha carregado
+function loadFallback() {
+  if (typeof firebase === "undefined") {
+    console.warn("⚠️ Firebase ainda não está disponível (fallback aguardando compat SDK).");
+    return false;
   }
 
-  return null;
-}
-
-// Firestore herdado do Portal
-export function getFirestore() {
-  if (window.__RELEVO_DB__) return window.__RELEVO_DB__;
-
-  const app = getFirebaseApp();
-  if (app && typeof app.firestore === "function") {
-    return app.firestore();
+  try {
+    app = firebase.app();       // usa a mesma instância compat
+    auth = firebase.auth();
+    db = firebase.firestore();
+    return true;
+  } catch (err) {
+    console.error("❌ Erro ao tentar carregar Firebase no fallback:", err);
+    return false;
   }
-
-  return null;
 }
 
-// Usuário bruto exposto pelo Portal
-export function getCurrentUserRaw() {
-  return window.__RELEVO_USER__ || null;
-}
+// Carregar agora
+loadFromPortal() || loadFallback();
 
-// Verifica se o Firebase já foi inicializado pelo Portal
-export function isFirebaseReady() {
-  return !!getFirebaseApp();
-}
+// 🔥 Exportar exatamente o que o projeto React importa
+export { app, auth, db };
