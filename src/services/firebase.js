@@ -1,43 +1,45 @@
-// ==============================================
-//  Firebase inicializado via Portal Relevo
-//  cronogramas-relevo usa a sessão exposta
-// ==============================================
+// src/services/firebase.js
+
+// =======================================
+//  Integração Firebase via Portal Relevo
+//  Usa instâncias já inicializadas no Portal
+// =======================================
 
 let app = null;
 let auth = null;
 let db = null;
 
-// O portal expõe estes valores globalmente quando carrega
-function loadFromPortal() {
-  if (window.__RELEVO_FIREBASE__ && window.__RELEVO_AUTH__ && window.__RELEVO_DB__) {
-    app = window.__RELEVO_FIREBASE__;
-    auth = window.__RELEVO_AUTH__;
-    db = window.__RELEVO_DB__;
-    return true;
-  }
-  return false;
-}
+// Tenta pegar tudo do namespace global exposto pelo Portal
+function initFromPortal() {
+  if (typeof window === "undefined") return false;
 
-// Fallback — caso o Guard ainda não tenha carregado
-function loadFallback() {
-  if (typeof firebase === "undefined") {
-    console.warn("⚠️ Firebase ainda não está disponível (fallback aguardando compat SDK).");
+  const portalApp = window.__RELEVO_FIREBASE__;
+  const portalAuth = window.__RELEVO_AUTH__;
+  const portalDb = window.__RELEVO_DB__;
+
+  if (!portalApp || !portalAuth || !portalDb) {
+    console.warn("⚠️ Firebase do Portal ainda não está pronto no Cronograma.");
     return false;
   }
 
-  try {
-    app = firebase.app();       // usa a mesma instância compat
-    auth = firebase.auth();
-    db = firebase.firestore();
-    return true;
-  } catch (err) {
-    console.error("❌ Erro ao tentar carregar Firebase no fallback:", err);
-    return false;
-  }
+  app = portalApp;
+  auth = portalAuth;
+  db = portalDb;
+
+  console.log("✅ Firebase integrado via Portal Relevo (Cronograma).");
+  return true;
 }
 
-// Carregar agora
-loadFromPortal() || loadFallback();
+// Inicializa imediatamente ao importar o módulo
+initFromPortal();
 
-// 🔥 Exportar exatamente o que o projeto React importa
+/**
+ * Indica se o Firebase já está pronto para uso dentro do Cronograma.
+ * Usado pelo <App /> para exibir "Preparando ambiente Relevo…"
+ */
+export function isFirebaseReady() {
+  return !!(app && auth && db);
+}
+
+// Exporta as referências (podem ser null se chamado cedo demais)
 export { app, auth, db };
