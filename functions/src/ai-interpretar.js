@@ -1,50 +1,109 @@
 const OpenAI = require("openai");
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-exports.interpretarProposta = async (texto) => {
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+/**
+ * IA da Relevo — Conversão de texto (TR, orçamento, escopo)
+ * em tarefas estruturadas para o módulo de Cronograma.
+ *
+ * Retorna uma LISTA de tarefas no formato:
+ *
+ * [
+ *   {
+ *     nome: "",
+ *     descricao: "",
+ *     categoria: "",
+ *     produto: "",
+ *     responsavel: "",
+ *     inicioRelativoDias: 0,
+ *     duracaoDias: 0,
+ *     status: "pendente"
+ *   }
+ * ]
+ *
+ */
+
+exports.interpretarTexto = async function interpretarTexto(texto) {
+
   const prompt = `
-Você é uma IA especialista em análise ambiental e espeleológica da Relevo Consultoria.
+Você é a IA oficial da Relevo Consultoria Ambiental, especializada em transformar escopos, orçamentos e termos de referência em cronogramas executivos.
 
-Extraia da proposta:
+OBJETIVO:
+A partir do texto abaixo, extraia:
+- Produtos (entregas principais)
+- Atividades necessárias para cada produto
+- Sequência lógica das atividades
+- Durações estimadas
+- Datas relativas ao início (startDate será aplicada fora do modelo)
+- Responsáveis (se mencionados; caso contrário deixe vazio)
 
-- Objetivo do projeto
-- Etapas
-- Atividades
-- Entregáveis
-- Datas importantes
-- Marco inicial e final
-- Agenda de pagamentos (se existir)
-- Prazos de elaboração
-- Equipe envolvida
+Retorne APENAS um JSON válido contendo uma LISTA de tarefas no formato:
 
-Retorne tudo em JSON com esta estrutura:
+[
+  {
+    "nome": "",
+    "descricao": "",
+    "categoria": "",
+    "produto": "",
+    "responsavel": "",
+    "inicioRelativoDias": 0,
+    "duracaoDias": 0,
+    "status": "pendente"
+  }
+]
 
-{
-  "objetivo": "",
-  "etapas": [
-    {
-      "nome": "",
-      "atividades": [],
-      "duracaoDias": 0,
-      "dependencias": []
-    }
-  ],
-  "entregaveis": [],
-  "pagamentos": [],
-  "observacoes": ""
-}
+REGRAS:
+1. Identifique produtos/entregas explícitas e implícitas.
+2. Gere tarefas completas para cada produto:
+   - Planejamento
+   - Execução (coleta / campo / análises / processamento)
+   - Relatório
+   - Revisão interna
+   - Entrega final
+3. Duracões padrão caso o texto não informe:
+   - Planejamento: 2 dias
+   - Execução: 5–10 dias (use bom senso)
+   - Processamento/análises: 3–7 dias
+   - Relatório: 3–5 dias
+   - Revisão: 2 dias
+4. Use sempre apenas "inicioRelativoDias".
+5. Nunca retorne texto fora de JSON.
+6. O JSON deve ser totalmente válido e compatível com JSON.parse.
 
-Texto da proposta:
+TEXTO:
+""" 
 ${texto}
+"""
 `;
 
   const response = await client.chat.completions.create({
     model: "gpt-4.1",
     messages: [
-      { role: "system", content: "Você é uma IA Relevo." },
+      { role: "system", content: "Você é a IA oficial da Relevo Consultoria Ambiental." },
       { role: "user", content: prompt }
-    ]
+    ],
+    temperature: 0.2
   });
 
-  return JSON.parse(response.choices[0].message.content);
+  let output = response.choices[0].message.content;
+
+  // Normalização — remove markdown se vier
+  output = output.replace(/```json/gi, "").replace(/```/g, "").trim();
+
+  try {
+    const json = JSON.parse(output);
+
+    if (!Array.isArray(json)) {
+      throw new Error("A IA retornou um JSON que não é uma lista.");
+    }
+
+    return json;
+  } catch (err) {
+    console.error("❌ Erro ao interpretar JSON do modelo:", err);
+    console.error("Conteúdo retornado pela IA:", output);
+
+    throw new Error("Falha ao interpretar o JSON retornado pela IA.");
+  }
 };
