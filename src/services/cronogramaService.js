@@ -1,6 +1,6 @@
 // =========================================
 //  SERVIÇOS DO FIRESTORE — CRONOGRAMA RELEVO
-//  Atualizado e padronizado
+//  Versão completa e compatível com CronogramaContext.jsx
 // =========================================
 
 import {
@@ -10,15 +10,12 @@ import {
   deleteDoc,
   doc,
   updateDoc,
-  query,
-  where
 } from "firebase/firestore";
 
 import { db } from "./firebase";
 
 // =========================================
-//  PROJETOS
-//  Coleção: "projetos"
+//  PROJETOS (coleção: "projetos")
 // =========================================
 
 export async function listarProjetos() {
@@ -42,25 +39,24 @@ export async function criarProjeto(data) {
   }
 }
 
-export async function atualizarProjeto(id, data) {
+export async function editarProjeto(id, data) {
   try {
     await updateDoc(doc(db, "projetos", id), data);
   } catch (err) {
-    console.error("Erro ao atualizar projeto:", err);
+    console.error("Erro ao editar projeto:", err);
   }
 }
 
-export async function deletarProjeto(id) {
+export async function removerProjeto(id) {
   try {
     await deleteDoc(doc(db, "projetos", id));
   } catch (err) {
-    console.error("Erro ao deletar projeto:", err);
+    console.error("Erro ao remover projeto:", err);
   }
 }
 
 // =========================================
-//  TAREFAS
-//  Coleção: "tarefas"
+//  TAREFAS (coleção: "tarefas")
 // =========================================
 
 export async function listarTarefas() {
@@ -84,19 +80,18 @@ export async function criarTarefa(data) {
   }
 }
 
-export async function atualizarTarefa(id, data) {
+export async function editarTarefa(id, data) {
   try {
     await updateDoc(doc(db, "tarefas", id), data);
   } catch (err) {
-    console.error("Erro ao atualizar tarefa:", err);
+    console.error("Erro ao editar tarefa:", err);
   }
 }
 
-export async function deletarTarefa(id) {
+export async function removerTarefa(id) {
   try {
     await deleteDoc(doc(db, "tarefas", id));
   } catch (err) {
-    console.error("Erro ao deletar tarefa:", err);
+    console.error("Erro ao remover tarefa:", err);
   }
 }
-
