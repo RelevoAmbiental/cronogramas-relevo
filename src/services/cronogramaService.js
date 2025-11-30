@@ -1,8 +1,4 @@
-// =========================================
-//  SERVIÇOS DO FIRESTORE — CRONOGRAMA RELEVO
-//  Versão completa e compatível com CronogramaContext.jsx
-// =========================================
-
+// src/services/cronogramaService.js
 import {
   collection,
   addDoc,
@@ -10,88 +6,83 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  query,
+  where,
 } from "firebase/firestore";
 
-import { db } from "./firebase";
+/* ============================================================
+   🔥  Todas as funções recebem "db" como parâmetro
+       O DB vem do Portal, via CronogramaContext
+   ============================================================ */
 
-// =========================================
-//  PROJETOS (coleção: "projetos")
-// =========================================
+// ============================
+//  PROJETOS
+// ============================
 
-export async function listarProjetos() {
+export async function listarProjetos(db, userId = null) {
   try {
-    const colRef = collection(db, "projetos");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch (err) {
-    console.error("Erro ao listar projetos:", err);
+    let q = collection(db, "projetos");
+
+    if (userId) {
+      q = query(q, where("userId", "==", userId));
+    }
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
+  } catch (e) {
+    console.error("Erro ao listar projetos:", e);
     return [];
   }
 }
 
-export async function criarProjeto(data) {
-  try {
-    const colRef = collection(db, "projetos");
-    const docRef = await addDoc(colRef, data);
-    return docRef.id;
-  } catch (err) {
-    console.error("Erro ao criar projeto:", err);
-  }
+export async function criarProjeto(db, data) {
+  return addDoc(collection(db, "projetos"), data);
 }
 
-export async function editarProjeto(id, data) {
-  try {
-    await updateDoc(doc(db, "projetos", id), data);
-  } catch (err) {
-    console.error("Erro ao editar projeto:", err);
-  }
+export async function editarProjeto(db, id, data) {
+  return updateDoc(doc(db, "projetos", id), data);
 }
 
-export async function removerProjeto(id) {
-  try {
-    await deleteDoc(doc(db, "projetos", id));
-  } catch (err) {
-    console.error("Erro ao remover projeto:", err);
-  }
+export async function removerProjeto(db, id) {
+  return deleteDoc(doc(db, "projetos", id));
 }
 
-// =========================================
-//  TAREFAS (coleção: "tarefas")
-// =========================================
+// ============================
+//  TAREFAS
+// ============================
 
-export async function listarTarefas() {
+export async function listarTarefas(db, projetoId = null) {
   try {
-    const colRef = collection(db, "tarefas");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch (err) {
-    console.error("Erro ao listar tarefas:", err);
+    let q = collection(db, "tarefas");
+
+    if (projetoId) {
+      q = query(q, where("projetoId", "==", projetoId));
+    }
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
+  } catch (e) {
+    console.error("Erro ao listar tarefas:", e);
     return [];
   }
 }
 
-export async function criarTarefa(data) {
-  try {
-    const colRef = collection(db, "tarefas");
-    const docRef = await addDoc(colRef, data);
-    return docRef.id;
-  } catch (err) {
-    console.error("Erro ao criar tarefa:", err);
-  }
+export async function criarTarefa(db, data) {
+  return addDoc(collection(db, "tarefas"), data);
 }
 
-export async function editarTarefa(id, data) {
-  try {
-    await updateDoc(doc(db, "tarefas", id), data);
-  } catch (err) {
-    console.error("Erro ao editar tarefa:", err);
-  }
+export async function editarTarefa(db, id, data) {
+  return updateDoc(doc(db, "tarefas", id), data);
 }
 
-export async function removerTarefa(id) {
-  try {
-    await deleteDoc(doc(db, "tarefas", id));
-  } catch (err) {
-    console.error("Erro ao remover tarefa:", err);
-  }
+export async function removerTarefa(db, id) {
+  return deleteDoc(doc(db, "tarefas", id));
 }
