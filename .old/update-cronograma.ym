@@ -1,0 +1,93 @@
+name: Atualizar Cronograma no Portal
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [atualizar-portal]
+
+jobs:
+  deploy-cronograma:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Checkout do Cronograma
+      - name: Checkout Cronograma
+        uses: actions/checkout@v4
+
+      # 2) Instalar dependências
+      - name: Instalar dependências
+        run: npm install
+
+      # 3) Build
+      - name: Build Cronograma
+        run: npm run build
+
+      # 4) Identificar JS e CSS
+      - name: Identificar assets finais
+        id: assets
+        run: |
+          JS_FILE=$(ls dist/assets/index-*.js | head -n 1 | xargs -n 1 basename)
+          CSS_FILE=$(ls dist/assets/index-*.css | head -n 1 | xargs -n 1 basename)
+          echo "js_name=$JS_FILE" >> $GITHUB_OUTPUT
+          echo "css_name=$CSS_FILE" >> $GITHUB_OUTPUT
+
+      # 5) Clonar portal-relevo
+      - name: Clonar Portal Relevo
+        uses: actions/checkout@v4
+        with:
+          repository: RelevoAmbiental/portal-relevo
+          token: ${{ secrets.GH_PAT }}
+          path: portal
+
+      # 6) Limpar assets antigos
+      - name: Limpar assets antigos
+        run: |
+          rm -rf portal/cronograma/assets
+          mkdir -p portal/cronograma/assets
+
+      # 7) Copiar novos assets
+      - name: Copiar novos assets
+        run: |
+          cp -r dist/assets/* portal/cronograma/assets/
+
+      # 8) Gerar index.html final
+      - name: Gerar index.html final
+        run: |
+          cat > portal/cronograma/index.html <<EOF
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Cronogramas | Relevo Consultoria Ambiental</title>
+
+    <!-- Firebase compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <!-- Guard + Sessão -->
+    <script src="/scripts/firebase-init-guard.js"></script>
+    <script src="/scripts/expose-session.js"></script>
+
+    <!-- Build React (Vite) -->
+    <script type="module" crossorigin src="/cronograma/assets/${{ steps.assets.outputs.js_name }}"></script>
+    <link rel="stylesheet" crossorigin href="/cronograma/assets/${{ steps.assets.outputs.css_name }}" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+EOF
+
+      # 9) Commit e push
+      - name: Commit e push no Portal
+        run: |
+          cd portal
+          git config --local user.email "bot@relevo.eco.br"
+          git config --local user.name "RelevoBot"
+          git add .
+          git commit -m "Atualização automática do Cronograma 🚀" || echo "Nenhuma mudança"
+          git push
