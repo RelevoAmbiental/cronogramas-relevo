@@ -9,6 +9,7 @@ permissions:
   contents: write
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
@@ -48,10 +49,12 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      # 🚀 DISPARA ATUALIZAÇÃO NO PORTAL
+      # ---------------------------------------------------------
+      # 🚀 DISPARAR UPDATE DO PORTAL APÓS O DEPLOY
+      # ---------------------------------------------------------
       - name: Disparar Update para o Portal
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GH_PAT }}
-          repository: RelevoAmbiental/cronogramas-relevo
-          event-type: atualizar-portal
+          token: ${{ secrets.PAT_TOKEN }}
+          repository: RelevoAmbiental/portal-relevo
+          event-type: atualizar-cronograma
