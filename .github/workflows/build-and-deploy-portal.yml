@@ -1,84 +1,14 @@
-name: Build e Deploy Automático do Cronograma para o Portal
+name: [LEGADO] Build e Deploy Automático do Cronograma para o Portal
 
 on:
-  push:
-    branches: [ main ]
+  # ⚠️ só permite rodar manualmente, nunca mais roda sozinho
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  noop:
     runs-on: ubuntu-latest
-
     steps:
-    # -------------------------------------------------------------
-    # 1) Checkout do repositório do Cronograma
-    # -------------------------------------------------------------
-    - name: 📥 Checkout do repositório cronogramas-relevo
-      uses: actions/checkout@v4
-
-    # -------------------------------------------------------------
-    # 2) Setup Node
-    # -------------------------------------------------------------
-    - name: ⚙️ Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    # -------------------------------------------------------------
-    # 3) Instalar dependências
-    # -------------------------------------------------------------
-    - name: 📦 Instalar dependências
-      run: npm install
-
-    # -------------------------------------------------------------
-    # 4) Build do projeto
-    # -------------------------------------------------------------
-    - name: 🏗️ Build do projeto Cronograma
-      run: npm run build
-      env:
-        # (opcional) Se desejar usar variáveis secretas
-        VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-        VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-        VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-        VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-        VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-        VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-
-    # -------------------------------------------------------------
-    # 5) Checkout do Portal Relevo
-    # -------------------------------------------------------------
-    - name: 📥 Checkout do portal-relevo
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PAT_TOKEN }}
-        repository: RelevoAmbiental/portal-relevo
-        path: portal-temp
-
-    # -------------------------------------------------------------
-    # 6) Copiar o build para dentro do Portal
-    # -------------------------------------------------------------
-    - name: 📁 Copiar build do Cronograma para o Portal
-      run: |
-        echo "🔄 Limpando pasta cronograma do portal..."
-        rm -rf portal-temp/cronograma/
-        
-        echo "📁 Criando nova pasta cronograma..."
-        mkdir -p portal-temp/cronograma
-
-        echo "📦 Copiando build..."
-        cp -r dist/* portal-temp/cronograma/
-
-        echo "📂 Conteúdo resultante:"
-        ls -la portal-temp/cronograma/
-
-    # -------------------------------------------------------------
-    # 7) Commit + Push no Portal
-    # -------------------------------------------------------------
-    - name: 💾 Commit e Push para o portal
-      run: |
-        cd portal-temp
-        git config --local user.email "actions@github.com"
-        git config --local user.name "GitHub Actions"
-        git add cronograma/
-        git commit -m "🚀 Deploy automático do Cronograma" || echo "⚠️ Nenhuma mudança para commitar"
-        git push
+      - name: Workflow legado desativado
+        run: |
+          echo "Este workflow foi descontinuado."
+          echo "Use update-cronograma.yml para atualizar o portal."
