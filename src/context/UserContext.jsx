@@ -48,4 +48,15 @@ export function UserProvider({ children }) {
   );
 }
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+
+  if (!context) {
+    console.warn(
+      "⚠️ UserContext não encontrado. Verifique se o componente está dentro do <UserProvider>."
+    );
+    return { user: null, loading: true };
+  }
+
+  return context;
+};

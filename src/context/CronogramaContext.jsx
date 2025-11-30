@@ -12,7 +12,21 @@ import {
   removerTarefa
 } from "../services/cronogramaService";
 
-const CronogramaContext = createContext();
+const noopAsync = async () => {};
+
+const defaultValue = {
+  projetos: [],
+  tarefas: [],
+  loading: true,
+  criarProjeto: noopAsync,
+  editarProjeto: noopAsync,
+  removerProjeto: noopAsync,
+  criarTarefa: noopAsync,
+  editarTarefa: noopAsync,
+  removerTarefa: noopAsync,
+};
+
+const CronogramaContext = createContext(defaultValue);
 
 export function CronogramaProvider({ children }) {
   const { user } = useUser();
@@ -124,5 +138,14 @@ export function CronogramaProvider({ children }) {
 }
 
 export function useCronograma() {
-  return useContext(CronogramaContext);
+  const context = useContext(CronogramaContext);
+
+  if (!context) {
+    console.warn(
+      "⚠️ CronogramaContext não encontrado. Verifique se o componente está dentro do <CronogramaProvider>."
+    );
+    return defaultValue;
+  }
+
+  return context;
 }
