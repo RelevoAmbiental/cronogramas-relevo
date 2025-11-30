@@ -4,44 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Relevo | Cronogramas</title>
+    <title>Cronogramas | Relevo Consultoria Ambiental</title>
 
-    <!-- ===============================
-         FAVICON (USA O DO PORTAL)
-         =============================== -->
-    <link rel="icon" type="image/png"
-      href="/assets/icons/favicon_menos.png" />
+    <!-- Firebase compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
 
-    <!-- ===============================
-         FONTES
-         =============================== -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Guard -->
+    <script src="/scripts/firebase-init-guard.js"></script>
 
-    <!-- ===============================
-         ESTILOS RESET
-         =============================== -->
-    <style>
-      body, html, #root {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: 'Montserrat', sans-serif;
-        background: #f5f5f5;
-      }
-    </style>
+    <!-- Session exposure -->
+    <script src="/scripts/expose-session.js"></script>
 
-    <!--
-      ⚠️ NÃO COLOCAR SCRIPTS AQUI.
-      O VITE VAI INSERIR OS BUNDLES AUTOMATICAMENTE.
-    -->
+    <!-- Build do cronograma -->
+    <script type="module" crossorigin src="/cronograma/assets/index-DsbZaL5u.js"></script>
+    <link rel="stylesheet" crossorigin href="/cronograma/assets/index-C7Dj_beS.css" />
   </head>
 
   <body>
     <div id="root"></div>
-
-    <!-- O Vite injeta automaticamente o script JS e CSS finais -->
   </body>
 </html>
