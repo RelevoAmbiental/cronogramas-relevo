@@ -1,12 +1,5 @@
 // src/context/CronogramaContext.jsx
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useUser } from "./UserContext";
 
 import {
@@ -20,181 +13,105 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
-/* ============================================================
-   🔥 FUNÇÃO CENTRAL — Aguarda Firebase do Portal
-   ============================================================ */
-function aguardarFirebasePortal() {
-  return new Promise((resolve) => {
-    if (window.__RELEVO_DB__ && window.__RELEVO_AUTH__) {
-      return resolve();
-    }
-    const timer = setInterval(() => {
-      if (window.__RELEVO_DB__ && window.__RELEVO_AUTH__) {
-        clearInterval(timer);
-        resolve();
-      }
-    }, 50);
-  });
-}
+import { db as dbPortal } from "../services/firebase";
 
 const CronogramaContext = createContext();
 
-/* ============================================================
-   🔥 PROVIDER PRINCIPAL
-   ============================================================ */
 export function CronogramaProvider({ children }) {
   const { user } = useUser();
 
   const [db, setDb] = useState(null);
-  const [auth, setAuth] = useState(null);
-  const [firebasePronto, setFirebasePronto] = useState(false);
+  const [carregando, setCarregando] = useState(true);
 
   const [projetos, setProjetos] = useState([]);
   const [tarefas, setTarefas] = useState([]);
 
-  const [carregando, setCarregando] = useState(true);
-
-  /* ============================================================
-     1) Esperar Firebase do Portal
-     ============================================================ */
+  // ================================================================
+  // 1) Aguardar Firebase do Portal
+  // ================================================================
   useEffect(() => {
-    let ativo = true;
+    if (!dbPortal) return;
 
-    async function iniciar() {
-      await aguardarFirebasePortal();
+    setDb(dbPortal);
+  }, [dbPortal]);
 
-      if (!ativo) return;
-
-      const portalDb = window.__RELEVO_DB__;
-      const portalAuth = window.__RELEVO_AUTH__;
-
-      if (!portalDb || !portalAuth) {
-        console.error("❌ Firebase do Portal indisponível — erro crítico.");
-        return;
-      }
-
-      setDb(portalDb);
-      setAuth(portalAuth);
-      setFirebasePronto(true);
-
-      console.log("🔥 Cronograma inicializado após Firebase do Portal.");
-
-      await carregarDados(portalDb);
+  // ================================================================
+  // 2) Carregar dados
+  // ================================================================
+  const carregarDados = useCallback(async () => {
+    if (!db) return;
+    try {
+      setCarregando(true);
+      const lp = await listarProjetos(db, user?.uid);
+      const lt = await listarTarefas(db);
+      setProjetos(lp);
+      setTarefas(lt);
+    } catch (e) {
+      console.error("Erro ao carregar dados:", e);
+    } finally {
+      setCarregando(false);
     }
+  }, [db, user]);
 
-    iniciar();
+  useEffect(() => {
+    if (db) carregarDados();
+  }, [db, carregarDados]);
 
-    return () => {
-      ativo = false;
-    };
-  }, []);
+  // ================================================================
+  // CRUD Project
+  // ================================================================
+  const criarProjetoCtx = async (dados) => {
+    if (!db) return;
+    await criarProjeto(db, dados);
+    await carregarDados();
+  };
 
-  /* ============================================================
-     2) Carregar Projetos + Tarefas
-     ============================================================ */
-  const carregarDados = useCallback(
-    async (dbRef = db) => {
-      if (!dbRef) return;
+  const editarProjetoCtx = async (id, dados) => {
+    if (!db) return;
+    await editarProjeto(db, id, dados);
+    await carregarDados();
+  };
 
-      try {
-        setCarregando(true);
-        const listaProjetos = await listarProjetos(dbRef);
-        const listaTarefas = await listarTarefas(dbRef);
+  const removerProjetoCtx = async (id) => {
+    if (!db) return;
+    await removerProjeto(db, id);
+    await carregarDados();
+  };
 
-        setProjetos(listaProjetos);
-        setTarefas(listaTarefas);
-      } catch (err) {
-        console.error("❌ Erro ao carregar dados do Cronograma:", err);
-      } finally {
-        setCarregando(false);
-      }
-    },
-    [db]
-  );
+  // ================================================================
+  // CRUD Tasks
+  // ================================================================
+  const criarTarefaCtx = async (dados) => {
+    if (!db) return;
+    await criarTarefa(db, dados);
+    await carregarDados();
+  };
 
-  /* ============================================================
-     3) CRUD — Projetos
-     ============================================================ */
-  const criarProjetoCtx = useCallback(
-    async (dados) => {
-      if (!db) return;
-      await criarProjeto(db, dados);
-      await carregarDados(db);
-    },
-    [db, carregarDados]
-  );
+  const editarTarefaCtx = async (id, dados) => {
+    if (!db) return;
+    await editarTarefa(db, id, dados);
+    await carregarDados();
+  };
 
-  const editarProjetoCtx = useCallback(
-    async (id, dados) => {
-      if (!db) return;
-      await editarProjeto(db, id, dados);
-      await carregarDados(db);
-    },
-    [db, carregarDados]
-  );
+  const removerTarefaCtx = async (id) => {
+    if (!db) return;
+    await removerTarefa(db, id);
+    await carregarDados();
+  };
 
-  const removerProjetoCtx = useCallback(
-    async (id) => {
-      if (!db) return;
-      await removerProjeto(db, id);
-      await carregarDados(db);
-    },
-    [db, carregarDados]
-  );
-
-  /* ============================================================
-     4) CRUD — Tarefas
-     ============================================================ */
-  const criarTarefaCtx = useCallback(
-    async (dados) => {
-      if (!db) return;
-      await criarTarefa(db, dados);
-      await carregarDados(db);
-    },
-    [db, carregarDados]
-  );
-
-  const editarTarefaCtx = useCallback(
-    async (id, dados) => {
-      if (!db) return;
-      await editarTarefa(db, id, dados);
-      await carregarDados(db);
-    },
-    [db, carregarDados]
-  );
-
-  const removerTarefaCtx = useCallback(
-    async (id) => {
-      if (!db) return;
-      await removerTarefa(db, id);
-      await carregarDados(db);
-    },
-    [db, carregarDados]
-  );
-
-  /* ============================================================
-     5) VALUE EXPOSTO AO APP
-     ============================================================ */
   return (
     <CronogramaContext.Provider
       value={{
-        firebasePronto,
-        auth,
-        db,
         carregando,
-
         projetos,
         tarefas,
-
-        carregarDados,
-
         criarProjeto: criarProjetoCtx,
         editarProjeto: editarProjetoCtx,
         removerProjeto: removerProjetoCtx,
-
         criarTarefa: criarTarefaCtx,
         editarTarefa: editarTarefaCtx,
         removerTarefa: removerTarefaCtx,
+        atualizar: carregarDados,
       }}
     >
       {children}
@@ -202,9 +119,6 @@ export function CronogramaProvider({ children }) {
   );
 }
 
-/* ============================================================
-   6) Hook de acesso ao Contexto
-   ============================================================ */
 export function useCronograma() {
   return useContext(CronogramaContext);
 }
