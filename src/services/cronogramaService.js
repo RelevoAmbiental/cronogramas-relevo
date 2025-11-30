@@ -8,11 +8,10 @@ import {
   updateDoc,
   query,
   where,
-} from "firebase/firestore";
+} from "firebase/firestore-compat";  // 👈 OBRIGATÓRIO COMPAT
 
 /* ============================================================
    🔥  Todas as funções recebem "db" como parâmetro
-       O DB vem do Portal, via CronogramaContext
    ============================================================ */
 
 // ============================
