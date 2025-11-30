@@ -46,7 +46,7 @@ jobs:
 
       - name: Gerar index.html final
         run: |
-          cat > portal/cronograma/index.html <<EOF
+          cat > portal/cronograma/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
