@@ -83,3 +83,7 @@ EOF
           git add .
           git commit -m "Atualização automática do Cronograma 🚀" || echo "Nenhuma mudança"
           git push
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [atualizar-portal]
