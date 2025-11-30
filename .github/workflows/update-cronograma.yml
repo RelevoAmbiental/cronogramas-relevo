@@ -22,7 +22,7 @@ jobs:
       - name: Build Cronograma
         run: npm run build
 
-      # --- LOCALIZA JS E CSS GERADOS PELO VITE ---
+      # --- LOCALIZA JS E CSS (IGNORANDO index.html!) ---
       - name: Identificar assets finais
         id: assets
         run: |
@@ -32,10 +32,7 @@ jobs:
           echo "js_name=$JS_FILE" >> $GITHUB_OUTPUT
           echo "css_name=$CSS_FILE" >> $GITHUB_OUTPUT
 
-          echo "JS: $JS_FILE"
-          echo "CSS: $CSS_FILE"
-
-      # --- PREPARA O PORTAL ---
+      # --- CLONA O PORTAL ---
       - name: Clonar Portal Relevo
         uses: actions/checkout@v4
         with:
@@ -43,20 +40,21 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           path: portal
 
-      # --- LIMPA E SUBSTITUI OS ASSETS ---
+      # --- LIMPA SOMENTE OS ASSETS (preserva scripts e estrutura) ---
       - name: Limpar assets antigos
         run: |
           rm -rf portal/cronograma/assets
           mkdir -p portal/cronograma/assets
 
+      # --- COPIA SOMENTE ASSETS DO VITE ---
       - name: Copiar novos assets
         run: |
           cp -r dist/assets/* portal/cronograma/assets/
           cp dist/app.js portal/cronograma/app.js 2>/dev/null || true
           cp dist/style.css portal/cronograma/style.css 2>/dev/null || true
 
-      # --- GERA INDEX.HTML COMPLETO (COM GUARD + SESSÃO) ---
-      - name: Gerar novo index.html
+      # --- GERAR INDEX.HTML CUSTOMIZADO (SEMPRE VIRA O FINAL) ---
+      - name: Gerar index.html final
         run: |
           cat > portal/cronograma/index.html <<EOF
 <!DOCTYPE html>
@@ -76,7 +74,7 @@ jobs:
     <script src="/scripts/firebase-init-guard.js"></script>
     <script src="/scripts/expose-session.js"></script>
 
-    <!-- Build do React (Vite) -->
+    <!-- Build do React -->
     <script type="module" crossorigin src="/cronograma/assets/${{ steps.assets.outputs.js_name }}"></script>
     <link rel="stylesheet" crossorigin href="/cronograma/assets/${{ steps.assets.outputs.css_name }}" />
   </head>
@@ -87,12 +85,12 @@ jobs:
 </html>
 EOF
 
-      # --- COMMIT E PUSH NO PORTAL ---
+      # --- COMMIT E PUSH ---
       - name: Commit e push no Portal
         run: |
           cd portal
-          git config --global user.email "bot@relevo.eco.br"
-          git config --global user.name "RelevoBot"
+          git config --local user.email "bot@relevo.eco.br"
+          git config --local user.name "RelevoBot"
           git add .
           git commit -m "Atualização automática do Cronograma 🚀" || echo "Nenhuma mudança para commitar"
           git push
