@@ -1,4 +1,3 @@
-// src/services/cronogramaService.js
 import {
   collection,
   addDoc,
@@ -8,32 +7,27 @@ import {
   updateDoc,
   query,
   where,
-} from "firebase/firestore-compat";  // 👈 OBRIGATÓRIO COMPAT
+} from "firebase/firestore";
 
-/* ============================================================
-   🔥  Todas as funções recebem "db" como parâmetro
-   ============================================================ */
+// Todas as funções recebem "db" vindo do firebase.js
+// E funcionam mesmo sendo db compat, pois compat delega para modular internamente.
 
-// ============================
-//  PROJETOS
-// ============================
+// =========================================
+// PROJETOS
+// =========================================
 
 export async function listarProjetos(db, userId = null) {
   try {
-    let q = collection(db, "projetos");
+    let ref = collection(db, "projetos");
 
     if (userId) {
-      q = query(q, where("userId", "==", userId));
+      ref = query(ref, where("userId", "==", userId));
     }
 
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map((d) => ({
-      id: d.id,
-      ...d.data(),
-    }));
-  } catch (e) {
-    console.error("Erro ao listar projetos:", e);
+    const snap = await getDocs(ref);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (err) {
+    console.error("Erro ao listar projetos:", err);
     return [];
   }
 }
@@ -50,26 +44,22 @@ export async function removerProjeto(db, id) {
   return deleteDoc(doc(db, "projetos", id));
 }
 
-// ============================
-//  TAREFAS
-// ============================
+// =========================================
+// TAREFAS
+// =========================================
 
 export async function listarTarefas(db, projetoId = null) {
   try {
-    let q = collection(db, "tarefas");
+    let ref = collection(db, "tarefas");
 
     if (projetoId) {
-      q = query(q, where("projetoId", "==", projetoId));
+      ref = query(ref, where("projetoId", "==", projetoId));
     }
 
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map((d) => ({
-      id: d.id,
-      ...d.data(),
-    }));
-  } catch (e) {
-    console.error("Erro ao listar tarefas:", e);
+    const snap = await getDocs(ref);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (err) {
+    console.error("Erro ao listar tarefas:", err);
     return [];
   }
 }
