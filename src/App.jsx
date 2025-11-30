@@ -12,8 +12,7 @@ import Tarefas from "./components/Tarefas/Tarefas";
 import CalendarView from "./components/Calendar/CalendarView";
 import ImportarCronograma from "./components/Importador/ImportarCronograma";
 
-import { UserProvider, useUser } from "./context/UserContext";
-import { isFirebaseReady } from "./services/firebase";
+import { useUser } from "./context/UserContext";
 
 function AppContent() {
   const { user, loading } = useUser();
@@ -49,20 +48,9 @@ function AppContent() {
 }
 
 export default function App() {
-  // Garante que o Portal já inicializou o Firebase
-  if (!isFirebaseReady()) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h3>Preparando ambiente Relevo…</h3>
-      </div>
-    );
-  }
-
   return (
-    <UserProvider>
-      <Router basename="/cronograma">
-        <AppContent />
-      </Router>
-    </UserProvider>
+    <Router basename="/cronograma">
+      <AppContent />
+    </Router>
   );
 }
