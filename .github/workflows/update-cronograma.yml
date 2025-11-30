@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: ["main"]
+
 jobs:
   deploy-cronograma:
     runs-on: ubuntu-latest
@@ -65,11 +66,11 @@ jobs:
           cp -r dist/assets/* portal/cronograma/assets/
 
       # ---------------------------------------------------------
-      # 8) Gerar index.html final (com Guard + Session)
+      # 8) Gerar index.html final (com Guard + Sessão)
       # ---------------------------------------------------------
       - name: Gerar index.html final
         run: |
-          cat > portal/cronograma/index.html <<EOF
+          cat > portal/cronograma/index.html <<'EOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
