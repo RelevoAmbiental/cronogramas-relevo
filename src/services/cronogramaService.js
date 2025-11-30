@@ -1,77 +1,68 @@
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  updateDoc,
-  query,
-  where,
-} from "firebase/firestore";
-
-// Todas as funções recebem "db" vindo do firebase.js
-// E funcionam mesmo sendo db compat, pois compat delega para modular internamente.
-
-// =========================================
-// PROJETOS
-// =========================================
+// src/services/cronogramaService.js
+// CRUD simplificado usando Firestore compat exposto pelo portal
 
 export async function listarProjetos(db, userId = null) {
   try {
-    let ref = collection(db, "projetos");
+    let ref = db.collection("projetos");
 
     if (userId) {
-      ref = query(ref, where("userId", "==", userId));
+      ref = ref.where("userId", "==", userId);
     }
 
-    const snap = await getDocs(ref);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const snap = await ref.get();
+    return snap.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
   } catch (err) {
     console.error("Erro ao listar projetos:", err);
     return [];
   }
 }
 
-export async function criarProjeto(db, data) {
-  return addDoc(collection(db, "projetos"), data);
+export function criarProjeto(db, data) {
+  return db.collection("projetos").add(data);
 }
 
-export async function editarProjeto(db, id, data) {
-  return updateDoc(doc(db, "projetos", id), data);
+export function editarProjeto(db, id, data) {
+  return db.collection("projetos").doc(id).update(data);
 }
 
-export async function removerProjeto(db, id) {
-  return deleteDoc(doc(db, "projetos", id));
+export function removerProjeto(db, id) {
+  return db.collection("projetos").doc(id).delete();
 }
 
-// =========================================
+// ============================================================
 // TAREFAS
-// =========================================
+// ============================================================
 
 export async function listarTarefas(db, projetoId = null) {
   try {
-    let ref = collection(db, "tarefas");
+    let ref = db.collection("tarefas");
 
     if (projetoId) {
-      ref = query(ref, where("projetoId", "==", projetoId));
+      ref = ref.where("projetoId", "==", projetoId);
     }
 
-    const snap = await getDocs(ref);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const snap = await ref.get();
+    return snap.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
   } catch (err) {
     console.error("Erro ao listar tarefas:", err);
     return [];
   }
 }
 
-export async function criarTarefa(db, data) {
-  return addDoc(collection(db, "tarefas"), data);
+export function criarTarefa(db, data) {
+  return db.collection("tarefas").add(data);
 }
 
-export async function editarTarefa(db, id, data) {
-  return updateDoc(doc(db, "tarefas", id), data);
+export function editarTarefa(db, id, data) {
+  return db.collection("tarefas").doc(id).update(data);
 }
 
-export async function removerTarefa(db, id) {
-  return deleteDoc(doc(db, "tarefas", id));
+export function removerTarefa(db, id) {
+  return db.collection("tarefas").doc(id).delete();
 }
