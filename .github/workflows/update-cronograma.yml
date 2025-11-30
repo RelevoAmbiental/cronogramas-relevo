@@ -10,89 +10,79 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # --- CLONA O REPOSITÓRIO DO CRONOGRAMA ---
+      # Clona o repositório do cronograma
       - name: Checkout Cronograma
         uses: actions/checkout@v4
 
-      # --- INSTALA DEPENDÊNCIAS ---
+      # Instalar dependências
       - name: Instalar dependências
         run: npm install
 
-      # --- BUILDA O PROJETO ---
+      # Build do projeto
       - name: Build Cronograma
         run: npm run build
 
-      # --- LOCALIZA JS E CSS GERADOS PELO VITE ---
-      - name: Identificar assets finais
+      # Identificar arquivos gerados pelo Vite
+      - name: Capturar asset names
         id: assets
         run: |
           JS_FILE=$(ls dist/assets/index-*.js | head -n 1 | xargs -n 1 basename)
           CSS_FILE=$(ls dist/assets/index-*.css | head -n 1 | xargs -n 1 basename)
-
           echo "js_name=$JS_FILE" >> $GITHUB_OUTPUT
           echo "css_name=$CSS_FILE" >> $GITHUB_OUTPUT
 
-          echo "JS: $JS_FILE"
-          echo "CSS: $CSS_FILE"
-
-      # --- CLONA O PORTAL ---
-      - name: Clonar Portal Relevo
+      # Clonar o Portal
+      - name: Clonar portal-relevo
         uses: actions/checkout@v4
         with:
           repository: RelevoAmbiental/portal-relevo
           token: ${{ secrets.GH_PAT }}
           path: portal
 
-      # --- LIMPA ASSETS ANTIGOS ---
-      - name: Limpar assets antigos
+      # Copiar assets para o portal
+      - name: Substituir assets antigos
         run: |
           rm -rf portal/cronograma/assets
           mkdir -p portal/cronograma/assets
-
-      # --- COPIA ASSETS NOVOS ---
-      - name: Copiar novos assets
-        run: |
           cp -r dist/assets/* portal/cronograma/assets/
-          cp dist/app.js portal/cronograma/app.js 2>/dev/null || true
-          cp dist/style.css portal/cronograma/style.css 2>/dev/null || true
 
-      # --- GERAR NOVO INDEX.HTML ---
-      - name: Gerar novo index.html
+      # Gerar index.html CORRETO
+      - name: Gerar index.html atualizado
         run: |
           cat > portal/cronograma/index.html <<EOF
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cronogramas | Relevo Consultoria Ambiental</title>
 
-    <title>Cronogramas | Relevo Consultoria Ambiental</title>
+  <!-- Firebase compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
 
-    <!-- Firebase compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <!-- Guard e sessão -->
+  <script src="/scripts/firebase-init-guard.js"></script>
+  <script src="/scripts/expose-session.js"></script>
 
-    <!-- Guard + Sessão -->
-    <script src="/scripts/firebase-init-guard.js"></script>
-    <script src="/scripts/expose-session.js"></script>
+  <!-- React app -->
+  <script type="module" crossorigin src="assets/${{ steps.assets.outputs.js_name }}"></script>
+  <link rel="stylesheet" href="assets/${{ steps.assets.outputs.css_name }}" />
+</head>
 
-    <!-- Build React -->
-    <script type="module" crossorigin src="/cronograma/assets/${{ steps.assets.outputs.js_name }}"></script>
-    <link rel="stylesheet" crossorigin href="/cronograma/assets/${{ steps.assets.outputs.css_name }}" />
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+  <div id="root"></div>
+</body>
 </html>
 EOF
 
-      # --- COMMIT E PUSH NO PORTAL ---
-      - name: Commit e push no Portal
+      # Commit + Push
+      - name: Commit e push
         run: |
           cd portal
           git config --global user.email "bot@relevo.eco.br"
           git config --global user.name "RelevoBot"
           git add .
-          git commit -m "Atualização automática do Cronograma 🚀"
+          git commit -m "Atualização automática do Cronograma – Build corrigido 🚀" || true
           git push
