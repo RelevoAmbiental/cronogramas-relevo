@@ -1,0 +1,35 @@
+name: Generate package-lock.json
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-lockfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEVO_GH_PAT }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate package-lock.json
+        run: |
+          npm install
+          ls -la
+
+      - name: Commit lockfile
+        run: |
+          git config --local user.email "bot@relevo.eco.br"
+          git config --local user.name "RelevoBot CI"
+          git add package-lock.json
+          git commit -m "Add package-lock.json (generated via CI)"
+          git push
