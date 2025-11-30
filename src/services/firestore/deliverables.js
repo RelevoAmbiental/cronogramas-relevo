@@ -9,7 +9,7 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
-import { db } from "../firebase/firestore";
+import { db } from "../firebase";
 
 const PROJECTS_COLLECTION = "projects";
 

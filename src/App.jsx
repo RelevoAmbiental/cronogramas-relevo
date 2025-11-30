@@ -1,5 +1,5 @@
 // src/App.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Header from "./components/layout/Header";
@@ -13,7 +13,8 @@ import CalendarView from "./components/Calendar/CalendarView";
 import ImportarCronograma from "./components/Importador/ImportarCronograma";
 
 import { UserProvider, useUser } from "./context/UserContext";
-import { isFirebaseReady } from "./services/firebase";
+import { CronogramaProvider } from "./context/CronogramaContext";
+import { isFirebaseReady, onFirebaseReady } from "./services/firebase";
 
 function AppContent() {
   const { user, loading } = useUser();
@@ -49,20 +50,33 @@ function AppContent() {
 }
 
 export default function App() {
-  // Garante que o Portal já inicializou o Firebase
-  if (!isFirebaseReady()) {
+  const [portalReady, setPortalReady] = useState(isFirebaseReady());
+
+  useEffect(() => {
+    if (portalReady) return undefined;
+
+    const unsubscribe = onFirebaseReady(() => setPortalReady(true));
+    return unsubscribe;
+  }, [portalReady]);
+
+  if (!portalReady) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h3>Preparando ambiente Relevo…</h3>
+        <p style={{ marginTop: "8px", color: "#666" }}>
+          Estamos aguardando o Portal inicializar o Firebase.
+        </p>
       </div>
     );
   }
 
   return (
     <UserProvider>
-      <Router basename="/cronograma">
-        <AppContent />
-      </Router>
+      <CronogramaProvider>
+        <Router basename="/cronograma">
+          <AppContent />
+        </Router>
+      </CronogramaProvider>
     </UserProvider>
   );
 }
