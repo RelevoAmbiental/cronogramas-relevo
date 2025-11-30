@@ -7,47 +7,35 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Aguarda o Firebase do PORTAL ficar pronto
-  function esperarAuthDoPortal() {
-    return new Promise((resolve) => {
-      if (window.__RELEVO_AUTH__) return resolve(window.__RELEVO_AUTH__);
-
-      const timer = setInterval(() => {
-        if (window.__RELEVO_AUTH__) {
-          clearInterval(timer);
-          resolve(window.__RELEVO_AUTH__);
-        }
-      }, 50);
-    });
-  }
-
   useEffect(() => {
     let ativo = true;
 
-    async function iniciar() {
-      const authPortal = await esperarAuthDoPortal();
-
+    function sincronizarUsuario() {
       if (!ativo) return;
 
-      if (!authPortal) {
-        console.error("❌ Erro crítico: Auth do Portal não carregou.");
-        setLoading(false);
-        return;
-      }
+      const u = window.__RELEVO_USER__;
 
-      const unsubscribe = authPortal.onAuthStateChanged((u) => {
-        if (!ativo) return;
-        setUser(u || null);
-        setLoading(false);
-      });
+      // Caso o portal ainda não tenha carregado o estado do usuário
+      if (u === undefined) return;
 
-      return () => unsubscribe();
+      setUser(u || null);
+      setLoading(false);
     }
 
-    iniciar();
+    // 🔥 Tenta imediatamente
+    sincronizarUsuario();
+
+    // 🔥 Observa o Portal até expor o usuário
+    const interval = setInterval(() => {
+      if (window.__RELEVO_USER__ !== undefined) {
+        sincronizarUsuario();
+        clearInterval(interval);
+      }
+    }, 50);
 
     return () => {
       ativo = false;
+      clearInterval(interval);
     };
   }, []);
 
