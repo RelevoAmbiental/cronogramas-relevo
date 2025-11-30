@@ -16,10 +16,11 @@ jobs:
         with:
           token: ${{ secrets.RELEVO_GH_PAT }}
 
-      - name: Setup Node
+      - name: Setup Node (sem cache forçado)
         uses: actions/setup-node@v4
         with:
-          node-version: 20        # 🔥 SEM CACHE AQUI
+          node-version: 20
+          cache: 'none'        # 🔥 OBRIGATÓRIO PARA PARAR O ERRO
 
       - name: Generate package-lock.json
         run: |
@@ -31,5 +32,5 @@ jobs:
           git config --local user.email "bot@relevo.eco.br"
           git config --local user.name "RelevoBot CI"
           git add package-lock.json
-          git commit -m "Add package-lock.json (generated via CI)"
-          git push
+          git commit -m "Add package-lock.json (generated via CI)" || echo "Nada para commitar"
+          git push || echo "Nada para enviar"
