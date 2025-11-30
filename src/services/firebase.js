@@ -1,93 +1,59 @@
-// =======================================================================
-//  FIREBASE SERVICE – Cronograma Relevo
-//  Integração 100% sincronizada com Firebase já inicializado no PORTAL.
-// =======================================================================
+// src/services/firebase.js
+// Integração com Firebase exposto pelo Portal via window.__RELEVO_FIREBASE__
 
-// Referências internas (inicialmente nulas)
 let app = null;
 let auth = null;
 let db = null;
 
-// Estado de prontidão
 let ready = false;
 const listeners = new Set();
 
-/**
- * Aguarda o Portal inicializar o Firebase.
- * O Portal expõe:
- *   window.__RELEVO_FIREBASE__
- *   window.__RELEVO_AUTH__
- *   window.__RELEVO_DB__
- */
-function tentarSincronizarComPortal() {
-  if (!window) return false;
+function tentarInicializar() {
+  if (typeof window === "undefined") return false;
 
-  const portalApp  = window.__RELEVO_FIREBASE__;
+  const portalApp = window.__RELEVO_FIREBASE__;
   const portalAuth = window.__RELEVO_AUTH__;
-  const portalDb   = window.__RELEVO_DB__;
+  const portalDb = window.__RELEVO_DB__;
 
   if (!portalApp || !portalAuth || !portalDb) return false;
 
   app = portalApp;
   auth = portalAuth;
   db = portalDb;
+
   ready = true;
+  listeners.forEach((cb) => cb());
 
-  console.log("🔥 Cronograma: Firebase sincronizado via Portal.");
-
-  // Notifica todos os listeners aguardando
-  listeners.forEach((fn) => fn());
-  listeners.clear();
-
+  console.log("🔥 Firebase integrado com sucesso via Guard (Cronograma).");
   return true;
 }
 
-/**
- * Inicialização automática com retentativas
- * (resolve race conditions de carregamento entre Portal e Cronograma)
- */
-(function bootstrapFirebase() {
+// Tenta inicializar a cada 200ms (até 20 tentativas)
+(function initLoop() {
   let tentativas = 0;
-  const MAX = 40; // tenta por ~5s
+  const max = 20;
 
-  const tryInit = () => {
+  const timer = setInterval(() => {
     tentativas++;
-
-    // Se sincronizou, para
-    if (tentarSincronizarComPortal()) {
+    if (tentarInicializar()) {
       clearInterval(timer);
-      return;
+    } else if (tentativas >= max) {
+      console.warn("⚠️ Firebase do Portal ainda não disponível.");
     }
-
-    // Logging moderado
-    if (tentativas === 10) {
-      console.warn("⏳ Cronograma aguardando Firebase do Portal…");
-    }
-  };
-
-  const timer = setInterval(tryInit, 125);
-  tryInit();
+  }, 200);
 })();
 
-/**
- * Retorna true quando Firebase está pronto.
- */
 export function isFirebaseReady() {
-  return ready && db !== null && auth !== null;
+  return ready && !!db && !!auth;
 }
 
-/**
- * Aguarda a prontidão do Firebase.
- */
 export function onFirebaseReady(callback) {
-  if (isFirebaseReady()) {
+  if (ready) {
     callback();
     return () => {};
   }
-
   listeners.add(callback);
   return () => listeners.delete(callback);
 }
 
-// Exporte referências
 export { app, auth, db };
