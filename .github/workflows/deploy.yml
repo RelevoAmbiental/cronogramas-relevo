@@ -47,3 +47,11 @@ jobs:
       - name: Deploy para GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+          - name: Disparar Update para o Portal
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: RelevoAmbiental/cronogramas-relevo
+          event-type: atualizar-portal
+
