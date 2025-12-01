@@ -1,3 +1,4 @@
+import { waitForRelevoFirebase } from "../../relevo-bootstrap";
 import { useState, useEffect } from "react";
 import { listarProjetos } from "../../services/cronogramaService";
 import { criarTarefa } from "../../services/cronogramaService";
@@ -22,13 +23,27 @@ export default function ImportarCronograma() {
   //  CARREGAR PROJETOS AO ABRIR A PÁGINA
   // ===============================================
   useEffect(() => {
-    async function carregar() {
-      const lista = await listarProjetos();
-      setProjetos(lista);
+    async function carregarProjetos() {
+      try {
+        const db = await waitForRelevoFirebase();
+  
+        console.log("🔥 Firestore pronto dentro do Importador:", db);
+  
+        const snap = await db.collection("projetos").get();
+  
+        const lista = snap.docs.map(d => ({
+          id: d.id,
+          ...d.data()
+        }));
+  
+        setProjetos(lista);
+      } catch (err) {
+        console.error("❌ Erro ao carregar projetos no Importador:", err);
+      }
     }
-    carregar();
+  
+    carregarProjetos();
   }, []);
-
   // ===============================================
   //  UPLOAD DO ARQUIVO
   // ===============================================
