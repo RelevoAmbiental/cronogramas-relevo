@@ -19,6 +19,7 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
+// 🔥 Agora usamos a API de readiness do Firebase
 import {
   db as firebaseDb,
   isFirebaseReady,
@@ -31,37 +32,46 @@ export function CronogramaProvider({ children }) {
   const { user } = useUser();
 
   const [db, setDb] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [carregando, setCarregando] = useState(true);
 
   const [projetos, setProjetos] = useState([]);
   const [tarefas, setTarefas] = useState([]);
 
-  // 1) Esperar o Firebase do Portal ficar pronto
+  // ================================================================
+  // 1) Aguardar Firebase do Portal de forma reativa
+  // ================================================================
   useEffect(() => {
-    // Se já estiver pronto, usa direto
+    // Se já estiver pronto, seta direto
     if (isFirebaseReady() && firebaseDb) {
       setDb(firebaseDb);
       return;
     }
 
-    // Caso contrário, registra callback para quando ficar pronto
+    // Caso contrário, assinamos o evento de "ready"
     const unsubscribe = onFirebaseReady(() => {
       if (firebaseDb) {
         setDb(firebaseDb);
+      } else if (window.__RELEVO_DB__) {
+        // fallback extra de segurança
+        setDb(window.__RELEVO_DB__);
       }
     });
 
-    return unsubscribe;
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
-  // 2) Carregar dados assim que tivermos um db válido
+  // ================================================================
+  // 2) Carregar dados sempre que o db ficar disponível
+  // ================================================================
   const carregarDados = useCallback(async () => {
     if (!db) return;
-    try {
-      setLoading(true);
 
-      // 👇 Sem filtro por userId por enquanto
-      const lp = await listarProjetos(db);
+    try {
+      setCarregando(true);
+
+      const lp = await listarProjetos(db, user?.uid || null);
       const lt = await listarTarefas(db);
 
       setProjetos(lp);
@@ -69,17 +79,17 @@ export function CronogramaProvider({ children }) {
     } catch (e) {
       console.error("Erro ao carregar dados:", e);
     } finally {
-      setLoading(false);
+      setCarregando(false);
     }
-  }, [db]);
+  }, [db, user]);
 
   useEffect(() => {
-    if (db) {
-      carregarDados();
-    }
-  }, [db, carregarDados, user?.uid]);
+    if (db) carregarDados();
+  }, [db, carregarDados]);
 
-  // CRUD Projetos
+  // ================================================================
+  // CRUD Project
+  // ================================================================
   const criarProjetoCtx = async (dados) => {
     if (!db) return;
     await criarProjeto(db, dados);
@@ -98,7 +108,9 @@ export function CronogramaProvider({ children }) {
     await carregarDados();
   };
 
-  // CRUD Tarefas
+  // ================================================================
+  // CRUD Tasks
+  // ================================================================
   const criarTarefaCtx = async (dados) => {
     if (!db) return;
     await criarTarefa(db, dados);
@@ -120,7 +132,7 @@ export function CronogramaProvider({ children }) {
   return (
     <CronogramaContext.Provider
       value={{
-        loading,
+        carregando,
         projetos,
         tarefas,
         criarProjeto: criarProjetoCtx,
