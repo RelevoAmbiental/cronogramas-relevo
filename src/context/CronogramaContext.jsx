@@ -13,7 +13,7 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
-import { db as dbPortal } from "../services/firebase";
+import { waitForRelevoFirebase } from "../relevo-bootstrap";
 
 const CronogramaContext = createContext();
 
@@ -27,25 +27,36 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ================================================================
-  // 1) Aguardar Firebase do Portal
+  // 1) Aguardar Firebase do Portal — (CORREÇÃO CRÍTICA)
   // ================================================================
   useEffect(() => {
-    if (!dbPortal) return;
+    async function init() {
+      try {
+        const dbPortal = await waitForRelevoFirebase(); // ← Firebase correto
+        setDb(dbPortal);
+      } catch (err) {
+        console.error("Erro ao inicializar Firebase no CronogramaContext:", err);
+      }
+    }
 
-    setDb(dbPortal);
-  }, [dbPortal]);
+    init();
+  }, []);
 
   // ================================================================
-  // 2) Carregar dados
+  // 2) Carregar dados (projetos + tarefas)
   // ================================================================
   const carregarDados = useCallback(async () => {
     if (!db) return;
+
     try {
       setCarregando(true);
+
       const lp = await listarProjetos(db, user?.uid);
       const lt = await listarTarefas(db);
+
       setProjetos(lp);
       setTarefas(lt);
+
     } catch (e) {
       console.error("Erro ao carregar dados:", e);
     } finally {
