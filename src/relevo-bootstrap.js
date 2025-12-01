@@ -11,21 +11,24 @@ export function waitForRelevoFirebase(timeoutMs = 15000) {
   }
 
   return new Promise((resolve, reject) => {
+
     const onReady = () => {
-      document.removeEventListener("RELEVO_FIREBASE_READY", onReady);
+      window.removeEventListener("relevo-firebase-ready", onReady);
       resolve(window.__RELEVO_DB__);
     };
 
-    document.addEventListener("RELEVO_FIREBASE_READY", onReady);
+    // ⚠️ O portal envia o evento "relevo-firebase-ready"
+    window.addEventListener("relevo-firebase-ready", onReady);
 
-    // Timeout defensivo para evitar travar eternamente
+    // Timeout defensivo
     setTimeout(() => {
-      document.removeEventListener("RELEVO_FIREBASE_READY", onReady);
+      window.removeEventListener("relevo-firebase-ready", onReady);
+
       if (window.__RELEVO_DB__) {
         resolve(window.__RELEVO_DB__);
       } else {
         console.error(
-          "[Relevo Bootstrap] Timeout aguardando RELEVO_FIREBASE_READY. Verificar firebase-init-guard.js no portal."
+          "[Relevo Bootstrap] Timeout aguardando evento relevo-firebase-ready"
         );
         reject(new Error("Timeout aguardando Firebase do Portal Relevo."));
       }
@@ -34,7 +37,7 @@ export function waitForRelevoFirebase(timeoutMs = 15000) {
 }
 
 /**
- * Helper opcional, caso você queira pegar o DB direto dentro de algum módulo.
+ * Helper opcional
  */
 export async function getRelevoDb() {
   const db = await waitForRelevoFirebase();
