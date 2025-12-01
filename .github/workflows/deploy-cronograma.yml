@@ -3,6 +3,7 @@ name: Build Cronograma e disparar atualização do Portal
 on:
   push:
     branches: [ "main" ]
+
   workflow_dispatch:
 
 permissions:
@@ -31,12 +32,12 @@ jobs:
       - name: 🚀 Disparar atualização no portal-relevo
         uses: peter-evans/repository-dispatch@v3
         with:
-          # 👉 Mesmo PAT em ambos os repositórios (mesmo valor)
           token: ${{ secrets.RELEVO_GH_PAT }}
           repository: RelevoAmbiental/portal-relevo
           event-type: cronograma-atualizado
           client-payload: |
             {
               "cronograma_sha": "${{ github.sha }}",
-              "cronograma_repo": "${{ github.repository }}"
+              "cronograma_repo": "${{ github.repository }}",
+              "timestamp": "${{ github.event.head_commit.timestamp }}"
             }
