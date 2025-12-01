@@ -14,14 +14,22 @@ function ensureDb(db) {
 export async function listarProjetos(db, uid = null) {
   const firestore = ensureDb(db);
 
+  console.log("[cronogramaService] listarProjetos() – db OK, uid =", uid);
+
   let ref = firestore.collection("projetos");
 
-  // filtra corretamente pelo campo REAL no Firestore
+  // filtra pelo campo REAL no Firestore (uid)
   if (uid) {
     ref = ref.where("uid", "==", uid);
   }
 
   const snap = await ref.get();
+
+  console.log(
+    "[cronogramaService] listarProjetos() – docs encontrados:",
+    snap.docs.length
+  );
+
   return snap.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -33,9 +41,11 @@ export async function criarProjeto(db, dados) {
 
   const payload = {
     ...dados,
-    uid: dados.uid,              // 🔥 garante associação ao usuário
+    uid: dados.uid, // 🔥 garante associação ao usuário
     criadoEm: dados.criadoEm || new Date(),
   };
+
+  console.log("[cronogramaService] criarProjeto() – payload:", payload);
 
   const docRef = await firestore.collection("projetos").add(payload);
   return { id: docRef.id, ...payload };
@@ -62,6 +72,12 @@ export async function listarTarefas(db, projetoId = null) {
   }
 
   const snap = await ref.get();
+
+  console.log(
+    "[cronogramaService] listarTarefas() – docs encontrados:",
+    snap.docs.length
+  );
+
   return snap.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -75,6 +91,8 @@ export async function criarTarefa(db, dados) {
     ...dados,
     criadoEm: dados.criadoEm || new Date(),
   };
+
+  console.log("[cronogramaService] criarTarefa() – payload:", payload);
 
   const docRef = await firestore.collection("tarefas").add(payload);
   return { id: docRef.id, ...payload };
