@@ -21,13 +21,6 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
-// Firebase vindo do portal
-import {
-  db as firebaseDb,
-  isFirebaseReady,
-  onFirebaseReady,
-} from "../services/firebase";
-
 const CronogramaContext = createContext();
 
 export function CronogramaProvider({ children }) {
@@ -40,38 +33,76 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ================================================================
-  // 1) Aguardar Firebase do Portal
+  // 1) Detectar o Firestore vindo do Portal (window.__RELEVO_DB__)
   // ================================================================
   useEffect(() => {
-    if (isFirebaseReady() && firebaseDb) {
-      setDb(firebaseDb);
+    // Se já está pronto, seta direto
+    if (window.__RELEVO_DB__) {
+      console.log(
+        "[CronogramaContext] DB já disponível em window.__RELEVO_DB__"
+      );
+      setDb(window.__RELEVO_DB__);
       return;
     }
 
-    const unsubscribe = onFirebaseReady(() => {
-      if (firebaseDb) setDb(firebaseDb);
-      else if (window.__RELEVO_DB__) setDb(window.__RELEVO_DB__);
-    });
+    // Caso não esteja pronto, faz polling leve
+    let tentativas = 0;
+    const maxTentativas = 50; // ~10s com 200ms
 
-    return () => unsubscribe && unsubscribe();
+    const id = setInterval(() => {
+      tentativas += 1;
+      if (window.__RELEVO_DB__) {
+        console.log(
+          "[CronogramaContext] DB detectado via polling em window.__RELEVO_DB__"
+        );
+        setDb(window.__RELEVO_DB__);
+        clearInterval(id);
+      } else if (tentativas >= maxTentativas) {
+        console.error(
+          "[CronogramaContext] Timeout aguardando window.__RELEVO_DB__"
+        );
+        clearInterval(id);
+      }
+    }, 200);
+
+    return () => clearInterval(id);
   }, []);
 
   // ================================================================
   // 2) Carregar dados sempre que db OU user mudarem
   // ================================================================
   const carregarDados = useCallback(async () => {
-    if (!db || !user) return;
+    if (!db || !user) {
+      console.log(
+        "[CronogramaContext] carregarDados() abortado – db ou user ausentes",
+        { temDb: !!db, temUser: !!user }
+      );
+      return;
+    }
 
     try {
       setCarregando(true);
+      console.log(
+        "[CronogramaContext] carregarDados() – iniciando",
+        "uid:",
+        user.uid
+      );
 
       const lp = await listarProjetos(db, user.uid);
       const lt = await listarTarefas(db);
 
+      console.log(
+        "[CronogramaContext] carregarDados() – recebidos",
+        lp.length,
+        "projetos e",
+        lt.length,
+        "tarefas"
+      );
+
       setProjetos(lp);
       setTarefas(lt);
     } catch (e) {
-      console.error("Erro ao carregar dados:", e);
+      console.error("[CronogramaContext] Erro ao carregar dados:", e);
     } finally {
       setCarregando(false);
     }
@@ -82,14 +113,20 @@ export function CronogramaProvider({ children }) {
   }, [carregarDados]);
 
   // ================================================================
-  // CRUD Projetos
+  // 3) CRUD Projetos
   // ================================================================
   const criarProjetoCtx = async (dados) => {
-    if (!db || !user) return;
+    if (!db || !user) {
+      console.warn(
+        "[CronogramaContext] criarProjetoCtx() – sem db ou user",
+        { temDb: !!db, temUser: !!user }
+      );
+      return;
+    }
 
     await criarProjeto(db, {
       ...dados,
-      uid: user.uid, // 🔥 Obrigatório
+      uid: user.uid, // 🔥 chave para o filtro
     });
 
     await carregarDados();
@@ -108,7 +145,7 @@ export function CronogramaProvider({ children }) {
   };
 
   // ================================================================
-  // CRUD Tarefas
+  // 4) CRUD Tarefas
   // ================================================================
   const criarTarefaCtx = async (dados) => {
     if (!db) return;
