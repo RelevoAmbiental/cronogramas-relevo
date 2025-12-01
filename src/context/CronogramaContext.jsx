@@ -67,13 +67,10 @@ export function CronogramaProvider({ children }) {
   // ================================================================
   const carregarDados = useCallback(async () => {
     if (!db) return;
-
     try {
       setCarregando(true);
-
-      const lp = await listarProjetos(db, user?.uid || null);
+      const lp = await listarProjetos(db, user?.uid); // AGORA alinha com "uid" do Firestore
       const lt = await listarTarefas(db);
-
       setProjetos(lp);
       setTarefas(lt);
     } catch (e) {
