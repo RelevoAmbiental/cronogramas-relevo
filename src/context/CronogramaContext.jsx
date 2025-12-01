@@ -65,20 +65,7 @@ export function CronogramaProvider({ children }) {
   // ================================================================
   // 2) Carregar dados sempre que o db ficar disponível
   // ================================================================
-  const carregarDados = useCallback(async () => {
-    if (!db) return;
-    try {
-      setCarregando(true);
-      const lp = await listarProjetos(db, user?.uid); // AGORA alinha com "uid" do Firestore
-      const lt = await listarTarefas(db);
-      setProjetos(lp);
-      setTarefas(lt);
-    } catch (e) {
-      console.error("Erro ao carregar dados:", e);
-    } finally {
-      setCarregando(false);
-    }
-  }, [db, user]);
+  const lp = await listarProjetos(db); // sem user?.uid
 
   useEffect(() => {
     if (db) carregarDados();
