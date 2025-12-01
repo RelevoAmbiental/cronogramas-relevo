@@ -1,7 +1,5 @@
-import { waitForRelevoFirebase } from "../../relevo-bootstrap";
-import { useState, useEffect } from "react";
-import { listarProjetos } from "../../services/cronogramaService";
-import { criarTarefa } from "../../services/cronogramaService";
+import { useState } from "react";
+import { useCronograma } from "../../context/CronogramaContext";
 import "./importar.css";
 
 // util para converter dias relativos em datas reais
@@ -12,48 +10,20 @@ function addDays(date, days) {
 }
 
 export default function ImportarCronograma() {
+  const { projetos, loading, criarTarefa } = useCronograma();
+
   const [arquivo, setArquivo] = useState(null);
   const [textoExtraido, setTextoExtraido] = useState("");
   const [tarefasExtraidas, setTarefasExtraidas] = useState([]);
-  const [projetos, setProjetos] = useState([]);
   const [projetoSelecionado, setProjetoSelecionado] = useState("");
-  const [carregando, setCarregando] = useState(false);
+  const [carregandoIA, setCarregandoIA] = useState(false);
 
-  // ===============================================
-  //  CARREGAR PROJETOS AO ABRIR A PÁGINA
-  // ===============================================
-  useEffect(() => {
-    async function carregarProjetos() {
-      try {
-        const db = await waitForRelevoFirebase();
-  
-        console.log("🔥 Firestore pronto dentro do Importador:", db);
-  
-        const snap = await db.collection("projetos").get();
-  
-        const lista = snap.docs.map(d => ({
-          id: d.id,
-          ...d.data()
-        }));
-  
-        setProjetos(lista);
-      } catch (err) {
-        console.error("❌ Erro ao carregar projetos no Importador:", err);
-      }
-    }
-  
-    carregarProjetos();
-  }, []);
-  // ===============================================
-  //  UPLOAD DO ARQUIVO
-  // ===============================================
+  // UPLOAD DO ARQUIVO
   function handleArquivo(e) {
     setArquivo(e.target.files[0]);
   }
 
-  // ===============================================
-  //  ENVIAR PARA IA
-  // ===============================================
+  // ENVIAR PARA IA
   async function gerarComIA() {
     if (!arquivo) {
       alert("Envie um arquivo primeiro.");
@@ -64,7 +34,7 @@ export default function ImportarCronograma() {
       return;
     }
 
-    setCarregando(true);
+    setCarregandoIA(true);
 
     const formData = new FormData();
     formData.append("file", arquivo);
@@ -83,29 +53,28 @@ export default function ImportarCronograma() {
       if (!Array.isArray(resultado)) {
         alert("A IA retornou um formato inesperado.");
         console.error(resultado);
-        setCarregando(false);
+        setCarregandoIA(false);
         return;
       }
 
-      // Salvar lista de tarefas extraídas
       setTarefasExtraidas(resultado);
-      setTextoExtraido("Tarefas extraídas com sucesso.");
-
-      setCarregando(false);
-
+      setTextoExtraido(JSON.stringify(resultado, null, 2));
     } catch (err) {
       console.error("Erro ao enviar para IA:", err);
       alert("Erro ao gerar tarefas com IA.");
-      setCarregando(false);
+    } finally {
+      setCarregandoIA(false);
     }
   }
 
-  // ===============================================
-  //  SALVAR TODAS AS TAREFAS NO FIRESTORE
-  // ===============================================
+  // SALVAR TODAS AS TAREFAS NO FIRESTORE
   async function salvarTarefas() {
     if (tarefasExtraidas.length === 0) {
       alert("Nenhuma tarefa para salvar.");
+      return;
+    }
+    if (!projetoSelecionado) {
+      alert("Selecione um projeto.");
       return;
     }
 
@@ -131,9 +100,7 @@ export default function ImportarCronograma() {
     alert("Tarefas salvas com sucesso!");
   }
 
-  // ===============================================
-  //  INTERFACE
-  // ===============================================
+  // INTERFACE
   return (
     <div className="importar-container">
       <h2>Importar Cronograma via IA</h2>
@@ -142,6 +109,7 @@ export default function ImportarCronograma() {
       <select
         value={projetoSelecionado}
         onChange={(e) => setProjetoSelecionado(e.target.value)}
+        disabled={loading}
       >
         <option value="">-- Selecione --</option>
         {projetos.map((p) => (
@@ -154,8 +122,8 @@ export default function ImportarCronograma() {
       <label>Arquivo (PDF, DOCX ou TXT):</label>
       <input type="file" accept=".pdf,.txt,.docx" onChange={handleArquivo} />
 
-      <button onClick={gerarComIA} disabled={carregando}>
-        {carregando ? "Processando..." : "Gerar Tarefas com IA"}
+      <button onClick={gerarComIA} disabled={carregandoIA || loading}>
+        {carregandoIA ? "Processando..." : "Gerar Tarefas com IA"}
       </button>
 
       <hr />
