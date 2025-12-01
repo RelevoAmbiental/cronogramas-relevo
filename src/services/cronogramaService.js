@@ -1,41 +1,42 @@
 // src/services/cronogramaService.js
-// Camada de acesso ao Firestore para Projetos e Tarefas
-// Integrado com o Firebase compat exposto pelo Portal Relevo.
+// Camada de acesso ao Firestore para Projetos e Tarefas (Firebase compat).
 
 //
-// 🔧 Helper para garantir que temos um DB válido
+// 🔧 Helper para garantir DB
 //
 function ensureDb(db) {
-  if (!db) {
-    throw new Error("Firestore DB não informado em cronogramaService.");
-  }
+  if (!db) throw new Error("Firestore DB não informado em cronogramaService.");
   return db;
 }
 
 //
-// 🔹 PROJETOS
-//
-// Lista projetos do usuário logado (filtrando pelo campo "uid")
+// ========================== PROJETOS =============================
 export async function listarProjetos(db, uid = null) {
-  let col = db.collection("projetos");
+  const firestore = ensureDb(db);
 
-  // Se tiver uid, filtra por ele; senão, traz tudo
+  let ref = firestore.collection("projetos");
+
+  // filtra corretamente pelo campo REAL no Firestore
   if (uid) {
-    col = col.where("uid", "==", uid);
+    ref = ref.where("uid", "==", uid);
   }
 
-  const snap = await col.get();
+  const snap = await ref.get();
   return snap.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
 }
+
 export async function criarProjeto(db, dados) {
   const firestore = ensureDb(db);
+
   const payload = {
     ...dados,
+    uid: dados.uid,              // 🔥 garante associação ao usuário
     criadoEm: dados.criadoEm || new Date(),
   };
+
   const docRef = await firestore.collection("projetos").add(payload);
   return { id: docRef.id, ...payload };
 }
@@ -51,34 +52,30 @@ export async function removerProjeto(db, id) {
 }
 
 //
-// 🔹 TAREFAS
-//
+// ========================== TAREFAS =============================
 export async function listarTarefas(db, projetoId = null) {
-  try {
-    const firestore = ensureDb(db);
+  const firestore = ensureDb(db);
 
-    let ref = firestore.collection("tarefas");
-    if (projetoId) {
-      ref = ref.where("projetoId", "==", projetoId);
-    }
-
-    const snap = await ref.get();
-    return snap.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-  } catch (err) {
-    console.error("Erro ao listar tarefas:", err);
-    return [];
+  let ref = firestore.collection("tarefas");
+  if (projetoId) {
+    ref = ref.where("projetoId", "==", projetoId);
   }
+
+  const snap = await ref.get();
+  return snap.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 }
 
 export async function criarTarefa(db, dados) {
   const firestore = ensureDb(db);
+
   const payload = {
     ...dados,
     criadoEm: dados.criadoEm || new Date(),
   };
+
   const docRef = await firestore.collection("tarefas").add(payload);
   return { id: docRef.id, ...payload };
 }
