@@ -84,23 +84,19 @@ export function CronogramaProvider({ children }) {
   // ================================================================
   // CRUD Project
   // ================================================================
-  const criarProjetoCtx = async (dados) => {
-    if (!db) return;
-    await criarProjeto(db, dados);
-    await carregarDados();
-  };
-
-  const editarProjetoCtx = async (id, dados) => {
-    if (!db) return;
-    await editarProjeto(db, id, dados);
-    await carregarDados();
-  };
-
-  const removerProjetoCtx = async (id) => {
-    if (!db) return;
-    await removerProjeto(db, id);
-    await carregarDados();
-  };
+  criarProjetoCtx
+  
+    const editarProjetoCtx = async (id, dados) => {
+      if (!db) return;
+      await editarProjeto(db, id, dados);
+      await carregarDados();
+    };
+  
+    const removerProjetoCtx = async (id) => {
+      if (!db) return;
+      await removerProjeto(db, id);
+      await carregarDados();
+    };
 
   // ================================================================
   // CRUD Tasks
