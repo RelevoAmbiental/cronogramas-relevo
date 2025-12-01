@@ -15,30 +15,21 @@ function ensureDb(db) {
 //
 // 🔹 PROJETOS
 //
+// Lista projetos do usuário logado (filtrando pelo campo "uid")
 export async function listarProjetos(db, uid = null) {
-  try {
-    const firestore = ensureDb(db);
+  let col = db.collection("projetos");
 
-    let ref = firestore.collection("projetos");
-
-    // 🔥 Aqui está o ajuste crítico:
-    // No seu Firestore o campo se chama "uid" (não "userId").
-    // Se quiser ver projetos por usuário logado, usamos esse campo.
-    if (uid) {
-      ref = ref.where("uid", "==", uid);
-    }
-
-    const snap = await ref.get();
-    return snap.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-  } catch (err) {
-    console.error("Erro ao listar projetos:", err);
-    return [];
+  // Se tiver uid, filtra por ele; senão, traz tudo
+  if (uid) {
+    col = col.where("uid", "==", uid);
   }
-}
 
+  const snap = await col.get();
+  return snap.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+}
 export async function criarProjeto(db, dados) {
   const firestore = ensureDb(db);
   const payload = {
