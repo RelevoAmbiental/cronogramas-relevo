@@ -1,14 +1,7 @@
 // src/context/CronogramaContext.jsx
-
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useUser } from "./UserContext";
+import { waitForRelevoFirebase } from "../relevo-bootstrap";
 
 import {
   listarProjetos,
@@ -18,7 +11,7 @@ import {
   removerProjeto,
   criarTarefa,
   editarTarefa,
-  removerTarefa,
+  removerTarefa
 } from "../services/cronogramaService";
 
 const CronogramaContext = createContext();
@@ -26,115 +19,55 @@ const CronogramaContext = createContext();
 export function CronogramaProvider({ children }) {
   const { user } = useUser();
 
+  const [db, setDb] = useState(null);
   const [carregando, setCarregando] = useState(true);
+
   const [projetos, setProjetos] = useState([]);
   const [tarefas, setTarefas] = useState([]);
 
-  // ================================================================
-  // 1) Carregar Projetos + Tarefas quando USER + DB estiverem prontos
-  // ================================================================
+  // 🔥 1) Inicializar SOMENTE via relevo-bootstrap
+  useEffect(() => {
+    waitForRelevoFirebase().then((dbPortal) => {
+      setDb(dbPortal);
+    });
+  }, []);
+
+  // 🔥 2) Carregar dados quando db e user estiverem prontos
   const carregarDados = useCallback(async () => {
-    const dbGlobal = window.__RELEVO_DB__;
-
-    if (!dbGlobal || !user) {
-      console.log(
-        "[CronogramaContext] carregarDados() aguardando user/DB...",
-        { temDb: !!dbGlobal, temUser: !!user }
-      );
-      return;
-    }
-
+    if (!db || !user) return;
     try {
       setCarregando(true);
 
-      console.log(
-        "[CronogramaContext] carregarDados() iniciando – uid:",
-        user.uid
-      );
-
       const [lp, lt] = await Promise.all([
-        listarProjetos(user.uid),
-        listarTarefas(),
+        listarProjetos(db, user.uid),
+        listarTarefas(db)
       ]);
-
-      console.log(
-        `[CronogramaContext] carregarDados() – ${lp.length} projetos, ${lt.length} tarefas`
-      );
 
       setProjetos(lp);
       setTarefas(lt);
-    } catch (e) {
-      console.error("[CronogramaContext] Erro ao carregar dados:", e);
     } finally {
       setCarregando(false);
     }
-  }, [user]);
+  }, [db, user]);
 
   useEffect(() => {
     carregarDados();
   }, [carregarDados]);
 
-  // ================================================================
-  // 2) CRUD Projetos
-  // ================================================================
-  const criarProjetoCtx = async (dados) => {
-    if (!user || !window.__RELEVO_DB__) return;
-
-    await criarProjeto({
-      ...dados,
-      uid: user.uid,
-    });
-
-    await carregarDados();
-  };
-
-  const editarProjetoCtx = async (id, dados) => {
-    if (!window.__RELEVO_DB__) return;
-    await editarProjeto(id, dados);
-    await carregarDados();
-  };
-
-  const removerProjetoCtx = async (id) => {
-    if (!window.__RELEVO_DB__) return;
-    await removerProjeto(id);
-    await carregarDados();
-  };
-
-  // ================================================================
-  // 3) CRUD Tarefas
-  // ================================================================
-  const criarTarefaCtx = async (dados) => {
-    if (!window.__RELEVO_DB__) return;
-    await criarTarefa(dados);
-    await carregarDados();
-  };
-
-  const editarTarefaCtx = async (id, dados) => {
-    if (!window.__RELEVO_DB__) return;
-    await editarTarefa(id, dados);
-    await carregarDados();
-  };
-
-  const removerTarefaCtx = async (id) => {
-    if (!window.__RELEVO_DB__) return;
-    await removerTarefa(id);
-    await carregarDados();
-  };
-
+  // 🔥 3) Expor API limpa
   return (
     <CronogramaContext.Provider
       value={{
         carregando,
-        loading: carregando,
         projetos,
         tarefas,
-        criarProjeto: criarProjetoCtx,
-        editarProjeto: editarProjetoCtx,
-        removerProjeto: removerProjetoCtx,
-        criarTarefa: criarTarefaCtx,
-        editarTarefa: editarTarefaCtx,
-        removerTarefa: removerTarefaCtx,
-        atualizar: carregarDados,
+        criarProjeto: (d) => criarProjeto(db, { ...d, uid: user.uid }).then(carregarDados),
+        editarProjeto: (id, d) => editarProjeto(db, id, d).then(carregarDados),
+        removerProjeto: (id) => removerProjeto(db, id).then(carregarDados),
+        criarTarefa: (d) => criarTarefa(db, d).then(carregarDados),
+        editarTarefa: (id, d) => editarTarefa(db, id, d).then(carregarDados),
+        removerTarefa: (id) => removerTarefa(db, id).then(carregarDados),
+        atualizar: carregarDados
       }}
     >
       {children}
