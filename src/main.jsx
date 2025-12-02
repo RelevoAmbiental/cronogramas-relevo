@@ -1,5 +1,4 @@
 // src/main.jsx
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -17,8 +16,8 @@ import { waitForRelevoFirebase } from "./relevo-bootstrap";
 // 🔥 1) Aguarda o Firebase do portal ANTES de montar o React
 // ===========================================================
 waitForRelevoFirebase()
-  .then((db) => {
-    console.log("🔥 [main.jsx] Firebase pronto via bootstrap:", db);
+  .then(({ db, auth }) => {
+    console.log("🔥 [main.jsx] Firebase pronto via Portal Relevo:", { db, auth });
 
     const rootElement = document.getElementById("root");
     if (!rootElement) {
@@ -26,9 +25,6 @@ waitForRelevoFirebase()
       return;
     }
 
-    // ===========================================================
-    // 🔥 2) Aqui sim montamos o React com segurança
-    // ===========================================================
     ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
         <UserProvider>
@@ -40,8 +36,5 @@ waitForRelevoFirebase()
     );
   })
   .catch((err) => {
-    console.error(
-      "❌ [main.jsx] Erro esperando Firebase do Portal Relevo:",
-      err
-    );
+    console.error("❌ [main.jsx] Erro esperando Firebase do Portal Relevo:", err);
   });
