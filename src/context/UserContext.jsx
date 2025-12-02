@@ -1,42 +1,29 @@
 // src/context/UserContext.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { waitForRelevoFirebase } from "../relevo-bootstrap";
 
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
+  console.log("[UserProvider] MONTANDO UserProvider");
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let ativo = true;
+    console.log("[UserProvider] useEffect START — aguardando bootstrap");
 
-    function sincronizarUsuario() {
-      if (!ativo) return;
-
-      const u = window.__RELEVO_USER__;
-
-      // Caso o portal ainda não tenha carregado o estado do usuário
-      if (u === undefined) return;
-
-      setUser(u || null);
-      setLoading(false);
-    }
-
-    // 🔥 Tenta imediatamente
-    sincronizarUsuario();
-
-    // 🔥 Observa o Portal até expor o usuário
-    const interval = setInterval(() => {
-      if (window.__RELEVO_USER__ !== undefined) {
-        sincronizarUsuario();
-        clearInterval(interval);
-      }
-    }, 50);
-
-    return () => {
-      ativo = false;
-      clearInterval(interval);
-    };
+    // 🔥 Usa o mesmo bootstrap do CronogramaProvider.
+    waitForRelevoFirebase()
+      .then((res) => {
+        console.log("[UserProvider] Bootstrap OK — usuário recebido:", res.user);
+        setUser(res.user || null);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("[UserProvider] Erro no bootstrap:", err);
+        setLoading(false);
+      });
   }, []);
 
   return (
