@@ -1,4 +1,5 @@
 // src/main.jsx
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -12,11 +13,23 @@ import "./styles/layout.css";
 
 import { waitForRelevoFirebase } from "./relevo-bootstrap";
 
+// ===========================================================
+// 🔥 1) Aguarda o Firebase do portal ANTES de montar o React
+// ===========================================================
 waitForRelevoFirebase()
-  .then(() => {
-    console.log("🔥 Firebase realmente pronto — iniciando React (Cronograma).");
+  .then((db) => {
+    console.log("🔥 [main.jsx] Firebase pronto via bootstrap:", db);
 
-    ReactDOM.createRoot(document.getElementById("root")).render(
+    const rootElement = document.getElementById("root");
+    if (!rootElement) {
+      console.error("❌ [main.jsx] ERRO FATAL: #root não encontrado no DOM.");
+      return;
+    }
+
+    // ===========================================================
+    // 🔥 2) Aqui sim montamos o React com segurança
+    // ===========================================================
+    ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
         <UserProvider>
           <CronogramaProvider>
@@ -28,7 +41,7 @@ waitForRelevoFirebase()
   })
   .catch((err) => {
     console.error(
-      "❌ Erro ao aguardar Firebase do Portal Relevo. React não será iniciado:",
+      "❌ [main.jsx] Erro esperando Firebase do Portal Relevo:",
       err
     );
   });
