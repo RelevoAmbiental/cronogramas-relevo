@@ -1,0 +1,46 @@
+.timeline-container {
+  width: 100%;
+  margin: 30px auto;
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+  padding-left: 25px;
+}
+
+.timeline-item {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+/* Pontinhos */
+.timeline-dot {
+  position: absolute;
+  left: -13px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid white;
+}
+
+/* Cards - agora em tema claro */
+.timeline-content {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  color: #0a4723 !important;
+  font-family: "Montserrat";
+}
+
+.timeline-content h3 {
+  margin: 0 0 6px 0;
+  color: #0a4723 !important;
+}
+
+.tag {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+}

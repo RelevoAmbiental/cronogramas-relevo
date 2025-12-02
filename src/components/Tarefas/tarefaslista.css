@@ -1,0 +1,139 @@
+/* ================================
+   ESTILO TABELA — LINHA ÚNICA
+================================ */
+
+.tarefas-lista-container {
+  width: 100%;
+  margin-top: 25px;
+}
+
+/* TABELA */
+.tarefas-tabela {
+  width: 100%;
+  border-collapse: collapse !important;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.tarefas-tabela thead {
+  background: #f2f4f3 !important;
+}
+
+.tarefas-tabela th {
+  padding: 12px !important;
+  text-align: left !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  color: #0a4723 !important;
+}
+
+.tarefa-row {
+  border-bottom: 1px solid #e4e4e4 !important;
+  background: white !important;
+}
+
+.tarefa-row:hover {
+  background: #f7f7f7 !important;
+}
+
+/* CÉLULAS */
+.tarefas-tabela td {
+  padding: 10px 8px !important;
+  font-size: 15px !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important; /* 👈 impede quebra */
+}
+
+/* BOLINHA + NOME */
+.tarefa-col-nome {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-weight: 600 !important;
+  color: #06371b !important;
+}
+
+.tarefa-bolinha {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+}
+
+/* STATUS */
+.tarefa-col-status {
+  font-weight: 600 !important;
+  text-transform: capitalize !important;
+}
+
+/* AÇÕES */
+.tarefa-col-acoes {
+  display: flex !important;
+  gap: 10px !important;
+}
+
+.btn-editar,
+.btn-excluir {
+  padding: 6px 12px !important;
+  border-radius: 5px !important;
+  border: none !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+}
+
+.btn-editar {
+  background: #0a4723 !important;
+  color: white !important;
+}
+
+.btn-excluir {
+  background: #c62828 !important;
+  color: white !important;
+}
+
+/* RESPONSIVIDADE — MOBILE EMPILHADO */
+@media (max-width: 750px) {
+  .tarefas-tabela thead {
+    display: none !important;
+  }
+
+  .tarefas-tabela tr {
+    display: block !important;
+    background: white !important;
+    border-radius: 12px !important;
+    margin-bottom: 18px !important;
+    padding: 12px !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06) !important;
+  }
+
+  .tarefas-tabela td {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 6px 2px !important;
+    white-space: normal !important;
+  }
+
+  .tarefa-col-nome {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+  }
+}
+
+/* ======================================
+   BOTÃO FLUTUANTE — CORREÇÃO Z-INDEX
+====================================== */
+.btn-flutuante {
+  position: fixed !important;
+  bottom: 28px !important;
+  right: 28px !important;
+  z-index: 9999 !important;  /* 👈 resolve sobreposição */
+  width: 55px !important;
+  height: 55px !important;
+  background: #0a4723 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  font-size: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25) !important;
+  border: none !important;
+}

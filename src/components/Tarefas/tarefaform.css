@@ -1,0 +1,175 @@
+/* —————————————————————————————
+   FORMULÁRIO DE TAREFA — RELEVO
+   Versão FINAL
+   ————————————————————————————— */
+
+.relevo-form {
+  font-family: "Montserrat", sans-serif;
+  color: #0a4723;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ——————— GRID PRINCIPAL ——————— */
+.relevo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* evita sobreposição */
+  gap: 20px 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.relevo-grid > div {
+  min-width: 0; /* ESSENCIAL para inputs caberem */
+}
+
+.relevo-grid .full {
+  grid-column: span 2;
+}
+
+/* ——————— RESPONSIVIDADE ——————— */
+@media (max-width: 760px) {
+  .relevo-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .relevo-grid .full {
+    grid-column: span 1;
+  }
+}
+
+/* ——————— LABELS ——————— */
+.relevo-form label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+  color: #0a4723;
+}
+
+/* ——————— INPUTS E SELECTS ——————— */
+.relevo-form input,
+.relevo-form select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box !important;
+  padding: 9px 10px; /* padding reduzido para evitar quebra */
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: rgba(255, 255, 255, 0.85);
+  color: #0a4723 !important;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+/* ——————— INPUT DATE ——————— */
+/* Correção definitiva */
+.relevo-form input[type="date"] {
+  padding-right: 40px !important; /* espaço para o ícone */
+  min-width: 0 !important;        /* permite encolher */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ——————— FOCUS / INTERAÇÃO ——————— */
+.relevo-form input:focus,
+.relevo-form select:focus {
+  background: #fff;
+  border-color: #0a4723;
+  box-shadow: 0 0 8px rgba(10, 71, 35, 0.2);
+  transform: scale(1.015);
+}
+
+/* ——————— DROPDOWN COM SETA VERDE ——————— */
+.relevo-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #0a4723 50%),
+    linear-gradient(135deg, #0a4723 50%, transparent 50%);
+  background-position:
+    calc(100% - 15px) calc(50% - 6px),
+    calc(100% - 10px) calc(50% - 6px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* ——————— AÇÕES ——————— */
+.relevo-actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.relevo-actions .save {
+  padding: 10px 18px;
+  background: #0a4723;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.relevo-actions .save:hover {
+  opacity: 0.9;
+}
+
+.relevo-actions .cancel {
+  padding: 10px 18px;
+  background: #777;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.relevo-actions .cancel:hover {
+  opacity: 0.9;
+}
+
+/* ——————— BOTÃO FLUTUANTE ——————— */
+.btn-flutuante {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+
+  background: #0a4723;
+  color: white;
+  font-size: 32px;
+  border: none;
+
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.32);
+
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-flutuante:hover {
+  transform: scale(1.12);
+  background: #0c5a2c;
+}
+
+/* ——————— BOTÃO "NOVA TAREFA" NO TOPO ——————— */
+.btn-nova-tarefa {
+  background: #0a4723;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-nova-tarefa:hover {
+  opacity: 0.85;
+}

@@ -1,0 +1,43 @@
+name: Build Cronograma e disparar atualização do Portal
+
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-dispatch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧬 Checkout do repositório (cronogramas-relevo)
+        uses: actions/checkout@v4
+
+      - name: 🔧 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: 📦 Instalar dependências
+        run: npm ci
+
+      - name: 🏗️ Build do Vite
+        run: npm run build
+
+      - name: 🚀 Disparar atualização no portal-relevo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.RELEVO_GH_PAT }}
+          repository: RelevoAmbiental/portal-relevo
+          event-type: cronograma-atualizado
+          client-payload: |
+            {
+              "cronograma_sha": "${{ github.sha }}",
+              "cronograma_repo": "${{ github.repository }}",
+              "timestamp": "${{ github.event.head_commit.timestamp }}"
+            }

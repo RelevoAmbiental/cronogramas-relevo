@@ -1,0 +1,291 @@
+/* ========================== */
+/* CONTAINER GERAL */
+/* ========================== */
+
+.calendar-container {
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* impede scroll horizontal */
+  box-sizing: border-box;
+}
+
+/* ========================== */
+/* TOOLBAR SUPERIOR */
+/* ========================== */
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(6px);
+  padding: 12px 20px;
+  border-radius: 20px;
+
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  width: 100%; /* antes estava fit-content quebrando o layout */
+  box-sizing: border-box;
+}
+
+/* Botões HOJE e setas */
+.calendar-btn {
+  background: #ffffff;
+  border: 1px solid #cfd8dc;
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #0a4723;
+  transition: all 0.2s;
+}
+
+.calendar-btn:hover {
+  background: #e8f5e9;
+}
+
+/* Segment control (Mês / Semana / Dia) */
+.modo-toggle {
+  display: flex;
+  background: #fff;
+  border-radius: 30px;
+  padding: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.modo-item {
+  padding: 6px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #0a4723;
+}
+
+.modo-item.ativo {
+  background: #0a4723;
+  color: white;
+}
+
+/* Data no canto direito */
+.calendar-data {
+  margin-left: auto;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding-right: 20px;
+  text-transform: capitalize;
+}
+
+/* ========================== */
+/* CALENDÁRIO MENSAL */
+/* ========================== */
+
+.mes-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.mes-celula {
+  background: #ffffffaa;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 6px;
+  backdrop-filter: blur(6px);
+  min-height: 130px;
+  cursor: pointer;
+  position: relative;
+  min-width: 0; /* impede expansão horizontal */
+  overflow: hidden;
+}
+
+/* HOJE */
+.mes-celula.hoje {
+  border: 3px solid #0a4723;
+  background: #e9f5ef;
+}
+
+/* Cabeçalho da célula */
+.mes-celula-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* Lista de tarefas */
+.mes-celula-tarefas {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ========================== */
+/* TAG DAS TAREFAS */
+/* ========================== */
+
+.tag-tarefa {
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  border-left: 8px solid;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Concluídas */
+.tag-tarefa.concluida {
+  background: #e9e9e9;
+  color: #777;
+  text-decoration: line-through;
+  border-left-color: #bdbdbd !important;
+}
+
+/* Atrasadas */
+.tag-tarefa.atrasada {
+  background: #ffdddd;
+  border-left-color: #c30000 !important;
+  color: #7a0000;
+}
+
+/* ========================== */
+/* SEMANA */
+/* ========================== */
+
+.semana-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.semana-celula {
+  background: #ffffffaa;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 6px;
+  min-height: 160px;
+  cursor: pointer;
+
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ========================== */
+/* VISÃO DIA */
+/* ========================== */
+
+.dia-container {
+  background: #ffffffaa;
+  border-radius: 10px;
+  padding: 1rem;
+
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ========================== */
+/* MODAL */
+/* ========================== */
+
+.tarefa-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
+.tarefa-modal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  border-top: 6px solid #0a4723;
+}
+
+.modal-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.modal-btn {
+  background: #0a4723;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+}
+
+.modal-btn:hover {
+  background: #07361a;
+}
+/* ===== Cabeçalho Dias da Semana ===== */
+.semana-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 10px;
+  color: #0a4723;
+  padding: 0 4px;
+}
+
+.semana-header-item {
+  padding: 6px 0;
+  border-bottom: 2px solid #e0e0e0;
+  font-size: 0.9rem;
+}
+
+/* ===== Seleção Mês | Semana | Dia ===== */
+.modo-toggle {
+  display: flex;
+  background: #fff;
+  border-radius: 30px;
+  padding: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.modo-item {
+  padding: 6px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #0a4723;
+  border: none;
+  background: transparent;
+  transition: 0.2s;
+}
+
+.modo-item:hover {
+  background: #e5f2ea;
+}
+
+.modo-item.ativo {
+  background: #0a4723;
+  color: #fff;
+}

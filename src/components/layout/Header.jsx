@@ -1,7 +1,49 @@
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./header.css";
+
 export default function Header() {
+  const location = useLocation();
+
+  // 🔥 Função aprimorada para detectar rota ativa corretamente
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/" ? "nav-btn active" : "nav-btn";
+    }
+    return location.pathname.startsWith(path) ? "nav-btn active" : "nav-btn";
+  };
+
   return (
-    <header>
-      <strong>Relevo Consultoria Ambiental</strong> — Cronogramas
+    <header className="topbar">
+      {/* === ESQUERDA: Logo + Título === */}
+      <div className="topbar-left">
+        <img
+          src="https://raw.githubusercontent.com/RelevoAmbiental/relevo-site/refs/heads/main/assets/icons/Logo_atualizada_horizontal.png"
+          alt="Relevo Consultoria Ambiental"
+          className="topbar-logo"
+        />
+
+        <span className="topbar-title">Cronograma</span>
+      </div>
+
+      {/* === DIREITA: Navegação === */}
+      <nav className="topbar-nav">
+        <Link to="/" className={isActive("/")}>
+          Dashboard
+        </Link>
+        <Link to="/projetos" className={isActive("/projetos")}>
+          Projetos
+        </Link>
+        <Link to="/tarefas" className={isActive("/tarefas")}>
+          Tarefas
+        </Link>
+        <Link to="/calendario" className={isActive("/calendario")}>
+          Calendário
+        </Link>
+        <Link to="/importar" className={isActive("/importar")}>
+          Importar (IA)
+        </Link>
+      </nav>
     </header>
   );
 }
