@@ -1,5 +1,4 @@
 // src/context/CronogramaContext.jsx
-
 import {
   createContext,
   useContext,
@@ -9,6 +8,7 @@ import {
 } from "react";
 
 import { useUser } from "./UserContext";
+
 import {
   listarProjetos,
   listarTarefas,
@@ -25,6 +25,8 @@ import { waitForRelevoFirebase } from "../relevo-bootstrap";
 const CronogramaContext = createContext();
 
 export function CronogramaProvider({ children }) {
+  console.log("[Provider] MONTANDO CronogramaProvider");
+
   const { user } = useUser();
 
   const [db, setDb] = useState(null);
@@ -37,30 +39,32 @@ export function CronogramaProvider({ children }) {
   // 1) Inicializa o Firestore APENAS via bootstrap
   // ==========================================================
   useEffect(() => {
-    waitForRelevoFirebase().then((dbPortal) => {
-      console.log("[CronogramaContext] DB recebido via bootstrap:", dbPortal);
-      setDb(dbPortal);
-    });
+    console.log("[Provider] useEffect() START — aguardando waitForRelevoFirebase");
+
+    waitForRelevoFirebase()
+      .then((res) => {
+        console.log("[Provider] DB DEFINIDO via bootstrap:", res.db);
+        setDb(res.db);
+      })
+      .catch((err) => {
+        console.error("[Provider] Erro no bootstrap:", err);
+      });
   }, []);
 
   // ==========================================================
-  // 2) Carregar dados sempre que db + user estiverem disponíveis
+  // 2) Carregar dados quando db + user estiverem prontos
   // ==========================================================
   const carregarDados = useCallback(async () => {
-    if (!db || !user) {
-      console.log("[CronogramaContext] carregarDados abortado", {
-        temDb: !!db,
-        temUser: !!user,
-      });
-      return;
-    }
+    console.log("[Provider] carregarDados() CHAMADO", {
+      temDb: !!db,
+      temUser: !!user,
+    });
+
+    if (!db || !user) return;
 
     try {
       setCarregando(true);
-      console.log(
-        "[CronogramaContext] carregarDados() – iniciando | uid:",
-        user.uid
-      );
+      console.log("[Provider] carregarDados() – iniciando | uid:", user.uid);
 
       const [lp, lt] = await Promise.all([
         listarProjetos(db, user.uid),
@@ -68,7 +72,7 @@ export function CronogramaProvider({ children }) {
       ]);
 
       console.log(
-        "[CronogramaContext] carregarDados() – recebidos:",
+        "[Provider] carregarDados() – recebidos:",
         lp.length,
         "projetos e",
         lt.length,
@@ -78,7 +82,7 @@ export function CronogramaProvider({ children }) {
       setProjetos(lp);
       setTarefas(lt);
     } catch (e) {
-      console.error("[CronogramaContext] Erro ao carregar dados:", e);
+      console.error("[Provider] Erro ao carregar dados:", e);
     } finally {
       setCarregando(false);
     }
@@ -121,8 +125,15 @@ export function CronogramaProvider({ children }) {
     await carregarDados();
   };
 
+  console.log(
+    "[Provider] RENDER — projetos:",
+    projetos.length,
+    "| tarefas:",
+    tarefas.length
+  );
+
   // ==========================================================
-  // 4) Retorno do contexto
+  // 4) Provider exposto
   // ==========================================================
   return (
     <CronogramaContext.Provider
