@@ -21,12 +21,6 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
-// 🔥 Adapter real que conecta ao Firebase exposto pelo Portal
-import {
-  onFirebaseReady,
-  isFirebaseReady,
-} from "../services/firebase";
-
 const CronogramaContext = createContext();
 
 export function CronogramaProvider({ children }) {
@@ -39,34 +33,39 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ================================================================
-  // 1) Detectar o Firestore do Portal
+  // 1) Detectar o Firestore exposto pelo Portal via window.__RELEVO_DB__
+  //    (sem depender do timing do Guard)
   // ================================================================
   useEffect(() => {
-    // Caso o adapter já tenha sinalizado que está pronto
-    if (isFirebaseReady() && window.__RELEVO_DB__) {
-      console.log(
-        "[CronogramaContext] Firebase pronto via adapter (isFirebaseReady)."
-      );
-      setDb(window.__RELEVO_DB__);
-      return;
-    }
+    const tentar = () => {
+      if (window.__RELEVO_DB__) {
+        console.log(
+          "[CronogramaContext] Firestore detectado via window.__RELEVO_DB__."
+        );
+        setDb(window.__RELEVO_DB__);
+        return true;
+      }
+      return false;
+    };
 
-    // Caso o adapter ainda vá sinalizar futuramente
-    const unsubscribe = onFirebaseReady(({ db: dbPronto }) => {
-      console.log("[CronogramaContext] onFirebaseReady disparado.");
-      setDb(dbPronto);
-    });
+    // tenta imediatamente
+    if (tentar()) return;
 
-    return () => unsubscribe && unsubscribe();
+    // tenta novamente até encontrar
+    const interval = setInterval(() => {
+      if (tentar()) clearInterval(interval);
+    }, 200);
+
+    return () => clearInterval(interval);
   }, []);
 
   // ================================================================
-  // 2) Carregar dados quando db OU user mudarem
+  // 2) Carregar Projetos + Tarefas quando db & user estiverem prontos
   // ================================================================
   const carregarDados = useCallback(async () => {
     if (!db || !user) {
       console.log(
-        "[CronogramaContext] carregarDados() abortado — db ou user ausentes",
+        "[CronogramaContext] carregarDados() aguardando db/user...",
         { temDb: !!db, temUser: !!user }
       );
       return;
@@ -75,7 +74,7 @@ export function CronogramaProvider({ children }) {
     try {
       setCarregando(true);
       console.log(
-        "[CronogramaContext] carregarDados() — iniciando",
+        "[CronogramaContext] carregarDados() iniciando fetch",
         "uid:",
         user.uid
       );
@@ -86,11 +85,7 @@ export function CronogramaProvider({ children }) {
       ]);
 
       console.log(
-        "[CronogramaContext] carregarDados() — recebidos:",
-        lp.length,
-        "projetos |",
-        lt.length,
-        "tarefas"
+        `[CronogramaContext] carregarDados() — ${lp.length} projetos, ${lt.length} tarefas`
       );
 
       setProjetos(lp);
@@ -154,13 +149,13 @@ export function CronogramaProvider({ children }) {
   };
 
   // ================================================================
-  // 5) Expor contexto para UI
+  // 5) Contexto exposto para a aplicação
   // ================================================================
   return (
     <CronogramaContext.Provider
       value={{
         carregando,
-        loading: carregando, // alias para compatibilidade
+        loading: carregando,
         projetos,
         tarefas,
         criarProjeto: criarProjetoCtx,
