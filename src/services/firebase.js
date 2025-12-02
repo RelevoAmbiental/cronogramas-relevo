@@ -22,7 +22,7 @@ function tentarInicializar() {
   db = portalDb;
 
   ready = true;
-  listeners.forEach((cb) => cb());
+  listeners.forEach((cb) => cb({ app, auth, db }));
 
   console.log("🔥 Firebase integrado com sucesso via Guard (Cronograma).");
   return true;
@@ -38,10 +38,17 @@ function tentarInicializar() {
     if (tentarInicializar()) {
       clearInterval(timer);
     } else if (tentativas >= max) {
-      console.warn("⚠️ Firebase do Portal ainda não disponível.");
+      console.warn(
+        "⚠️ Firebase do Portal ainda não disponível para o Cronograma."
+      );
+      clearInterval(timer);
     }
   }, 200);
 })();
+
+export function getFirebase() {
+  return { app, auth, db };
+}
 
 export function isFirebaseReady() {
   return ready && !!db && !!auth;
@@ -49,7 +56,7 @@ export function isFirebaseReady() {
 
 export function onFirebaseReady(callback) {
   if (ready) {
-    callback();
+    callback({ app, auth, db });
     return () => {};
   }
   listeners.add(callback);
