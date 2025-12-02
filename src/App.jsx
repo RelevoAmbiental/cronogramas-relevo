@@ -13,6 +13,7 @@ import CalendarView from "./components/Calendar/CalendarView";
 import ImportarCronograma from "./components/Importador/ImportarCronograma";
 
 import { useUser } from "./context/UserContext";
+import { CronogramaProvider } from "./context/CronogramaContext"; // <-- 🔥 IMPORTANTE
 
 function AppContent() {
   const { user, loading } = useUser();
@@ -49,8 +50,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <Router basename="/cronograma">
-      <AppContent />
-    </Router>
+    <CronogramaProvider>
+      <Router basename="/cronograma">
+        <AppContent />
+      </Router>
+    </CronogramaProvider>
   );
 }
