@@ -21,6 +21,8 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
+import { onFirebaseReady, isFirebaseReady, db as firebaseDb } from "../services/firebase";
+
 const CronogramaContext = createContext();
 
 export function CronogramaProvider({ children }) {
@@ -33,39 +35,33 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ================================================================
-  // 1) Detectar o Firestore vindo do Portal (window.__RELEVO_DB__)
+  // 1) Detectar o Firestore vindo do Portal (via adapter de Firebase)
   // ================================================================
   useEffect(() => {
-    // Se já está pronto, seta direto
-    if (window.__RELEVO_DB__) {
+    // Se já estiver pronto via adapter, usa direto
+    if (isFirebaseReady() && (firebaseDb || window.__RELEVO_DB__)) {
+      const instancia = firebaseDb || window.__RELEVO_DB__;
       console.log(
-        "[CronogramaContext] DB já disponível em window.__RELEVO_DB__"
+        "[CronogramaContext] DB já disponível (adapter/firebase.js)",
+        instancia ? "OK" : "null"
       );
-      setDb(window.__RELEVO_DB__);
+      setDb(instancia);
       return;
     }
 
-    // Caso não esteja pronto, faz polling leve
-    let tentativas = 0;
-    const maxTentativas = 50; // ~10s com 200ms
+    // Senão, assina o evento do adapter
+    const unsubscribe = onFirebaseReady(({ db: dbPronto }) => {
+      const instancia = dbPronto || window.__RELEVO_DB__ || null;
+      console.log(
+        "[CronogramaContext] DB recebido via onFirebaseReady",
+        instancia ? "OK" : "null"
+      );
+      setDb(instancia);
+    });
 
-    const id = setInterval(() => {
-      tentativas += 1;
-      if (window.__RELEVO_DB__) {
-        console.log(
-          "[CronogramaContext] DB detectado via polling em window.__RELEVO_DB__"
-        );
-        setDb(window.__RELEVO_DB__);
-        clearInterval(id);
-      } else if (tentativas >= maxTentativas) {
-        console.error(
-          "[CronogramaContext] Timeout aguardando window.__RELEVO_DB__"
-        );
-        clearInterval(id);
-      }
-    }, 200);
-
-    return () => clearInterval(id);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   // ================================================================
@@ -88,8 +84,10 @@ export function CronogramaProvider({ children }) {
         user.uid
       );
 
-      const lp = await listarProjetos(db, user.uid);
-      const lt = await listarTarefas(db);
+      const [lp, lt] = await Promise.all([
+        listarProjetos(db, user.uid),
+        listarTarefas(db),
+      ]);
 
       console.log(
         "[CronogramaContext] carregarDados() – recebidos",
@@ -165,10 +163,14 @@ export function CronogramaProvider({ children }) {
     await carregarDados();
   };
 
+  // ================================================================
+  // 5) Expor contexto para a UI
+  // ================================================================
   return (
     <CronogramaContext.Provider
       value={{
         carregando,
+        loading: carregando, // 🔥 alias para não quebrar os componentes
         projetos,
         tarefas,
         criarProjeto: criarProjetoCtx,
