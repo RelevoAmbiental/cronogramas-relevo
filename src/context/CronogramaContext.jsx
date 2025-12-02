@@ -33,46 +33,63 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ================================================================
-  // 1) Detectar o Firestore exposto pelo Portal via window.__RELEVO_DB__
-  //    (sem depender do timing do Guard)
+  // 1) DETECTAR FIRESTORE + USUÁRIO EXPOSOS PELO PORTAL
+  //
+  //    - Firestore vem de window.__RELEVO_DB__
+  //    - Usuário vem de window.__RELEVO_USER__
+  //
+  //    O Cronograma carrega antes do Portal em alguns casos,
+  //    então usamos um polling leve até que AMBOS estejam prontos.
   // ================================================================
   useEffect(() => {
+    console.log("[CronogramaContext] Iniciando detecção de DB + USER...");
+
     const tentar = () => {
-      if (window.__RELEVO_DB__) {
+      const dbPortal = window.__RELEVO_DB__;
+      const userPortal = window.__RELEVO_USER__;
+
+      if (dbPortal && userPortal) {
         console.log(
-          "[CronogramaContext] Firestore detectado via window.__RELEVO_DB__."
+          "[CronogramaContext] DB + USER detectados com sucesso.",
+          { db: !!dbPortal, user: !!userPortal }
         );
-        setDb(window.__RELEVO_DB__);
+        setDb(dbPortal);
         return true;
       }
+
       return false;
     };
 
-    // tenta imediatamente
+    // tentar imediatamente
     if (tentar()) return;
 
-    // tenta novamente até encontrar
+    // caso ainda não estejam prontos, tentar a cada 200ms
     const interval = setInterval(() => {
-      if (tentar()) clearInterval(interval);
+      if (tentar()) {
+        clearInterval(interval);
+      }
     }, 200);
 
     return () => clearInterval(interval);
   }, []);
 
   // ================================================================
-  // 2) Carregar Projetos + Tarefas quando db & user estiverem prontos
+  // 2) CARREGAMENTO DE PROJETOS E TAREFAS
+  //
+  //    Só executa quando db e user EXISTEM.
   // ================================================================
   const carregarDados = useCallback(async () => {
     if (!db || !user) {
       console.log(
-        "[CronogramaContext] carregarDados() aguardando db/user...",
-        { temDb: !!db, temUser: !!user }
+        "[CronogramaContext] carregarDados() aguardando DB + USER...",
+        { db: !!db, user: !!user }
       );
       return;
     }
 
     try {
       setCarregando(true);
+
       console.log(
         "[CronogramaContext] carregarDados() iniciando fetch",
         "uid:",
@@ -102,7 +119,7 @@ export function CronogramaProvider({ children }) {
   }, [carregarDados]);
 
   // ================================================================
-  // 3) CRUD Projetos
+  // 3) CRUD DE PROJETOS
   // ================================================================
   const criarProjetoCtx = async (dados) => {
     if (!db || !user) return;
@@ -128,7 +145,7 @@ export function CronogramaProvider({ children }) {
   };
 
   // ================================================================
-  // 4) CRUD Tarefas
+  // 4) CRUD DE TAREFAS
   // ================================================================
   const criarTarefaCtx = async (dados) => {
     if (!db) return;
@@ -149,7 +166,7 @@ export function CronogramaProvider({ children }) {
   };
 
   // ================================================================
-  // 5) Contexto exposto para a aplicação
+  // 5) ENTREGA DO CONTEXTO PARA A UI
   // ================================================================
   return (
     <CronogramaContext.Provider
