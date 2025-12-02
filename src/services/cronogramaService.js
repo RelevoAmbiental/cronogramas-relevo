@@ -1,24 +1,26 @@
 // src/services/cronogramaService.js
-// Camada de acesso ao Firestore para Projetos e Tarefas (Firebase compat).
+// Camada de acesso ao Firestore para Projetos e Tarefas,
+// usando SEMPRE o Firestore compat exposto pelo Portal em window.__RELEVO_DB__.
 
-//
-// 🔧 Helper para garantir DB
-//
-function ensureDb(db) {
-  if (!db) throw new Error("Firestore DB não informado em cronogramaService.");
+function getDb() {
+  const db = window.__RELEVO_DB__;
+  if (!db) {
+    throw new Error(
+      "Firestore ainda não disponível em window.__RELEVO_DB__ (cronogramaService)."
+    );
+  }
   return db;
 }
 
-//
 // ========================== PROJETOS =============================
-export async function listarProjetos(db, uid = null) {
-  const firestore = ensureDb(db);
 
-  console.log("[cronogramaService] listarProjetos() – db OK, uid =", uid);
+export async function listarProjetos(uid = null) {
+  const firestore = getDb();
+
+  console.log("[cronogramaService] listarProjetos() – uid =", uid);
 
   let ref = firestore.collection("projetos");
 
-  // filtra pelo campo REAL no Firestore (uid)
   if (uid) {
     ref = ref.where("uid", "==", uid);
   }
@@ -36,12 +38,11 @@ export async function listarProjetos(db, uid = null) {
   }));
 }
 
-export async function criarProjeto(db, dados) {
-  const firestore = ensureDb(db);
+export async function criarProjeto(dados) {
+  const firestore = getDb();
 
   const payload = {
     ...dados,
-    uid: dados.uid, // 🔥 garante associação ao usuário
     criadoEm: dados.criadoEm || new Date(),
   };
 
@@ -51,20 +52,20 @@ export async function criarProjeto(db, dados) {
   return { id: docRef.id, ...payload };
 }
 
-export async function editarProjeto(db, id, dados) {
-  const firestore = ensureDb(db);
+export async function editarProjeto(id, dados) {
+  const firestore = getDb();
   await firestore.collection("projetos").doc(id).update(dados);
 }
 
-export async function removerProjeto(db, id) {
-  const firestore = ensureDb(db);
+export async function removerProjeto(id) {
+  const firestore = getDb();
   await firestore.collection("projetos").doc(id).delete();
 }
 
-//
 // ========================== TAREFAS =============================
-export async function listarTarefas(db, projetoId = null) {
-  const firestore = ensureDb(db);
+
+export async function listarTarefas(projetoId = null) {
+  const firestore = getDb();
 
   let ref = firestore.collection("tarefas");
   if (projetoId) {
@@ -75,7 +76,9 @@ export async function listarTarefas(db, projetoId = null) {
 
   console.log(
     "[cronogramaService] listarTarefas() – docs encontrados:",
-    snap.docs.length
+    snap.docs.length,
+    "filtro projetoId =",
+    projetoId
   );
 
   return snap.docs.map((doc) => ({
@@ -84,8 +87,8 @@ export async function listarTarefas(db, projetoId = null) {
   }));
 }
 
-export async function criarTarefa(db, dados) {
-  const firestore = ensureDb(db);
+export async function criarTarefa(dados) {
+  const firestore = getDb();
 
   const payload = {
     ...dados,
@@ -98,12 +101,12 @@ export async function criarTarefa(db, dados) {
   return { id: docRef.id, ...payload };
 }
 
-export async function editarTarefa(db, id, dados) {
-  const firestore = ensureDb(db);
+export async function editarTarefa(id, dados) {
+  const firestore = getDb();
   await firestore.collection("tarefas").doc(id).update(dados);
 }
 
-export async function removerTarefa(db, id) {
-  const firestore = ensureDb(db);
+export async function removerTarefa(id) {
+  const firestore = getDb();
   await firestore.collection("tarefas").doc(id).delete();
 }
