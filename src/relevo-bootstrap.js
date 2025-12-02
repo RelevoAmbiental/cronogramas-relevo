@@ -1,5 +1,4 @@
 // src/relevo-bootstrap.js
-
 /**
  * Espera o Firebase do Portal Relevo ficar pronto.
  * O portal expõe:
@@ -13,16 +12,16 @@
  */
 
 export function waitForRelevoFirebase(timeoutMs = 15000) {
-  return new Promise((resolve, reject) => {
-    console.log("[Bootstrap] Aguardando Firebase do Portal...");
+  console.log("[Bootstrap] INICIANDO waitForRelevoFirebase()");
 
-    // 🔥 1) Se já está tudo disponível, devolve na hora
+  return new Promise((resolve, reject) => {
+    // 🔥 1) Checagem imediata
     if (
       window.__RELEVO_DB__ &&
       window.__RELEVO_AUTH__ &&
       window.__RELEVO_USER__
     ) {
-      console.log("[Bootstrap] Firebase já encontrado (startup imediato).");
+      console.log("[Bootstrap] DB já existe na chegada:", window.__RELEVO_DB__);
       resolve({
         db: window.__RELEVO_DB__,
         auth: window.__RELEVO_AUTH__,
@@ -31,9 +30,11 @@ export function waitForRelevoFirebase(timeoutMs = 15000) {
       return;
     }
 
-    // 🔥 2) Listener para o portal
+    console.log("[Bootstrap] Aguardando evento relevo-firebase-ready...");
+
+    // 🔥 2) Listener do evento
     const onReady = () => {
-      console.log("[Bootstrap] Evento relevo-firebase-ready recebido.");
+      console.log("[Bootstrap] EVENTO RECEBIDO → DB pronto:", window.__RELEVO_DB__);
       cleanup();
       resolve({
         db: window.__RELEVO_DB__,
@@ -44,7 +45,7 @@ export function waitForRelevoFirebase(timeoutMs = 15000) {
 
     window.addEventListener("relevo-firebase-ready", onReady);
 
-    // 🔥 3) Fallback interval (caso evento dispare antes do listener)
+    // 🔥 3) Fallback polling
     const interval = setInterval(() => {
       if (
         window.__RELEVO_DB__ &&
@@ -63,9 +64,9 @@ export function waitForRelevoFirebase(timeoutMs = 15000) {
 
     // 🔥 4) Timeout
     const timeout = setTimeout(() => {
-      console.error("[Bootstrap] Timeout esperando Firebase do Portal.");
+      console.error("[Bootstrap] TIMEOUT FATAL — Firebase não disponível.");
       cleanup();
-      reject(new Error("Firebase não disponível depois do timeout."));
+      reject(new Error("Timeout aguardando Firebase do Portal Relevo."));
     }, timeoutMs);
 
     function cleanup() {
