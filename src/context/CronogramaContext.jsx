@@ -21,7 +21,11 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
-import { onFirebaseReady, isFirebaseReady, db as firebaseDb } from "../services/firebase";
+// 🔥 Adapter real que conecta ao Firebase exposto pelo Portal
+import {
+  onFirebaseReady,
+  isFirebaseReady,
+} from "../services/firebase";
 
 const CronogramaContext = createContext();
 
@@ -35,42 +39,34 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ================================================================
-  // 1) Detectar o Firestore vindo do Portal (via adapter de Firebase)
+  // 1) Detectar o Firestore do Portal
   // ================================================================
   useEffect(() => {
-    // Se já estiver pronto via adapter, usa direto
-    if (isFirebaseReady() && (firebaseDb || window.__RELEVO_DB__)) {
-      const instancia = firebaseDb || window.__RELEVO_DB__;
+    // Caso o adapter já tenha sinalizado que está pronto
+    if (isFirebaseReady() && window.__RELEVO_DB__) {
       console.log(
-        "[CronogramaContext] DB já disponível (adapter/firebase.js)",
-        instancia ? "OK" : "null"
+        "[CronogramaContext] Firebase pronto via adapter (isFirebaseReady)."
       );
-      setDb(instancia);
+      setDb(window.__RELEVO_DB__);
       return;
     }
 
-    // Senão, assina o evento do adapter
+    // Caso o adapter ainda vá sinalizar futuramente
     const unsubscribe = onFirebaseReady(({ db: dbPronto }) => {
-      const instancia = dbPronto || window.__RELEVO_DB__ || null;
-      console.log(
-        "[CronogramaContext] DB recebido via onFirebaseReady",
-        instancia ? "OK" : "null"
-      );
-      setDb(instancia);
+      console.log("[CronogramaContext] onFirebaseReady disparado.");
+      setDb(dbPronto);
     });
 
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
+    return () => unsubscribe && unsubscribe();
   }, []);
 
   // ================================================================
-  // 2) Carregar dados sempre que db OU user mudarem
+  // 2) Carregar dados quando db OU user mudarem
   // ================================================================
   const carregarDados = useCallback(async () => {
     if (!db || !user) {
       console.log(
-        "[CronogramaContext] carregarDados() abortado – db ou user ausentes",
+        "[CronogramaContext] carregarDados() abortado — db ou user ausentes",
         { temDb: !!db, temUser: !!user }
       );
       return;
@@ -79,7 +75,7 @@ export function CronogramaProvider({ children }) {
     try {
       setCarregando(true);
       console.log(
-        "[CronogramaContext] carregarDados() – iniciando",
+        "[CronogramaContext] carregarDados() — iniciando",
         "uid:",
         user.uid
       );
@@ -90,9 +86,9 @@ export function CronogramaProvider({ children }) {
       ]);
 
       console.log(
-        "[CronogramaContext] carregarDados() – recebidos",
+        "[CronogramaContext] carregarDados() — recebidos:",
         lp.length,
-        "projetos e",
+        "projetos |",
         lt.length,
         "tarefas"
       );
@@ -114,17 +110,11 @@ export function CronogramaProvider({ children }) {
   // 3) CRUD Projetos
   // ================================================================
   const criarProjetoCtx = async (dados) => {
-    if (!db || !user) {
-      console.warn(
-        "[CronogramaContext] criarProjetoCtx() – sem db ou user",
-        { temDb: !!db, temUser: !!user }
-      );
-      return;
-    }
+    if (!db || !user) return;
 
     await criarProjeto(db, {
       ...dados,
-      uid: user.uid, // 🔥 chave para o filtro
+      uid: user.uid,
     });
 
     await carregarDados();
@@ -164,13 +154,13 @@ export function CronogramaProvider({ children }) {
   };
 
   // ================================================================
-  // 5) Expor contexto para a UI
+  // 5) Expor contexto para UI
   // ================================================================
   return (
     <CronogramaContext.Provider
       value={{
         carregando,
-        loading: carregando, // 🔥 alias para não quebrar os componentes
+        loading: carregando, // alias para compatibilidade
         projetos,
         tarefas,
         criarProjeto: criarProjetoCtx,
