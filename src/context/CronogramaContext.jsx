@@ -60,15 +60,19 @@ export function CronogramaProvider({ children }) {
       temUser: !!user,
     });
 
-    if (!db || !user) return;
+    if (!db || !user) {
+      console.warn("[Provider] carregarDados abortado — db ou user indisponível");
+      return;
+    }
 
     try {
       setCarregando(true);
       console.log("[Provider] carregarDados() – iniciando | uid:", user.uid);
 
+      // 🔥 CORREÇÃO CRÍTICA: agora usamos somente user.uid, sem db como argumento
       const [lp, lt] = await Promise.all([
-        listarProjetos(db, user.uid),
-        listarTarefas(db),
+        listarProjetos(user.uid),  // ✔ usa só uid
+        listarTarefas(),           // ✔ sem argumentos
       ]);
 
       console.log(
@@ -93,35 +97,35 @@ export function CronogramaProvider({ children }) {
   }, [carregarDados]);
 
   // ==========================================================
-  // 3) CRUDs expostos para UI
+  // 3) CRUDs expostos para UI — corrigidos (sem db como argumento)
   // ==========================================================
   const criarProjetoCtx = async (dados) => {
-    await criarProjeto(db, { ...dados, uid: user.uid });
+    await criarProjeto({ ...dados, uid: user.uid }); // ✔ assinatura correta
     await carregarDados();
   };
 
   const editarProjetoCtx = async (id, dados) => {
-    await editarProjeto(db, id, dados);
+    await editarProjeto(id, dados);                  // ✔ assinatura correta
     await carregarDados();
   };
 
   const removerProjetoCtx = async (id) => {
-    await removerProjeto(db, id);
+    await removerProjeto(id);                        // ✔ assinatura correta
     await carregarDados();
   };
 
   const criarTarefaCtx = async (dados) => {
-    await criarTarefa(db, dados);
+    await criarTarefa(dados);                        // ✔ assinatura correta
     await carregarDados();
   };
 
   const editarTarefaCtx = async (id, dados) => {
-    await editarTarefa(db, id, dados);
+    await editarTarefa(id, dados);                   // ✔ assinatura correta
     await carregarDados();
   };
 
   const removerTarefaCtx = async (id) => {
-    await removerTarefa(db, id);
+    await removerTarefa(id);                         // ✔ assinatura correta
     await carregarDados();
   };
 
