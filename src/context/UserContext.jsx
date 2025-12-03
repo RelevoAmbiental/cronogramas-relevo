@@ -13,11 +13,26 @@ export function UserProvider({ children }) {
   useEffect(() => {
     console.log("[UserProvider] useEffect START — aguardando bootstrap");
 
-    // 🔥 Usa o mesmo bootstrap do CronogramaProvider.
     waitForRelevoFirebase()
       .then((res) => {
-        console.log("[UserProvider] Bootstrap OK — usuário recebido:", res.user);
-        setUser(res.user || null);
+        console.log("[UserProvider] Bootstrap OK — usuário recebido (BRUTO):", res.user);
+
+        const raw = res.user;
+
+        // ===============================================================
+        // 🔥 CORREÇÃO CRÍTICA:
+        // Criamos um USER PURO (somente campos permitidos)
+        // ===============================================================
+        const safeUser = raw
+          ? {
+              uid: raw.uid || null,
+              email: raw.email || null,
+            }
+          : null;
+
+        console.log("[UserProvider] Usuário NORMALIZADO:", safeUser);
+
+        setUser(safeUser);
         setLoading(false);
       })
       .catch((err) => {
