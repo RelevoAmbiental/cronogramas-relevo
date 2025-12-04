@@ -4,14 +4,24 @@ import { bootstrapCronograma } from "../relevo-bootstrap";
 
 const UserContext = createContext();
 
-export function UserProvider({ children }) {
-  console.log("[UserProvider] MONTANDO UserProvider");
+export function UserProvider({ children, initialUser }) {
+  console.log("[UserProvider] MONTANDO UserProvider — initialUser:", initialUser);
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Se o portal já enviou o usuário, começamos com ele
+  const [user, setUser] = useState(initialUser || null);
+  const [loading, setLoading] = useState(!initialUser);
 
   useEffect(() => {
-    console.log("[UserProvider] useEffect START — aguardando bootstrapCronograma");
+    // Case 1: usuário já veio pronto do main.jsx
+    if (initialUser) {
+      console.log("[UserProvider] Usuário já fornecido pelo Portal:", initialUser);
+      setUser(initialUser);
+      setLoading(false);
+      return;
+    }
+
+    // Case 2: usuário ainda não existe → aguardar Portal
+    console.log("[UserProvider] Aguardando usuário via bootstrapCronograma()…");
 
     bootstrapCronograma()
       .then((res) => {
@@ -19,9 +29,6 @@ export function UserProvider({ children }) {
 
         const raw = res.user;
 
-        // ===============================================================
-        // 🔥 MANTIDA sua normalização PADRÃO (versão original)
-        // ===============================================================
         const safeUser = raw
           ? {
               uid: raw.uid || null,
