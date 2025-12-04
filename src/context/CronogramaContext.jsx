@@ -36,15 +36,15 @@ export function CronogramaProvider({ children }) {
   const [tarefas, setTarefas] = useState([]);
 
   // ==========================================================
-  // 1) Inicializa o Firestore APENAS via bootstrap
+  // 1) Inicializa o Firestore via bootstrap (mantém v10 interno)
   // ==========================================================
   useEffect(() => {
-    console.log("[Provider] useEffect() START — aguardando bootstrapCronograma");
+    console.log("[Provider] useEffect START — aguardando bootstrapCronograma");
 
     bootstrapCronograma()
-      .then((res) => {
-        console.log("[Provider] DB DEFINIDO via bootstrap:", res.db);
-        setDb(res.db);
+      .then(({ db }) => {
+        console.log("[Provider] DB DEFINIDO via bootstrap:", db);
+        setDb(db);
       })
       .catch((err) => {
         console.error("[Provider] Erro no bootstrap:", err);
@@ -67,21 +67,11 @@ export function CronogramaProvider({ children }) {
 
     try {
       setCarregando(true);
-      console.log("[Provider] carregarDados() – iniciando | uid:", user.uid);
 
-      // 🔥 CORREÇÃO CRÍTICA: agora usamos somente user.uid, sem db como argumento
       const [lp, lt] = await Promise.all([
-        listarProjetos(user.uid),  // ✔ usa só uid
-        listarTarefas(),           // ✔ sem argumentos
+        listarProjetos(db, user.uid), // ← assinatura correta
+        listarTarefas(db),            // ← assinatura correta
       ]);
-
-      console.log(
-        "[Provider] carregarDados() – recebidos:",
-        lp.length,
-        "projetos e",
-        lt.length,
-        "tarefas"
-      );
 
       setProjetos(lp);
       setTarefas(lt);
@@ -97,48 +87,38 @@ export function CronogramaProvider({ children }) {
   }, [carregarDados]);
 
   // ==========================================================
-  // 3) CRUDs expostos para UI — corrigidos (sem db como argumento)
+  // 3) CRUDs expostos — preservando assinatura correta
   // ==========================================================
   const criarProjetoCtx = async (dados) => {
-    await criarProjeto({ ...dados, uid: user.uid }); // ✔ assinatura correta
+    await criarProjeto(db, { ...dados, uid: user.uid });
     await carregarDados();
   };
 
   const editarProjetoCtx = async (id, dados) => {
-    await editarProjeto(id, dados);                  // ✔ assinatura correta
+    await editarProjeto(db, id, dados);
     await carregarDados();
   };
 
   const removerProjetoCtx = async (id) => {
-    await removerProjeto(id);                        // ✔ assinatura correta
+    await removerProjeto(db, id);
     await carregarDados();
   };
 
   const criarTarefaCtx = async (dados) => {
-    await criarTarefa(dados);                        // ✔ assinatura correta
+    await criarTarefa(db, dados);
     await carregarDados();
   };
 
   const editarTarefaCtx = async (id, dados) => {
-    await editarTarefa(id, dados);                   // ✔ assinatura correta
+    await editarTarefa(db, id, dados);
     await carregarDados();
   };
 
   const removerTarefaCtx = async (id) => {
-    await removerTarefa(id);                         // ✔ assinatura correta
+    await removerTarefa(db, id);
     await carregarDados();
   };
 
-  console.log(
-    "[Provider] RENDER — projetos:",
-    projetos.length,
-    "| tarefas:",
-    tarefas.length
-  );
-
-  // ==========================================================
-  // 4) Provider exposto
-  // ==========================================================
   return (
     <CronogramaContext.Provider
       value={{
