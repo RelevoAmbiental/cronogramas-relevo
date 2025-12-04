@@ -1,5 +1,6 @@
 // src/services/cronogramaService.js
-// Firestore compat vindo do Portal via window.__RELEVO_DB__
+// Camada de acesso ao Firestore para Projetos e Tarefas,
+// usando SEMPRE o Firestore compat exposto pelo Portal em window.__RELEVO_DB__.
 
 function getDb() {
   const db = window.__RELEVO_DB__;
@@ -20,7 +21,7 @@ export async function listarProjetos(uid = null) {
 
   let ref = firestore.collection("projetos");
 
-  // 🔒 Proteção contra UID inválido
+  // 🔒 Proteção: só aplica filtro se UID for string válida
   if (typeof uid === "string" && uid.trim() !== "") {
     ref = ref.where("uid", "==", uid.trim());
   } else {
@@ -72,6 +73,7 @@ export async function listarTarefas(projetoId = null) {
 
   let ref = firestore.collection("tarefas");
 
+  // Proteção semelhante para projetoId (quando houver filtro)
   if (typeof projetoId === "string" && projetoId.trim() !== "") {
     ref = ref.where("projetoId", "==", projetoId.trim());
   }
@@ -79,8 +81,10 @@ export async function listarTarefas(projetoId = null) {
   const snap = await ref.get();
 
   console.log(
-    "[cronogramaService] listarTarefas() — docs encontrados:",
-    snap.docs.length
+    "[cronogramaService] listarTarefas() – docs encontrados:",
+    snap.docs.length,
+    "filtro projetoId =",
+    projetoId
   );
 
   return snap.docs.map((doc) => ({
