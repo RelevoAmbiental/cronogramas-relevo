@@ -1,4 +1,11 @@
-// src/main.jsx
+// ======================================================================
+// src/main.jsx — Cronograma Relevo
+// Integração oficial com o Portal Relevo (Firebase compat v9)
+// Monta o React SOMENTE após:
+//   1) Firebase do portal estar disponível
+//   2) Usuário do portal estar disponível
+// ======================================================================
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -10,24 +17,34 @@ import { CronogramaProvider } from "./context/CronogramaContext";
 import "./styles/globals.css";
 import "./styles/layout.css";
 
-import { waitForRelevoFirebase } from "./relevo-bootstrap";
+// Função unificada que aguarda Firebase + User
+import { bootstrapCronograma } from "./relevo-bootstrap";
 
-// ===========================================================
-// 🔥 1) Aguarda o Firebase do portal ANTES de montar o React
-// ===========================================================
-waitForRelevoFirebase()
-  .then(({ db, auth }) => {
-    console.log("🔥 [main.jsx] Firebase pronto via Portal Relevo:", { db, auth });
+// ======================================================================
+// 🔥 1) Bootstrap — aguarda Firebase + Usuário do Portal
+// ======================================================================
+bootstrapCronograma()
+  .then(({ db, auth, user }) => {
+    console.log("🔥 [main.jsx] Bootstrap concluído via Portal Relevo:", {
+      db,
+      auth,
+      user,
+    });
 
     const rootElement = document.getElementById("root");
+
     if (!rootElement) {
       console.error("❌ [main.jsx] ERRO FATAL: #root não encontrado no DOM.");
       return;
     }
 
+    // ================================================================
+    // 🔥 2) Monta o React APENAS quando tudo estiver pronto
+    // ================================================================
     ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
-        <UserProvider>
+        {/* Passa o usuário inicial fornecido pelo Portal Relevo */}
+        <UserProvider initialUser={user}>
           <CronogramaProvider>
             <App />
           </CronogramaProvider>
@@ -35,6 +52,10 @@ waitForRelevoFirebase()
       </React.StrictMode>
     );
   })
+
+  // ====================================================================
+  // ❌ Falha no bootstrap (Firebase ou usuário não carregou)
+  // ====================================================================
   .catch((err) => {
-    console.error("❌ [main.jsx] Erro esperando Firebase do Portal Relevo:", err);
+    console.error("❌ [main.jsx] Erro no bootstrap do Cronograma:", err);
   });
