@@ -20,7 +20,7 @@ import {
   removerTarefa,
 } from "../services/cronogramaService";
 
-import { waitForRelevoFirebase } from "../relevo-bootstrap";
+import { bootstrapCronograma } from "../relevo-bootstrap";
 
 const CronogramaContext = createContext();
 
@@ -39,9 +39,9 @@ export function CronogramaProvider({ children }) {
   // 1) Inicializa o Firestore APENAS via bootstrap
   // ==========================================================
   useEffect(() => {
-    console.log("[Provider] useEffect() START — aguardando waitForRelevoFirebase");
+    console.log("[Provider] useEffect() START — aguardando bootstrapCronograma");
 
-    waitForRelevoFirebase()
+    bootstrapCronograma()
       .then((res) => {
         console.log("[Provider] DB DEFINIDO via bootstrap:", res.db);
         setDb(res.db);
