@@ -1,0 +1,7 @@
+/* Bloqueia o reset invasivo do header.css, apenas dentro do Cronograma */
+.cronograma-scope div,
+.cronograma-scope main,
+.cronograma-scope section {
+  max-width: unset !important;
+  width: auto !important;
+}
