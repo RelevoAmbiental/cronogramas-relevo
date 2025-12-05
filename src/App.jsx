@@ -21,18 +21,20 @@ import { useUser } from "./context/UserContext";
 function CronogramaApp() {
   return (
     <div className="cronograma-scope">
-      <Header />
-      <Navegacao />
-      <main className="content">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/projetos" element={<Projetos />} />
-          <Route path="/tarefas" element={<Tarefas />} />
-          <Route path="/calendario" element={<CalendarView />} />
-          <Route path="/importar" element={<ImportarCronograma />} />
-        </Routes>
-      </main>
-      <Footer />
+      <div className="layout">
+        <Header />
+        <Navegacao />
+        <main className="content">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/projetos" element={<Projetos />} />
+            <Route path="/tarefas" element={<Tarefas />} />
+            <Route path="/calendario" element={<CalendarView />} />
+            <Route path="/importar" element={<ImportarCronograma />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
