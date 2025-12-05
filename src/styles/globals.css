@@ -58,8 +58,22 @@ table th {
   text-align: left;
 }
 
-/* Header fixo */
+/* Afastamento para compensar o header fixo do layout */
 main,
+.content,
 #page-content {
   padding-top: 95px !important;
+}
+
+/* Evita problemas de overflow sem travar layouts complexos */
+* {
+  box-sizing: border-box;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
 }
