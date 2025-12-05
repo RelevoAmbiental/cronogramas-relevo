@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
-import "./importar.css";
+import "./importar-scope.css";
 
 // util para converter dias relativos em datas reais
 function addDays(date, days) {
