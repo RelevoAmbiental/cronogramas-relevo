@@ -14,6 +14,33 @@ import ImportarCronograma from "./components/Importador/ImportarCronograma";
 
 import { useUser } from "./context/UserContext";
 
+
+// --------------------------------------------------------
+// COMPONENTE PRINCIPAL DO CRONOGRAMA (escopo isolado)
+// --------------------------------------------------------
+function CronogramaApp() {
+  return (
+    <div className="cronograma-scope">
+      <Header />
+      <Navegacao />
+      <main className="content">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/projetos" element={<Projetos />} />
+          <Route path="/tarefas" element={<Tarefas />} />
+          <Route path="/calendario" element={<CalendarView />} />
+          <Route path="/importar" element={<ImportarCronograma />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+
+// --------------------------------------------------------
+// LÓGICA DE AUTENTICAÇÃO VIA PORTAL
+// --------------------------------------------------------
 function AppContent() {
   const { user, loading } = useUser();
 
@@ -29,24 +56,14 @@ function AppContent() {
     );
   }
 
-  return (
-    <>
-      <Header />
-      <Navegacao />
-      <main className="content" style={{ padding: "20px" }}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/projetos" element={<Projetos />} />
-          <Route path="/tarefas" element={<Tarefas />} />
-          <Route path="/calendario" element={<CalendarView />} />
-          <Route path="/importar" element={<ImportarCronograma />} />
-        </Routes>
-      </main>
-      <Footer />
-    </>
-  );
+  // 🔥 Retorna o aplicativo do cronograma isolado no wrapper
+  return <CronogramaApp />;
 }
 
+
+// --------------------------------------------------------
+// EXPORTAÇÃO FINAL — única
+// --------------------------------------------------------
 export default function App() {
   return (
     <Router basename="/cronograma">
