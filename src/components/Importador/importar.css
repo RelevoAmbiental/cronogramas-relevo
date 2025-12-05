@@ -3,6 +3,8 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 24px 20px 40px;
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
 .importar-header h1 {
