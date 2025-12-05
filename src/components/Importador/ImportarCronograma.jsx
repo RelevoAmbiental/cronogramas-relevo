@@ -86,7 +86,9 @@ export default function ImportarCronograma() {
 
       if (!Array.isArray(resultado)) {
         console.error("[ImportarCronograma] Formato inesperado:", resultado);
-        setErro("A IA retornou um formato inesperado. Veja o console para detalhes.");
+        setErro(
+          "A IA retornou um formato inesperado. Veja o console para detalhes."
+        );
         setCarregandoIA(false);
         return;
       }
@@ -110,9 +112,10 @@ export default function ImportarCronograma() {
       }));
 
       setTarefasExtraidas(tarefasNormalizadas);
-      // texto simples do resultado para visualização (texto extraído da IA)
       setTextoExtraido(JSON.stringify(resultado, null, 2));
-      setMensagem("Tarefas geradas com sucesso pela IA. Revise antes de salvar.");
+      setMensagem(
+        "Tarefas geradas com sucesso pela IA. Revise antes de salvar."
+      );
     } catch (err) {
       console.error("Erro ao enviar para IA:", err);
       setErro("Erro ao gerar tarefas com IA. Verifique o console para detalhes.");
@@ -190,9 +193,6 @@ export default function ImportarCronograma() {
       }
 
       setMensagem("Tarefas salvas com sucesso no Firestore.");
-      // se quiser limpar após salvar:
-      // setTarefasExtraidas([]);
-      // setTextoExtraido("");
     } catch (err) {
       console.error("[ImportarCronograma] Erro ao salvar tarefas:", err);
       setErro("Falha ao salvar tarefas. Verifique o console para detalhes.");
