@@ -16,6 +16,7 @@ import { CronogramaProvider } from "./context/CronogramaContext";
 
 import "./styles/globals.css";
 import "./styles/layout.css";
+import "./styles/cronograma-scope.css";
 
 // Função unificada que aguarda Firebase + User
 import { bootstrapCronograma } from "./relevo-bootstrap";
