@@ -2,15 +2,22 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: radial-gradient(circle at top left, #0d9488 0, #022c22 36%, #020617 100%);
+  color: #f9fafb;
 }
 
 .content {
   flex: 1;
-  padding: 2rem;
+  padding: 24px 24px 32px;
 }
 
-header, footer {
+/* Header e Footer do cronograma (não mexe no portal externo) */
+
+header,
+footer {
   background: #0a4723;
   color: white;
   padding: 1rem 2rem;
 }
+
+/* Se você tiver .header, .footer específicos, pode refinar aqui depois */
