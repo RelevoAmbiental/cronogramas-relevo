@@ -1,0 +1,28 @@
+/* ======================================================
+   IMPORTAR — CSS Scope Relevo
+   Garante prioridade para o layout moderno do Importador
+   ====================================================== */
+
+.importar-wrapper,
+.importar-wrapper * {
+  all: revert;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Reaplica base do importar.css */
+@import "./importar.css";
+
+/* Ajustes de força para evitar sobrescrita global */
+.importar-wrapper {
+  width: 100%;
+  max-width: 1280px !important;
+  margin: 0 auto;
+  padding: 24px 20px 40px !important;
+}
+
+.importar-main-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr) !important;
+  gap: 18px !important;
+}
