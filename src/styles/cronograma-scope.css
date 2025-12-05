@@ -5,3 +5,30 @@
   max-width: unset !important;
   width: auto !important;
 }
+/* ===========================================
+   Ajustes internos do Cronograma — padding e centralização
+   =========================================== */
+
+/* Reequilibra a área principal do conteúdo */
+.cronograma-scope .content {
+  padding: 32px 24px 48px !important;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Espaço extra por causa do header fixo */
+.cronograma-scope main.content {
+  padding-top: 110px !important;
+}
+
+/* Melhora a defesa visual dos grids */
+.cronograma-scope .importar-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Ajusta o grid principal */
+.cronograma-scope .importar-main-grid {
+  gap: 24px !important;
+}
