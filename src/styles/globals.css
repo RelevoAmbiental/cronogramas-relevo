@@ -9,7 +9,175 @@ img,
 video,
 canvas,
 svg {
+  max-width: 100%;/* =====================================================================
+   GLOBALS.CSS — Relevo Cronograma
+   Reset moderno, tipografia Relevo, base visual limpa.
+   Focado exclusivamente no módulo Cronograma (não afeta Portal).
+   ===================================================================== */
+
+/* ---------------------------
+   RESET MODERNO E SEGURO
+----------------------------*/
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Elementos de mídia fluidos */
+img,
+video,
+canvas,
+svg {
+  display: block;
   max-width: 100%;
+  height: auto;
+}
+
+/* Remove estilizações antigas de inputs */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* ---------------------------
+   BASE TIPOGRÁFICA
+----------------------------*/
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2937;
+  background: #f3f4f6; /* cinza suave e moderno */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------
+   TITULAÇÃO GLOBAL
+----------------------------*/
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 600;
+  color: #0d3b2e; /* verde profundo Relevo */
+}
+
+/* ---------------------------
+   LINKS
+----------------------------*/
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------------------------
+   CONTÊINER PRINCIPAL (.content)
+   Cada página será organizada dentro dele.
+----------------------------*/
+.content {
+  width: 100%;
+  max-width: 1280px; /* centralização padrão Relevo */
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* Ajuste para compensar o header fixo */
+header + .content {
+  padding-top: 110px;
+}
+
+/* ---------------------------
+   TABELAS (mínimas, mas elegantes)
+----------------------------*/
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  background: white;
+}
+
+table th,
+table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.6rem;
+}
+
+table th {
+  background: #f0fdf4; /* tom suave Relevo */
+  font-weight: 600;
+  color: #065f46;
+  text-align: left;
+}
+
+/* ---------------------------
+   SCROLLBAR MODERNA
+----------------------------*/
+::-webkit-scrollbar {
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e5e7eb;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* ---------------------------
+   FORM CONTROLS BASE (SEM SOBRESCREVER IMPORTAR.CSS)
+----------------------------*/
+input,
+select,
+textarea {
+  font-size: 1rem;
+}
+
+/* ---------------------------
+   BOTÕES BASE (não colide com btn-relevo)
+----------------------------*/
+button {
+  cursor: pointer;
+}
+
+/* ---------------------------
+   FEEDBACK GLOBAL PADRÃO
+----------------------------*/
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.alert.erro {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.alert.sucesso {
+  background: #ecfdf5;
+  color: #166534;
+}
+
   height: auto;
 }
 
