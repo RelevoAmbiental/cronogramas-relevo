@@ -81,20 +81,6 @@
   }
 }
 
-/* --- CORAÇÃO DO PROBLEMA: PREVENIR OVERFLOW --- */
-body, html {
-  overflow-x: hidden !important;
-  width: 100% !important;
-}
-
-#root {
-  overflow-x: hidden !important;
-}
-
-/* Garante que nenhum container tente ampliar além da tela */
-main, section, div {
-  max-width: 100% !important;
-}
 /* ---- NAV PRINCIPAL AJUSTADA ---- */
 .topbar {
   padding: 10px 24px;
