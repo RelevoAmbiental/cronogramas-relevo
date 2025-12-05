@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
-//import "./importar-scope.css";
 
-// util para converter dias relativos em datas reais
+// *** SEM CSS neste modo ***
+// import "./importar-scope.css";
+
 function addDays(date, days) {
   const d = new Date(date);
   d.setDate(d.getDate() + (Number(days) || 0));
@@ -30,26 +31,6 @@ export default function ImportarCronograma() {
     setMensagem("");
   }
 
-  function handleProjetoChange(e) {
-    setProjetoSelecionado(e.target.value);
-    setErro("");
-    setMensagem("");
-  }
-
-  function handleLimpar() {
-    setArquivo(null);
-    setTextoExtraido("");
-    setTarefasExtraidas([]);
-    setProjetoSelecionado("");
-    setErro("");
-    setMensagem("");
-    setCarregandoIA(false);
-    setSalvando(false);
-
-    const input = document.getElementById("importar-arquivo");
-    if (input) input.value = "";
-  }
-
   async function gerarComIA() {
     setErro("");
     setMensagem("");
@@ -64,7 +45,6 @@ export default function ImportarCronograma() {
     }
 
     setCarregandoIA(true);
-
     const formData = new FormData();
     formData.append("file", arquivo);
 
@@ -77,23 +57,14 @@ export default function ImportarCronograma() {
         }
       );
 
-      if (!response.ok) {
-        console.error("[ImportarCronograma] Erro HTTP:", response.status);
-        throw new Error(`Falha na requisição: ${response.status}`);
-      }
-
       const resultado = await response.json();
 
       if (!Array.isArray(resultado)) {
-        console.error("[ImportarCronograma] Formato inesperado:", resultado);
-        setErro(
-          "A IA retornou um formato inesperado. Veja o console para detalhes."
-        );
+        setErro("Formato inesperado.");
         setCarregandoIA(false);
         return;
       }
 
-      // garante campos editáveis
       const tarefasNormalizadas = resultado.map((t, idx) => ({
         idLocal: `${Date.now()}-${idx}`,
         nome: t.nome || "",
@@ -101,86 +72,41 @@ export default function ImportarCronograma() {
         produto: t.produto || "",
         categoria: t.categoria || "",
         responsavel: t.responsavel || "",
-        inicioRelativoDias:
-          typeof t.inicioRelativoDias === "number"
-            ? t.inicioRelativoDias
-            : Number(t.inicioRelativoDias) || 0,
-        duracaoDias:
-          typeof t.duracaoDias === "number"
-            ? t.duracaoDias
-            : Number(t.duracaoDias) || 1,
+        inicioRelativoDias: Number(t.inicioRelativoDias) || 0,
+        duracaoDias: Number(t.duracaoDias) || 1,
       }));
 
       setTarefasExtraidas(tarefasNormalizadas);
       setTextoExtraido(JSON.stringify(resultado, null, 2));
-      setMensagem(
-        "Tarefas geradas com sucesso pela IA. Revise antes de salvar."
-      );
+      setMensagem("Tarefas geradas com sucesso!");
     } catch (err) {
       console.error("Erro ao enviar para IA:", err);
-      setErro("Erro ao gerar tarefas com IA. Verifique o console para detalhes.");
+      setErro("Falha ao processar arquivo.");
     } finally {
       setCarregandoIA(false);
     }
   }
 
-  function handleChangeTarefa(index, campo, valor) {
-    setTarefasExtraidas((prev) =>
-      prev.map((t, i) =>
-        i === index
-          ? {
-              ...t,
-              [campo]:
-                campo === "inicioRelativoDias" || campo === "duracaoDias"
-                  ? Number(valor) || 0
-                  : valor,
-            }
-          : t
-      )
-    );
-  }
-
-  function handleRemoverTarefa(index) {
-    setTarefasExtraidas((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  function handleDuplicarTarefa(index) {
-    setTarefasExtraidas((prev) => {
-      const copia = { ...prev[index], idLocal: `${Date.now()}-copy-${index}` };
-      return [...prev.slice(0, index + 1), copia, ...prev.slice(index + 1)];
-    });
-  }
-
   async function salvarTarefas() {
-    setErro("");
-    setMensagem("");
-
     if (tarefasExtraidas.length === 0) {
       setErro("Nenhuma tarefa para salvar.");
       return;
     }
     if (!projetoSelecionado) {
-      setErro("Selecione um projeto para salvar as tarefas.");
+      setErro("Selecione um projeto para salvar.");
       return;
     }
 
     setSalvando(true);
-
     const startDate = new Date().toISOString().slice(0, 10);
 
     try {
       for (const t of tarefasExtraidas) {
-        const inicio = addDays(
-          startDate,
-          t.inicioRelativoDias != null ? t.inicioRelativoDias : 0
-        );
-        const fim = addDays(
-          inicio,
-          t.duracaoDias != null ? t.duracaoDias - 1 : 0
-        );
+        const inicio = addDays(startDate, t.inicioRelativoDias);
+        const fim = addDays(inicio, t.duracaoDias - 1);
 
         await criarTarefa({
-          nome: t.nome || "Tarefa sem nome",
+          nome: t.nome || "Sem nome",
           descricao: t.descricao || "",
           produto: t.produto || "",
           categoria: t.categoria || "",
@@ -192,282 +118,90 @@ export default function ImportarCronograma() {
         });
       }
 
-      setMensagem("Tarefas salvas com sucesso no Firestore.");
+      setMensagem("Tarefas salvas no Firestore.");
     } catch (err) {
-      console.error("[ImportarCronograma] Erro ao salvar tarefas:", err);
-      setErro("Falha ao salvar tarefas. Verifique o console para detalhes.");
+      console.error(err);
+      setErro("Erro ao salvar.");
     } finally {
       setSalvando(false);
     }
   }
 
+  // 🔥🔥🔥 AQUI COMEÇA O TESTE DE DIAGNÓSTICO 🔥🔥🔥
   return (
-    <div className="importar-wrapper">
-      <div className="importar-header">
-        <h1>Importar Cronograma via IA</h1>
-        <p>
-          Selecione um projeto, envie um arquivo (PDF, DOCX ou TXT) e use a IA
-          para extrair tarefas. Revise, ajuste e salve diretamente no
-          cronograma.
-        </p>
-      </div>
+    <div
+      style={{
+        border: "6px solid red",
+        padding: "20px",
+        background: "#fff0f0",
+      }}
+    >
+      <h1 style={{ color: "red", fontSize: "28px" }}>
+        🔎 TESTE: ESTE É O IMPORTADOR REACT ATUAL
+      </h1>
 
-      <div className="importar-card importar-card-top">
-        <div className="importar-row importar-row-top">
-          <div className="importar-field">
-            <label>Projeto</label>
-            <select
-              value={projetoSelecionado}
-              onChange={handleProjetoChange}
-              disabled={loading}
-              className="importar-select"
-            >
-              <option value="">-- Selecione um projeto --</option>
-              {projetos.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.nome || "Projeto sem nome"}
-                </option>
-              ))}
-            </select>
-          </div>
+      <p style={{ fontSize: "18px", marginTop: "10px" }}>
+        Se você está vendo este bloco vermelho com este texto, ENTÃO o React está
+        carregando o componente correto.
+      </p>
 
-          <div className="importar-field importar-field-file">
-            <label>Arquivo (PDF, DOCX ou TXT)</label>
-            <input
-              id="importar-arquivo"
-              type="file"
-              accept=".pdf,.txt,.doc,.docx"
-              onChange={handleArquivo}
-              disabled={carregandoIA || salvando}
-            />
-          </div>
+      <hr style={{ margin: "20px 0" }} />
 
-          <div className="importar-actions-top">
-            <button
-              type="button"
-              className="btn-relevo primario"
-              onClick={gerarComIA}
-              disabled={
-                !arquivo || !projetoSelecionado || carregandoIA || loading
-              }
-            >
-              {carregandoIA ? "Processando arquivo..." : "Extrair tarefas com IA"}
-            </button>
-          </div>
-        </div>
+      <p style={{ fontSize: "20px", color: "#333" }}>
+        ✔ Projetos carregados: {projetos.length}
+      </p>
 
-        {(erro || mensagem) && (
-          <div className="importar-feedback">
-            {erro && <div className="importar-alert erro">{erro}</div>}
-            {mensagem && (
-              <div className="importar-alert sucesso">{mensagem}</div>
-            )}
-          </div>
-        )}
-      </div>
+      <p style={{ fontSize: "16px", marginTop: "20px" }}>
+        <strong>Selecione um projeto:</strong>
+      </p>
 
-      <div className="importar-main-grid">
-        <div className="importar-card importar-preview">
-          <div className="importar-card-header">
-            <h2>Texto extraído</h2>
-            <span className="importar-subtitle">
-              Visualização simples do retorno da IA
-            </span>
-          </div>
-          <div className="importar-preview-content">
-            {textoExtraido ? (
-              <pre>{textoExtraido}</pre>
-            ) : (
-              <p className="importar-placeholder">
-                Ainda não há texto extraído. Após enviar o arquivo para a IA,
-                o conteúdo retornado será mostrado aqui em formato textual.
-              </p>
-            )}
-          </div>
-        </div>
+      <select
+        value={projetoSelecionado}
+        onChange={(e) => setProjetoSelecionado(e.target.value)}
+        style={{ padding: "6px", fontSize: "16px" }}
+      >
+        <option value="">-- selecione --</option>
+        {projetos.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.nome}
+          </option>
+        ))}
+      </select>
 
-        <div className="importar-card importar-tarefas">
-          <div className="importar-card-header">
-            <h2>Tarefas extraídas</h2>
-            <span className="importar-subtitle">
-              Revise os campos, ajuste dias relativos e organize antes de salvar.
-            </span>
-          </div>
+      <p style={{ marginTop: "20px", fontSize: "16px" }}>
+        <strong>Arquivo:</strong>
+      </p>
 
-          <div className="importar-tarefas-lista">
-            {tarefasExtraidas.length === 0 && (
-              <p className="importar-placeholder">
-                Nenhuma tarefa extraída ainda. Envie o arquivo para a IA para
-                gerar uma lista de tarefas editáveis.
-              </p>
-            )}
+      <input
+        type="file"
+        onChange={handleArquivo}
+        style={{ padding: "6px", fontSize: "16px" }}
+      />
 
-            {tarefasExtraidas.map((tarefa, index) => (
-              <div key={tarefa.idLocal || index} className="importar-tarefa-card">
-                <div className="importar-tarefa-header">
-                  <span className="importar-tarefa-titulo">
-                    Tarefa #{index + 1}
-                  </span>
-                  <div className="importar-tarefa-actions">
-                    <button
-                      type="button"
-                      className="btn-icon"
-                      title="Duplicar tarefa"
-                      onClick={() => handleDuplicarTarefa(index)}
-                    >
-                      ⧉
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-icon remover"
-                      title="Remover tarefa"
-                      onClick={() => handleRemoverTarefa(index)}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
+      <button
+        onClick={gerarComIA}
+        style={{
+          padding: "10px 18px",
+          marginTop: "20px",
+          background: "red",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
+      >
+        TESTE — Extrair Tarefas
+      </button>
 
-                <div className="importar-tarefa-grid">
-                  <div className="importar-field">
-                    <label>Nome da tarefa</label>
-                    <input
-                      type="text"
-                      value={tarefa.nome}
-                      onChange={(e) =>
-                        handleChangeTarefa(index, "nome", e.target.value)
-                      }
-                      placeholder="Ex.: Levantamento de campo - Trecho 1"
-                    />
-                  </div>
+      <hr style={{ margin: "20px 0" }} />
 
-                  <div className="importar-field">
-                    <label>Descrição</label>
-                    <textarea
-                      rows={2}
-                      value={tarefa.descricao}
-                      onChange={(e) =>
-                        handleChangeTarefa(index, "descricao", e.target.value)
-                      }
-                      placeholder="Descrição resumida da atividade, entregas, condicionantes, etc."
-                    />
-                  </div>
+      <pre style={{ fontSize: "14px", background: "#fff", padding: "10px" }}>
+        {textoExtraido || "Nenhum texto extraído ainda."}
+      </pre>
 
-                  <div className="importar-field">
-                    <label>Produto</label>
-                    <input
-                      type="text"
-                      value={tarefa.produto}
-                      onChange={(e) =>
-                        handleChangeTarefa(index, "produto", e.target.value)
-                      }
-                      placeholder="Ex.: Relatório técnico, mapa temático, banco de dados..."
-                    />
-                  </div>
-
-                  <div className="importar-field">
-                    <label>Categoria</label>
-                    <input
-                      type="text"
-                      value={tarefa.categoria}
-                      onChange={(e) =>
-                        handleChangeTarefa(index, "categoria", e.target.value)
-                      }
-                      placeholder="Ex.: Campo, gabinete, modelagem, oficinas..."
-                    />
-                  </div>
-
-                  <div className="importar-field">
-                    <label>Responsável</label>
-                    <input
-                      type="text"
-                      value={tarefa.responsavel}
-                      onChange={(e) =>
-                        handleChangeTarefa(index, "responsavel", e.target.value)
-                      }
-                      placeholder="Ex.: Geólogo, Coordenador, Equipe de campo..."
-                    />
-                  </div>
-
-                  <div className="importar-field importar-field-inline">
-                    <div>
-                      <label>Início relativo (dias)</label>
-                      <input
-                        type="number"
-                        value={tarefa.inicioRelativoDias}
-                        onChange={(e) =>
-                          handleChangeTarefa(
-                            index,
-                            "inicioRelativoDias",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label>Duração (dias)</label>
-                      <input
-                        type="number"
-                        value={tarefa.duracaoDias}
-                        onChange={(e) =>
-                          handleChangeTarefa(
-                            index,
-                            "duracaoDias",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="importar-field">
-                    <label>Resumo da relação temporal</label>
-                    <div className="importar-tempo-resumo">
-                      Inicia{" "}
-                      <strong>
-                        +{tarefa.inicioRelativoDias || 0} dia
-                        {Math.abs(tarefa.inicioRelativoDias || 0) === 1
-                          ? ""
-                          : "s"}
-                      </strong>{" "}
-                      após a data base, com duração de{" "}
-                      <strong>
-                        {tarefa.duracaoDias || 1} dia
-                        {Math.abs(tarefa.duracaoDias || 1) === 1 ? "" : "s"}
-                      </strong>
-                      .
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="importar-footer-actions">
-        <button
-          type="button"
-          className="btn-relevo fantasma"
-          onClick={handleLimpar}
-          disabled={carregandoIA || salvando || loading}
-        >
-          Limpar tudo
-        </button>
-
-        <div className="importar-footer-right">
-          <button
-            type="button"
-            className="btn-relevo primario"
-            onClick={salvarTarefas}
-            disabled={
-              salvando || carregandoIA || loading || tarefasExtraidas.length === 0
-            }
-          >
-            {salvando ? "Salvando tarefas..." : "Salvar tarefas no projeto"}
-          </button>
-        </div>
-      </div>
+      <p style={{ marginTop: "20px", fontSize: "18px" }}>
+        Tarefas extraídas: {tarefasExtraidas.length}
+      </p>
     </div>
   );
 }
