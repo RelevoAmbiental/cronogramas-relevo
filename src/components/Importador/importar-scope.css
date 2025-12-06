@@ -1,9 +1,12 @@
 /* ======================================================
    IMPORTAR — CSS Scope Relevo
-   Garante prioridade total ao layout moderno do Importador
+   Aplica reset isolado + upgrades premium
    ====================================================== */
 
-/* RESET isolado */
+/* 1) Importa a base original do importador */
+@import "./importar.css";
+
+/* 2) Reset isolado dentro do importador */
 .importar-wrapper,
 .importar-wrapper * {
   all: revert;
@@ -11,10 +14,7 @@
   font-family: inherit;
 }
 
-/* Reaplica base moderna */
-@import "./importar.css";
-
-/* Container principal */
+/* 3) Reaplica container principal com tipografia Relevo */
 .importar-wrapper {
   width: 100%;
   max-width: 1280px !important;
@@ -22,6 +22,24 @@
   padding: 24px 20px 40px !important;
   font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
+  position: relative;
+}
+
+/* Zona superior com gradiente suave para não sumir no fundo escuro */
+.importar-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  top: -40px;
+  height: 200px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.06) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Ajuste do grid principal */
@@ -32,9 +50,7 @@
   margin-bottom: 30px;
 }
 
-/* ======================================================
-   HEADER COMO CARD (correção do texto escuro no fundo escuro)
-   ====================================================== */
+/* HEADER como card premium */
 .importar-header {
   background: #ffffff;
   padding: 28px 32px;
@@ -57,9 +73,37 @@
   margin: 0 !important;
 }
 
-/* ======================================================
-   BOTÃO FANTASMA NO FUNDO ESCURO
-   ====================================================== */
+/* Cards premium com gradiente e hover */
+.importar-card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(249, 250, 251, 0.98)
+  ) !important;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.importar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.18) !important;
+}
+
+/* Placeholder mais visível */
+.importar-placeholder {
+  color: #4b5563 !important;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Foco suave nos campos */
+.importar-field input:focus,
+.importar-field textarea:focus,
+.importar-field select:focus {
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25) !important;
+  border-color: #0f766e !important;
+}
+
+/* Botão fantasma sobre fundo escuro */
 .importar-wrapper .btn-relevo.fantasma {
   color: #0f766e !important;
   border: 1px solid rgba(15, 118, 110, 0.45) !important;
@@ -74,52 +118,27 @@
   border-color: rgba(5, 150, 105, 0.55) !important;
 }
 
-/* ======================================================
-   AJUSTES ESPECIAIS DO IMPORTADOR
-   ====================================================== */
-
-/* Corrige grid interno e cards */
-.importar-card {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border: 1px solid rgba(15, 118, 110, 0.08) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12) !important;
+/* Microinterações globais de botões */
+.btn-relevo {
+  transition: background 0.18s ease, transform 0.15s ease,
+    box-shadow 0.18s ease;
 }
 
-/* Ajustes de títulos internos */
-.importar-card-header h2 {
-  color: #065f46 !important;
-  font-weight: 600 !important;
+.btn-relevo:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Mantém texto de preview legível */
-.importar-preview-content {
-  background: #f9fafb !important;
-  border: 1px solid #e5e7eb !important;
-}
-
-/* Lista de tarefas com boa separação */
+/* Melhor defesa dos grids de importação */
 .importar-tarefas-lista {
   padding-right: 4px;
   gap: 12px !important;
 }
 
-/* Margem extra antes do footer */
-.importar-footer-actions {
-  margin-top: 20px;
-}
-
-/* ======================================================
-   RESPONSIVIDADE
-   ====================================================== */
+/* Responsividade extra */
 @media (max-width: 900px) {
   .importar-main-grid {
     grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  .importar-preview-content,
-  .importar-tarefas-lista {
-    max-height: 360px;
   }
 }
 
