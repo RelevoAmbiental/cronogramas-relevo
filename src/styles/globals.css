@@ -1,22 +1,11 @@
-/* ===== Estilos Globais Relevo (correção de conflitos) ===== */
-
-* {
-  box-sizing: border-box;
-}
-
-/* Mantemos responsividade sem matar layouts */
-img,
-video,
-canvas,
-svg {
-  max-width: 100%;/* =====================================================================
+/* =====================================================================
    GLOBALS.CSS — Relevo Cronograma
-   Reset moderno, tipografia Relevo, base visual limpa.
-   Focado exclusivamente no módulo Cronograma (não afeta Portal).
+   Reset moderno + tipografia + tokens visuais.
+   NÃO toca em layout (.content, padding, header, footer, grids etc.)
    ===================================================================== */
 
 /* ---------------------------
-   RESET MODERNO E SEGURO
+   RESET MODERNO
 ----------------------------*/
 *,
 *::before,
@@ -26,7 +15,7 @@ svg {
   box-sizing: border-box;
 }
 
-/* Elementos de mídia fluidos */
+/* Mídia responsiva */
 img,
 video,
 canvas,
@@ -36,7 +25,7 @@ svg {
   height: auto;
 }
 
-/* Remove estilizações antigas de inputs */
+/* Remove estilização inconsistente */
 input,
 select,
 textarea,
@@ -45,7 +34,7 @@ button {
 }
 
 /* ---------------------------
-   BASE TIPOGRÁFICA
+   TIPOGRAFIA
 ----------------------------*/
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
 
@@ -58,13 +47,13 @@ body {
   font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #1f2937;
-  background: #f3f4f6; /* cinza suave e moderno */
+  background: #f3f4f6;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ---------------------------
-   TITULAÇÃO GLOBAL
+   TITULAÇÃO
 ----------------------------*/
 h1,
 h2,
@@ -72,7 +61,7 @@ h3,
 h4,
 h5 {
   font-weight: 600;
-  color: #0d3b2e; /* verde profundo Relevo */
+  color: #0d3b2e;
 }
 
 /* ---------------------------
@@ -84,28 +73,11 @@ a {
 }
 
 /* ---------------------------
-   CONTÊINER PRINCIPAL (.content)
-   Cada página será organizada dentro dele.
-----------------------------*/
-.content {
-  width: 100%;
-  max-width: 1280px; /* centralização padrão Relevo */
-  margin: 0 auto;
-  padding: 32px 24px;
-}
-
-/* Ajuste para compensar o header fixo */
-header + .content {
-  padding-top: 110px;
-}
-
-/* ---------------------------
-   TABELAS (mínimas, mas elegantes)
+   TABELAS (somente estilo, sem layout)
 ----------------------------*/
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
   font-size: 0.9rem;
   background: white;
 }
@@ -117,14 +89,13 @@ table td {
 }
 
 table th {
-  background: #f0fdf4; /* tom suave Relevo */
+  background: #f0fdf4;
   font-weight: 600;
   color: #065f46;
-  text-align: left;
 }
 
 /* ---------------------------
-   SCROLLBAR MODERNA
+   SCROLLBAR
 ----------------------------*/
 ::-webkit-scrollbar {
   width: 9px;
@@ -141,107 +112,4 @@ table th {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #4b5563;
-}
-
-/* ---------------------------
-   FORM CONTROLS BASE (SEM SOBRESCREVER IMPORTAR.CSS)
-----------------------------*/
-input,
-select,
-textarea {
-  font-size: 1rem;
-}
-
-/* ---------------------------
-   BOTÕES BASE (não colide com btn-relevo)
-----------------------------*/
-button {
-  cursor: pointer;
-}
-
-/* ---------------------------
-   FEEDBACK GLOBAL PADRÃO
-----------------------------*/
-.alert {
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-}
-
-.alert.erro {
-  background: #fef2f2;
-  color: #b91c1c;
-}
-
-.alert.sucesso {
-  background: #ecfdf5;
-  color: #166534;
-}
-
-  height: auto;
-}
-
-/* Layout base */
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #fafafa;
-  color: #333;
-}
-
-/* Títulos gerais */
-h1,
-h2,
-h3 {
-  font-weight: 600;
-}
-
-/* Conteúdo geral */
-.content {
-  padding: 20px !important; /* sobrescreve duplicação do inline */
-  width: 100%;
-}
-
-/* Links */
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Tabelas */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-table th,
-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-table th {
-  background-color: #f2f2f2;
-  text-align: left;
-}
-
-/* Afastamento para compensar o header fixo do layout */
-main,
-.content,
-#page-content {
-  padding-top: 95px !important;
-}
-
-/* Evita problemas de overflow sem travar layouts complexos */
-* {
-  box-sizing: border-box;
-}
-
-img,
-video,
-canvas,
-svg {
-  max-width: 100%;
-  height: auto;
 }
