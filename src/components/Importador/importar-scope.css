@@ -156,3 +156,108 @@
     padding-inline: 14px !important;
   }
 }
+/* ============================================================
+   PATCH PREMIUM — Correções de layout para o Importador (IA)
+   ============================================================ */
+
+/* 1) Ajusta a distância do topo — remove espaçamento duplicado */
+.cronograma-scope main.content {
+  padding-top: 40px !important; /* antes era 110px */
+}
+
+/* 2) HEADER – sobe um pouco e aplica aparência mais clean */
+.importar-header {
+  margin-top: 8px !important;      /* remove buraco entre nav e header */
+  padding: 32px 36px !important;
+  border-radius: 22px !important;
+}
+
+/* 3) CARD SUPERIOR – espaçamento premium e melhor alinhamento */
+.importar-card-top {
+  padding: 28px 26px 24px !important;
+  margin-bottom: 26px !important;
+  border-radius: 18px !important;
+}
+
+/* Campos no card superior com espaçamento consistente */
+.importar-row-top {
+  gap: 22px !important;
+  align-items: flex-end !important;
+}
+
+.importar-field label {
+  margin-bottom: 4px !important;
+}
+
+/* 4) CARDS DE TEXTO E TAREFAS — adiciona respiro e bordas premium */
+.importar-preview,
+.importar-tarefas {
+  padding: 26px 26px 20px !important;
+  border-radius: 18px !important;
+}
+
+/* Títulos internos */
+.importar-card-header h2 {
+  font-size: 1.15rem !important;
+  margin-bottom: 4px !important;
+}
+
+/* 5) GRID PRINCIPAL — afasta do card superior */
+.importar-main-grid {
+  margin-top: 10px !important;
+  gap: 26px !important;
+}
+
+/* 6) BOTÕES – reaplica o design system Relevo após o 'all: revert' */
+.btn-relevo {
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+/* Botão principal */
+.btn-relevo.primario {
+  background: #0f766e !important;
+  color: #fff !important;
+  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.28) !important;
+}
+
+.btn-relevo.primario:hover:not(:disabled) {
+  background: #0b5f58 !important;
+}
+
+/* Botão fantasma — corrigido com contraste real */
+.btn-relevo.fantasma {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+.btn-relevo.fantasma:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 7) FOOTER — alinha os dois botões em lados opostos
+      mas sem grudar nas bordas */
+.importar-footer-actions {
+  padding: 20px 8px !important;
+  margin-top: 40px !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.importar-footer-actions button {
+  margin-inline: 8px !important;
+}
+
+.importar-footer-right {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
