@@ -1,10 +1,7 @@
 /* =====================================================================
    LAYOUT.CSS — Estrutura visual macro do módulo Cronograma
-   Define layout, header, footer e espaçamentos principais.
-   Não interfere em componentes internos.
    ===================================================================== */
 
-/* Layout geral */
 .layout {
   display: flex;
   flex-direction: column;
@@ -16,21 +13,15 @@
   color: #f9fafb;
 }
 
-/* Container de conteúdo genérico das páginas do Cronograma */
 .content {
   flex: 1;
   padding: 24px 24px 32px;
 }
 
-/* Header e Footer exclusivos do módulo Cronograma */
+/* Header e Footer */
 header,
 footer {
   background: #0a4723;
   color: #ffffff;
   padding: 1rem 2rem;
 }
-
-/* Ajustes futuros podem ser adicionados aqui:
-   .header-cronograma { ... }
-   .footer-cronograma { ... }
-*/
