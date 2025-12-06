@@ -1,43 +1,53 @@
 /* ======================================================
-   IMPORTADOR — CAMADA BASE (SEM ESTILO RELEVO)
-   Mantém somente estrutura, espaçamento, grid e organização.
+   IMPORTAR — Base visual do módulo (sem escopo)
    ====================================================== */
 
-/* Container principal */
 .importar-wrapper {
   width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 24px 20px 40px;
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
-/* Header informativo */
-.importar-header {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* Header base (detalhado no scope) */
+.importar-header h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #0d3b2e;
+  margin-bottom: 4px;
+}
+
+.importar-header p {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 18px;
 }
 
 /* Cards */
 .importar-card {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.08);
 }
 
-/* Linha superior (projeto + upload + botão) */
+.importar-card-top {
+  padding: 18px 18px 10px;
+  margin-bottom: 18px;
+}
+
+/* Linha superior */
 .importar-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
   align-items: flex-end;
 }
 
 .importar-row-top {
   justify-content: space-between;
-  align-items: flex-end;
 }
 
 /* Campos */
@@ -45,58 +55,287 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-width: 180px;
-  flex: 1;
+  min-width: 200px;
+}
+
+.importar-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #065f46;
+}
+
+.importar-field input[type="text"],
+.importar-field input[type="date"],
+.importar-field input[type="number"],
+.importar-field select,
+.importar-field textarea {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 7px 9px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.importar-field textarea {
+  resize: vertical;
 }
 
 .importar-field-file {
   flex: 1;
 }
 
-/* Grid principal (preview + tarefas) */
+.importar-field-file input[type="file"] {
+  font-size: 0.86rem;
+}
+
+/* Ações topo */
+.importar-actions-top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Botões padrão Relevo */
+
+.btn-relevo {
+  border-radius: 999px;
+  padding: 8px 18px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.12s ease,
+    background-color 0.12s ease, color 0.12s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-relevo.primario {
+  background: #0f766e;
+  color: #f9fafb;
+  box-shadow: 0 10px 18px rgba(15, 118, 110, 0.3);
+}
+
+.btn-relevo.secundario {
+  background: #e5f3f0;
+  color: #064e3b;
+  border: 1px solid rgba(5, 150, 105, 0.3);
+}
+
+.btn-relevo.fantasma {
+  background: transparent;
+  color: #065f46;
+  border: 1px solid rgba(75, 85, 99, 0.25);
+}
+
+.btn-relevo:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-relevo:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Feedback */
+
+.importar-feedback {
+  margin-top: 12px;
+}
+
+.importar-alert {
+  padding: 8px 11px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 6px;
+}
+
+.importar-alert.erro {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.importar-alert.sucesso {
+  background: #ecfdf5;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* Grid principal */
+
 .importar-main-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.importar-preview,
+.importar-tarefas {
+  padding: 16px 18px 14px;
+}
+
+.importar-card-header {
+  margin-bottom: 8px;
+}
+
+.importar-card-header h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.importar-subtitle {
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 
 /* Preview */
+
 .importar-preview-content {
-  overflow-y: auto;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 10px 12px;
   max-height: 420px;
-  padding-right: 4px;
+  overflow-y: auto;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #111827;
 }
 
-/* Tarefas extraídas */
+.importar-preview-content pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+.importar-placeholder {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Lista de tarefas */
+
 .importar-tarefas-lista {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-  max-height: 420px;
+  gap: 10px;
 }
 
 .importar-tarefa-card {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, transform 0.15s ease,
+    background-color 0.18s ease;
 }
 
-/* Subgrid interno da tarefa */
-.importar-tarefa-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.importar-tarefa-card:hover {
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
+  transform: translateY(-1px);
+  background: #f3f4ff;
+}
+
+.importar-tarefa-card.dragging {
+  opacity: 0.85;
+  box-shadow: 0 20px 34px rgba(15, 23, 42, 0.3);
+}
+
+/* Colapsável */
+
+.importar-tarefa-card.collapsed .importar-tarefa-grid {
+  display: none;
 }
 
 .importar-tarefa-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* Inline fields (dias relativo + duração) */
+.importar-tarefa-card .importar-tarefa-header::after {
+  content: "▲";
+  font-size: 0.75rem;
+  margin-left: 6px;
+  opacity: 0.7;
+}
+
+.importar-tarefa-card.collapsed .importar-tarefa-header::after {
+  content: "▼";
+}
+
+/* Título da tarefa */
+
+.importar-tarefa-titulo {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+/* Ações da tarefa */
+
+.importar-tarefa-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-icon {
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  width: 26px;
+  height: 26px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease,
+    transform 0.08s ease;
+}
+
+.btn-icon:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.btn-icon.remover {
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.btn-icon.remover:hover {
+  background: #fef2f2;
+}
+
+/* Grid interno da tarefa */
+
+.importar-tarefa-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .importar-field-inline {
   display: flex;
   flex-wrap: wrap;
@@ -109,26 +348,56 @@
 }
 
 /* Resumo temporal */
+
 .importar-tempo-resumo {
-  display: block;
+  font-size: 0.8rem;
+  color: #374151;
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 6px 8px;
 }
 
-/* Ações do footer */
+/* Footer */
+
 .importar-footer-actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .importar-footer-right {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 /* Responsividade */
+
 @media (max-width: 900px) {
   .importar-main-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .importar-preview-content,
+  .importar-tarefas-lista {
+    max-height: 360px;
+  }
+}
+
+@media (max-width: 640px) {
+  .importar-row-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .importar-actions-top {
+    justify-content: flex-start;
+  }
+
+  .importar-wrapper {
+    padding-inline: 14px;
   }
 }
