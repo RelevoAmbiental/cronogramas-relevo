@@ -1,8 +1,8 @@
 /* ======================================================
-   IMPORTAR — CSS Scope Relevo
-   Garante prioridade para o layout moderno do Importador
+   IMPORTAR — CSS Scope Relevo (Versão Final)
    ====================================================== */
 
+/* 1) RESET CONTROLADO — protege o importador do portal */
 .importar-wrapper,
 .importar-wrapper * {
   all: revert;
@@ -10,19 +10,264 @@
   font-family: inherit;
 }
 
-/* Reaplica base do importar.css */
+/* 2) Importa a base original (importar.css) */
 @import "./importar.css";
 
-/* Ajustes de força para evitar sobrescrita global */
+/* 3) Container principal */
 .importar-wrapper {
   width: 100%;
-  max-width: 1280px !important;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 24px 20px 40px !important;
+  padding: 24px 20px 40px;
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
+/* 4) Grid principal: preview + tarefas */
 .importar-main-grid {
   display: grid !important;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr) !important;
   gap: 18px !important;
+  margin-bottom: 22px;
+}
+
+/* 5) Título / subtítulo */
+.importar-header h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #0d3b2e;
+  margin-bottom: 4px;
+}
+
+.importar-header p {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 18px;
+}
+
+/* 6) Cartões (base) */
+.importar-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.08);
+}
+
+.importar-card-top {
+  padding: 18px 18px 10px;
+  margin-bottom: 18px;
+}
+
+/* 7) Estruturas gerais */
+.importar-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.importar-row-top {
+  justify-content: space-between;
+}
+
+.importar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+
+/* 8) Labels */
+.importar-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #065f46;
+}
+
+/* 9) Inputs */
+.importar-field input[type="text"],
+.importar-field input[type="date"],
+.importar-field input[type="number"],
+.importar-field select,
+.importar-field textarea {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 7px 9px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.importar-field input:focus,
+.importar-field select:focus,
+.importar-field textarea:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.35);
+}
+
+/* 10) Upload */
+.importar-field-file {
+  flex: 1;
+}
+
+.importar-field-file input[type="file"] {
+  font-size: 0.86rem;
+}
+
+/* 11) Ações / Botões Relevo */
+.btn-relevo {
+  border-radius: 999px;
+  padding: 8px 18px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+.btn-relevo.primario {
+  background: #0f766e;
+  color: #fff;
+  box-shadow: 0 10px 18px rgba(15, 118, 110, 0.3);
+}
+
+.btn-relevo.primario:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-relevo.fantasma {
+  background: transparent;
+  color: #065f46;
+  border: 1px solid rgba(75, 85, 99, 0.25);
+}
+
+.btn-relevo.fantasma:hover:not(:disabled) {
+  background: rgba(229, 231, 235, 0.65);
+}
+
+/* 12) Feedback */
+.importar-feedback {
+  margin-top: 12px;
+}
+
+.importar-alert {
+  padding: 8px 11px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 6px;
+}
+
+.importar-alert.erro {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.importar-alert.sucesso {
+  background: #ecfdf5;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* 13) Preview */
+.importar-preview-content {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 10px 12px;
+  max-height: 420px;
+  overflow-y: auto;
+  font-size: 0.8rem;
+}
+
+.importar-preview-content pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 14) Tarefas */
+.importar-tarefas-lista {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.importar-tarefa-card {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 10px 12px;
+}
+
+.importar-tarefa-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.btn-icon {
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+/* 15) Inline fields */
+.importar-field-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.importar-field-inline > div {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* 16) Resumo temporal */
+.importar-tempo-resumo {
+  font-size: 0.8rem;
+  color: #374151;
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+/* 17) Footer */
+.importar-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.importar-footer-right {
+  display: flex;
+  gap: 8px;
+}
+
+/* 18) Responsividade */
+@media (max-width: 900px) {
+  .importar-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .importar-row-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
