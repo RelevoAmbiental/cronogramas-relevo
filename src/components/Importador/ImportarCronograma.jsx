@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
-import "./importar-scope.css"; // isolador visual
+import "./importar-scope.css"; // escopo visual do importador
 
 // util para converter dias relativos em datas reais
 function addDays(date, days) {
@@ -20,6 +20,7 @@ export default function ImportarCronograma() {
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [dragIndex, setDragIndex] = useState(null);
 
   function resetar() {
     setArquivo(null);
@@ -91,6 +92,7 @@ export default function ImportarCronograma() {
         responsavel: t.responsavel || "",
         inicioRelativoDias: Number(t.inicioRelativoDias) || 0,
         duracaoDias: Number(t.duracaoDias) || 1,
+        _collapsed: false,
       }));
 
       setTextoExtraido(JSON.stringify(resultado, null, 2));
@@ -113,6 +115,8 @@ export default function ImportarCronograma() {
               [campo]:
                 campo === "inicioRelativoDias" || campo === "duracaoDias"
                   ? Number(valor) || 0
+                  : campo === "_collapsed"
+                  ? !!valor
                   : valor,
             }
           : t
@@ -122,13 +126,41 @@ export default function ImportarCronograma() {
 
   function duplicarTarefa(index) {
     setTarefasExtraidas((prev) => {
-      const copia = { ...prev[index], idLocal: `${Date.now()}-copy-${index}` };
+      const copia = {
+        ...prev[index],
+        idLocal: `${Date.now()}-copy-${index}`,
+      };
       return [...prev.slice(0, index + 1), copia, ...prev.slice(index + 1)];
     });
   }
 
   function removerTarefa(index) {
     setTarefasExtraidas((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  // Drag & Drop para reordenar tarefas
+  function handleDragStart(e, index) {
+    setDragIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  }
+
+  function handleDragOver(e, index) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }
+
+  function handleDrop(e, index) {
+    e.preventDefault();
+    if (dragIndex === null || dragIndex === index) return;
+
+    setTarefasExtraidas((prev) => {
+      const nova = [...prev];
+      const [movida] = nova.splice(dragIndex, 1);
+      nova.splice(index, 0, movida);
+      return nova;
+    });
+
+    setDragIndex(null);
   }
 
   async function salvarTarefas() {
@@ -183,6 +215,7 @@ export default function ImportarCronograma() {
 
   return (
     <div className="importar-wrapper">
+      {/* Header em card premium */}
       <div className="importar-header">
         <h1>Importar Cronograma via IA</h1>
         <p>
@@ -191,6 +224,7 @@ export default function ImportarCronograma() {
         </p>
       </div>
 
+      {/* Card superior: seleção + upload + ação IA */}
       <div className="importar-card importar-card-top">
         <div className="importar-row importar-row-top">
           <div className="importar-field">
@@ -238,12 +272,16 @@ export default function ImportarCronograma() {
         {(erro || mensagem) && (
           <div className="importar-feedback">
             {erro && <div className="importar-alert erro">{erro}</div>}
-            {mensagem && <div className="importar-alert sucesso">{mensagem}</div>}
+            {mensagem && (
+              <div className="importar-alert sucesso">{mensagem}</div>
+            )}
           </div>
         )}
       </div>
 
+      {/* Grid principal: texto extraído + tarefas */}
       <div className="importar-main-grid">
+        {/* Coluna 1: preview do texto */}
         <div className="importar-card importar-preview">
           <div className="importar-card-header">
             <h2>Texto extraído</h2>
@@ -257,17 +295,20 @@ export default function ImportarCronograma() {
               <pre>{textoExtraido}</pre>
             ) : (
               <p className="importar-placeholder">
-                Nenhum conteúdo extraído ainda.
+                Nenhum conteúdo extraído ainda. Após o envio do arquivo, o
+                retorno da IA será exibido aqui em formato textual.
               </p>
             )}
           </div>
         </div>
 
+        {/* Coluna 2: lista de tarefas editáveis */}
         <div className="importar-card importar-tarefas">
           <div className="importar-card-header">
             <h2>Tarefas extraídas</h2>
             <span className="importar-subtitle">
-              Revise, edite e ajuste antes de salvar.
+              Arraste para reordenar, clique para expandir/contrair e ajuste os
+              campos antes de salvar.
             </span>
           </div>
 
@@ -279,7 +320,19 @@ export default function ImportarCronograma() {
             )}
 
             {tarefasExtraidas.map((t, idx) => (
-              <div key={t.idLocal} className="importar-tarefa-card">
+              <div
+                key={t.idLocal}
+                className={`importar-tarefa-card ${
+                  t._collapsed ? "collapsed" : ""
+                } ${dragIndex === idx ? "dragging" : ""}`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, idx)}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDrop={(e) => handleDrop(e, idx)}
+                onClick={() =>
+                  handleChangeTarefa(idx, "_collapsed", !t._collapsed)
+                }
+              >
                 <div className="importar-tarefa-header">
                   <span className="importar-tarefa-titulo">
                     Tarefa #{idx + 1}
@@ -290,7 +343,10 @@ export default function ImportarCronograma() {
                       type="button"
                       className="btn-icon"
                       title="Duplicar tarefa"
-                      onClick={() => duplicarTarefa(idx)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        duplicarTarefa(idx);
+                      }}
                     >
                       ⧉
                     </button>
@@ -299,7 +355,10 @@ export default function ImportarCronograma() {
                       type="button"
                       className="btn-icon remover"
                       title="Remover tarefa"
-                      onClick={() => removerTarefa(idx)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removerTarefa(idx);
+                      }}
                     >
                       ✕
                     </button>
@@ -312,9 +371,10 @@ export default function ImportarCronograma() {
                     <input
                       type="text"
                       value={t.nome}
-                      onChange={(e) =>
-                        handleChangeTarefa(idx, "nome", e.target.value)
-                      }
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleChangeTarefa(idx, "nome", e.target.value);
+                      }}
                     />
                   </div>
 
@@ -323,9 +383,10 @@ export default function ImportarCronograma() {
                     <textarea
                       rows={2}
                       value={t.descricao}
-                      onChange={(e) =>
-                        handleChangeTarefa(idx, "descricao", e.target.value)
-                      }
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleChangeTarefa(idx, "descricao", e.target.value);
+                      }}
                     />
                   </div>
 
@@ -334,9 +395,10 @@ export default function ImportarCronograma() {
                     <input
                       type="text"
                       value={t.produto}
-                      onChange={(e) =>
-                        handleChangeTarefa(idx, "produto", e.target.value)
-                      }
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleChangeTarefa(idx, "produto", e.target.value);
+                      }}
                     />
                   </div>
 
@@ -345,9 +407,10 @@ export default function ImportarCronograma() {
                     <input
                       type="text"
                       value={t.categoria}
-                      onChange={(e) =>
-                        handleChangeTarefa(idx, "categoria", e.target.value)
-                      }
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleChangeTarefa(idx, "categoria", e.target.value);
+                      }}
                     />
                   </div>
 
@@ -356,9 +419,14 @@ export default function ImportarCronograma() {
                     <input
                       type="text"
                       value={t.responsavel}
-                      onChange={(e) =>
-                        handleChangeTarefa(idx, "responsavel", e.target.value)
-                      }
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleChangeTarefa(
+                          idx,
+                          "responsavel",
+                          e.target.value
+                        );
+                      }}
                     />
                   </div>
 
@@ -368,13 +436,14 @@ export default function ImportarCronograma() {
                       <input
                         type="number"
                         value={t.inicioRelativoDias}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          e.stopPropagation();
                           handleChangeTarefa(
                             idx,
                             "inicioRelativoDias",
                             e.target.value
-                          )
-                        }
+                          );
+                        }}
                       />
                     </div>
 
@@ -383,9 +452,14 @@ export default function ImportarCronograma() {
                       <input
                         type="number"
                         value={t.duracaoDias}
-                        onChange={(e) =>
-                          handleChangeTarefa(idx, "duracaoDias", e.target.value)
-                        }
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handleChangeTarefa(
+                            idx,
+                            "duracaoDias",
+                            e.target.value
+                          );
+                        }}
                       />
                     </div>
                   </div>
@@ -393,9 +467,19 @@ export default function ImportarCronograma() {
                   <div className="importar-field">
                     <label>Resumo da relação temporal</label>
                     <div className="importar-tempo-resumo">
-                      Inicia <strong>+{t.inicioRelativoDias} dias</strong> após a
-                      data base, com duração de{" "}
-                      <strong>{t.duracaoDias} dias</strong>.
+                      Inicia{" "}
+                      <strong>
+                        +{t.inicioRelativoDias || 0} dia
+                        {Math.abs(t.inicioRelativoDias || 0) === 1
+                          ? ""
+                          : "s"}
+                      </strong>{" "}
+                      após a data base, com duração de{" "}
+                      <strong>
+                        {t.duracaoDias || 1} dia
+                        {Math.abs(t.duracaoDias || 1) === 1 ? "" : "s"}
+                      </strong>
+                      .
                     </div>
                   </div>
                 </div>
@@ -405,6 +489,7 @@ export default function ImportarCronograma() {
         </div>
       </div>
 
+      {/* Ações de rodapé */}
       <div className="importar-footer-actions">
         <button
           type="button"
