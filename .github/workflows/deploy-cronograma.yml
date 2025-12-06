@@ -2,8 +2,7 @@ name: Build Cronograma e disparar atualização do Portal
 
 on:
   push:
-    branches: [ "main" ]
-
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧬 Checkout do repositório (cronogramas-relevo)
+      - name: 🧬 Checkout do repositório
         uses: actions/checkout@v4
 
       - name: 🔧 Configurar Node.js
@@ -26,7 +25,7 @@ jobs:
       - name: 📦 Instalar dependências
         run: npm ci
 
-      - name: 🏗️ Build do Vite
+      - name: 🏗️ Build
         run: npm run build
 
       - name: 🚀 Disparar atualização no portal-relevo
@@ -37,7 +36,6 @@ jobs:
           event-type: cronograma-atualizado
           client-payload: |
             {
-              "cronograma_sha": "${{ github.sha }}",
-              "cronograma_repo": "${{ github.repository }}",
+              "sha": "${{ github.sha }}",
               "timestamp": "${{ github.event.head_commit.timestamp }}"
             }
