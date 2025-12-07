@@ -272,7 +272,7 @@
 /* Select médio e proporcional */
 .importar-field select {
   width: 100% !important;
-  max-width: 260px !important;
+  max-width: 230px !important;
 }
 
 /* ARQUIVO — mesma proporção do PROJETO */
@@ -287,7 +287,7 @@
 }
 
 .importar-field-file input[type="file"] {
-  width: 220px !important;    /* mais espaço */
+  width: 230px !important;    /* mais espaço */
 }
 
 /* BOTÃO IA mantém espaço próprio */
