@@ -15,11 +15,6 @@
   padding: 32px 24px 48px;
 }
 
-/* Ajuste de posicionamento — reduzido de 110px → 40px */
-.cronograma-scope main.content {
-  padding-top: 40px !important;
-}
-
 /* Compatibilidade com o Importador */
 .cronograma-scope .importar-wrapper {
   width: 100%;
