@@ -1,14 +1,13 @@
 /* =====================================================================
-   CRONOGRAMA-SCOPE.CSS — Isolamento do Portal + Ajustes de Layout
-   Mantém o Cronograma independente do CSS do portal-relevo.
+   CRONOGRAMA-SCOPE.CSS — Isolamento e ajuste fino para o Portal
    ===================================================================== */
 
-/* 1) Remove limites impostos por header.css do Portal */
+/* Remove limites herdados do portal */
 .cronograma-scope * {
   max-width: unset !important;
 }
 
-/* 2) Container principal do Cronograma */
+/* Container principal */
 .cronograma-scope .content {
   width: 100%;
   max-width: 1280px;
@@ -16,19 +15,19 @@
   padding: 32px 24px 48px;
 }
 
-/* 3) Compensação do header fixo do portal */
+/* Ajuste de posicionamento — reduzido de 110px → 40px */
 .cronograma-scope main.content {
-  padding-top: 110px !important;
+  padding-top: 40px !important;
 }
 
-/* 4) Ajustes para grids internos (exceto módulos com scope próprio) */
+/* Compatibilidade com o Importador */
 .cronograma-scope .importar-wrapper {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
 }
 
-/* Ajusta espaçamento entre colunas sem impactar importar-scope */
+/* Gaps do grid do Importador */
 .cronograma-scope .importar-main-grid {
-  gap: 24px !important;
+  gap: 26px !important;
 }
