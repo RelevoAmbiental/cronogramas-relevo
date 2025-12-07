@@ -1,12 +1,10 @@
 /* ======================================================
-   IMPORTAR — CSS Scope Relevo
-   Aplica reset isolado + upgrades premium
+   IMPORTAR — CSS Scope Relevo (Premium)
    ====================================================== */
 
-/* 1) Importa a base original do importador */
 @import "./importar.css";
 
-/* 2) Reset isolado dentro do importador */
+/* RESET LOCAL */
 .importar-wrapper,
 .importar-wrapper * {
   all: revert;
@@ -14,18 +12,17 @@
   font-family: inherit;
 }
 
-/* 3) Reaplica container principal com tipografia Relevo */
+/* WRAPPER */
 .importar-wrapper {
   width: 100%;
   max-width: 1280px !important;
   margin: 0 auto;
   padding: 24px 20px 40px !important;
-  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  font-family: "Montserrat", sans-serif;
   position: relative;
 }
 
-/* Zona superior com gradiente suave para não sumir no fundo escuro */
+/* GRADIENTE SUPERIOR */
 .importar-wrapper::before {
   content: "";
   position: absolute;
@@ -42,173 +39,56 @@
   z-index: -1;
 }
 
-/* Ajuste do grid principal */
-.importar-main-grid {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr) !important;
-  gap: 18px !important;
-  margin-bottom: 30px;
-}
-
-/* HEADER como card premium */
+/* HEADER PREMIUM */
 .importar-header {
   background: #ffffff;
-  padding: 28px 32px;
-  border-radius: 16px;
-  margin-bottom: 22px;
+  padding: 32px 36px !important;
+  border-radius: 22px !important;
+  margin-bottom: 26px !important;
   border: 1px solid rgba(15, 118, 110, 0.12);
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  margin-top: 8px !important;
 }
 
-.importar-header h1 {
-  font-size: 1.7rem !important;
-  font-weight: 700 !important;
-  color: #0d3b2e !important;
-  margin-bottom: 10px !important;
+/* CARD SUPERIOR */
+.importar-card-top {
+  padding: 28px 26px 24px !important;
+  border-radius: 18px !important;
+  margin-bottom: 26px !important;
 }
 
-.importar-header p {
-  font-size: 0.95rem !important;
-  color: #374151 !important;
-  margin: 0 !important;
+/* CAMPOS */
+.importar-row-top {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 22px !important;
+  align-items: flex-end !important;
 }
 
-/* Cards premium com gradiente e hover */
+/* CARDS INTERNOS */
 .importar-card {
   background: linear-gradient(
     145deg,
     rgba(255, 255, 255, 0.98),
     rgba(249, 250, 251, 0.98)
   ) !important;
+  border-radius: 18px !important;
+  padding: 26px 26px 20px !important;
   transition: transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 .importar-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.18) !important;
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.18);
 }
 
-/* Placeholder mais visível */
-.importar-placeholder {
-  color: #4b5563 !important;
-  font-style: italic;
-  opacity: 0.9;
-}
-
-/* Foco suave nos campos */
-.importar-field input:focus,
-.importar-field textarea:focus,
-.importar-field select:focus {
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25) !important;
-  border-color: #0f766e !important;
-}
-
-/* Botão fantasma sobre fundo escuro */
-.importar-wrapper .btn-relevo.fantasma {
-  color: #0f766e !important;
-  border: 1px solid rgba(15, 118, 110, 0.45) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(4px);
-  transition: background-color 0.12s ease, border-color 0.12s ease,
-    color 0.12s ease;
-}
-
-.importar-wrapper .btn-relevo.fantasma:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.18) !important;
-  border-color: rgba(5, 150, 105, 0.55) !important;
-}
-
-/* Microinterações globais de botões */
-.btn-relevo {
-  transition: background 0.18s ease, transform 0.15s ease,
-    box-shadow 0.18s ease;
-}
-
-.btn-relevo:active {
-  transform: scale(0.96);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-/* Melhor defesa dos grids de importação */
-.importar-tarefas-lista {
-  padding-right: 4px;
-  gap: 12px !important;
-}
-
-/* Responsividade extra */
-@media (max-width: 900px) {
-  .importar-main-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-}
-
-@media (max-width: 640px) {
-  .importar-row-top {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  .importar-actions-top {
-    justify-content: flex-start !important;
-  }
-
-  .importar-wrapper {
-    padding-inline: 14px !important;
-  }
-}
-/* ============================================================
-   PATCH PREMIUM — Correções de layout para o Importador (IA)
-   ============================================================ */
-
-/* 1) Ajusta a distância do topo — remove espaçamento duplicado */
-.cronograma-scope main.content {
-  padding-top: 40px !important; /* antes era 110px */
-}
-
-/* 2) HEADER – sobe um pouco e aplica aparência mais clean */
-.importar-header {
-  margin-top: 8px !important;      /* remove buraco entre nav e header */
-  padding: 32px 36px !important;
-  border-radius: 22px !important;
-}
-
-/* 3) CARD SUPERIOR – espaçamento premium e melhor alinhamento */
-.importar-card-top {
-  padding: 28px 26px 24px !important;
-  margin-bottom: 26px !important;
-  border-radius: 18px !important;
-}
-
-/* Campos no card superior com espaçamento consistente */
-.importar-row-top {
-  gap: 22px !important;
-  align-items: flex-end !important;
-}
-
-.importar-field label {
-  margin-bottom: 4px !important;
-}
-
-/* 4) CARDS DE TEXTO E TAREFAS — adiciona respiro e bordas premium */
-.importar-preview,
-.importar-tarefas {
-  padding: 26px 26px 20px !important;
-  border-radius: 18px !important;
-}
-
-/* Títulos internos */
-.importar-card-header h2 {
-  font-size: 1.15rem !important;
-  margin-bottom: 4px !important;
-}
-
-/* 5) GRID PRINCIPAL — afasta do card superior */
+/* GRID PRINCIPAL */
 .importar-main-grid {
   margin-top: 10px !important;
   gap: 26px !important;
 }
 
-/* 6) BOTÕES – reaplica o design system Relevo após o 'all: revert' */
+/* BOTÕES — redefinidos após o reset */
 .btn-relevo {
   border-radius: 999px !important;
   padding: 10px 22px !important;
@@ -218,14 +98,12 @@
   align-items: center !important;
   justify-content: center !important;
   gap: 6px !important;
-  border: none !important;
   cursor: pointer !important;
 }
 
-/* Botão principal */
 .btn-relevo.primario {
   background: #0f766e !important;
-  color: #fff !important;
+  color: #ffffff !important;
   box-shadow: 0 10px 20px rgba(15, 118, 110, 0.28) !important;
 }
 
@@ -233,7 +111,6 @@
   background: #0b5f58 !important;
 }
 
-/* Botão fantasma — corrigido com contraste real */
 .btn-relevo.fantasma {
   background: rgba(255, 255, 255, 0.12) !important;
   border: 1px solid rgba(255, 255, 255, 0.32) !important;
@@ -245,12 +122,14 @@
   background: rgba(255, 255, 255, 0.22) !important;
 }
 
-/* 7) FOOTER — alinha os dois botões em lados opostos
-      mas sem grudar nas bordas */
+/* FOOTER */
 .importar-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 20px 8px !important;
   margin-top: 40px !important;
-  border-top: 1px solid rgba(255,255,255,0.1) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .importar-footer-actions button {
@@ -260,4 +139,18 @@
 .importar-footer-right {
   display: flex !important;
   justify-content: flex-end !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+  .importar-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .importar-row-top {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
 }
