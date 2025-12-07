@@ -272,7 +272,7 @@
 /* Select médio e proporcional */
 .importar-field select {
   width: 100% !important;
-  max-width: 220px !important;
+  max-width: 260px !important;
 }
 
 /* ARQUIVO — mesma proporção do PROJETO */
@@ -287,10 +287,71 @@
 }
 
 .importar-field-file input[type="file"] {
-  width: 260px !important;    /* mais espaço */
+  width: 220px !important;    /* mais espaço */
 }
 
 /* BOTÃO IA mantém espaço próprio */
 .importar-actions-top {
   justify-content: flex-end !important;
+}
+/* ========================================================
+   1) PROJETO — label na mesma linha do select
+   ======================================================== */
+
+.importar-field {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.importar-field > label {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+/* largura adequada para o dropdown */
+.importar-field select {
+  width: 260px !important;
+}
+
+
+/* ========================================================
+   2) ARQUIVO — aumentar largura do input + alinhar label
+   ======================================================== */
+
+.importar-field-file {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.importar-field-file label {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+/* largura mais confortável */
+.importar-field-file input[type="file"] {
+  width: 260px !important;
+}
+
+
+/* ========================================================
+   3) GRID — proporção mais elegante
+   ======================================================== */
+
+.importar-row-top {
+  display: grid !important;
+  grid-template-columns: 300px 320px auto !important;  
+  /* projeto | arquivo | botão */
+  align-items: center !important;
+  gap: 28px !important;
 }
