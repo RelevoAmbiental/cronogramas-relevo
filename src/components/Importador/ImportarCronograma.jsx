@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCronograma } from "../../context/CronogramaContext";
+import "./importar.css";        // base
 import "./importar-scope.css"; // escopo visual do importador
 
 // util para converter dias relativos em datas reais
