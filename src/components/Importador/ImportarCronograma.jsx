@@ -66,7 +66,7 @@ export default function ImportarCronograma() {
 
     try {
       const response = await fetch(
-        "https://us-central1-relevo-cronograma.cloudfunctions.net/interpretarArquivo",
+        "https://us-central1-portal-relevo.cloudfunctions.net/interpretarArquivo",
         {
           method: "POST",
           body: formData,
