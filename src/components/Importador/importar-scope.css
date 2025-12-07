@@ -154,3 +154,106 @@
     align-items: stretch !important;
   }
 }
+/* ===============================
+   Ajuste do Card Superior
+   =============================== */
+
+/* Força alinhamento horizontal e espaçamento harmônico */
+.importar-row-top {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  gap: 24px !important;
+}
+
+/* Cada campo ocupa espaço proporcional */
+.importar-row-top .importar-field {
+  flex: 1;
+}
+
+/* A área do upload deve ocupar a mesma largura visual dos demais campos */
+.importar-field-file {
+  flex: 1.2 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* BOTÃO IA alinhado ao final da linha */
+.importar-actions-top {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  flex: 0.6 !important;
+}
+
+/* ===============================
+   Estilização do input[type=file]
+   =============================== */
+.importar-field-file input[type="file"] {
+  padding: 10px 14px !important;
+  font-size: 0.88rem !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 10px !important;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.importar-field-file input[type="file"]:hover {
+  background: #f1f5f9 !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.importar-field-file input[type="file"]::-webkit-file-upload-button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.12s ease;
+}
+
+.importar-field-file input[type="file"]::-webkit-file-upload-button:hover {
+  background: #0b564e;
+}
+/* ===============================
+   Footer – alinhamento perfeito
+   =============================== */
+
+.importar-footer-actions {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 28px 4px !important;
+  margin-top: 40px !important;
+}
+
+/* Evita que o botão da esquerda fique perdido */
+.importar-footer-actions button {
+  margin-inline: 0 !important;
+}
+
+/* Garante que o botão da direita fique encostado apenas no container interno */
+.importar-footer-right {
+  display: flex !important;
+  justify-content: flex-end !important;
+  flex: 1 !important;
+}
+
+/* ===============================
+   Contraste do botão "Limpar tudo"
+   =============================== */
+
+.btn-relevo.fantasma {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.btn-relevo.fantasma:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
