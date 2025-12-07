@@ -1,41 +1,33 @@
 /* ======================================================
-   IMPORTAR — CSS Scope Relevo (Versão FUNCIONAL Final)
+   IMPORTAR — CSS Scope Relevo (Premium)
    ====================================================== */
 
 @import "./importar.css";
 
-/* ======================================================
-   0) RESET LOCAL — sem apagar tudo!
-   ====================================================== */
-
-/* Apenas remove herdados problemáticos do Portal */
-.importar-wrapper {
-  all: unset;
-  display: block;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 24px 20px 40px;
-  font-family: "Montserrat", sans-serif !important;
-  position: relative;
-  box-sizing: border-box;
-}
-
+/* RESET LOCAL */
+.importar-wrapper,
 .importar-wrapper * {
-  box-sizing: border-box !important;
-  font-family: inherit !important;
+  all: revert;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
-/* ======================================================
-   1) GRADIENTE SUPERIOR
-   ====================================================== */
+/* WRAPPER */
+.importar-wrapper {
+  width: 100%;
+  max-width: 1280px !important;
+  margin: 0 auto;
+  padding: 24px 20px 40px !important;
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+}
 
+/* GRADIENTE SUPERIOR */
 .importar-wrapper::before {
   content: "";
   position: absolute;
+  inset: 0;
   top: -40px;
-  left: 0;
-  right: 0;
   height: 200px;
   background: linear-gradient(
     180deg,
@@ -47,200 +39,221 @@
   z-index: -1;
 }
 
-/* ======================================================
-   2) HEADER PREMIUM
-   ====================================================== */
-
+/* HEADER PREMIUM */
 .importar-header {
   background: #ffffff;
-  padding: 32px 36px;
-  border-radius: 22px;
-  margin-bottom: 26px;
+  padding: 32px 36px !important;
+  border-radius: 22px !important;
+  margin-bottom: 26px !important;
   border: 1px solid rgba(15, 118, 110, 0.12);
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  margin-top: 8px !important;
 }
 
-.importar-header h1 {
-  font-size: 1.7rem;
-  font-weight: 700;
-  color: #0d3b2e;
-}
-
-.importar-header p {
-  font-size: 0.95rem;
-  color: #374151;
-}
-
-/* ======================================================
-   3) CARD SUPERIOR — Primeira linha em 1 linha no notebook
-   ====================================================== */
-
+/* CARD SUPERIOR */
 .importar-card-top {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 26px 28px 22px;
-  margin-bottom: 26px;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  padding: 28px 26px 24px !important;
+  border-radius: 18px !important;
+  margin-bottom: 26px !important;
 }
 
-/* Linha superior — FLEX inteligente */
+/* CAMPOS */
 .importar-row-top {
-  display: flex;
-  flex-wrap: nowrap;    /* mantém em uma linha */
-  align-items: flex-end;
-  gap: 22px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 22px !important;
+  align-items: flex-end !important;
 }
 
-/* quebra suave em pequenas telas */
-@media (max-width: 1050px) {
-  .importar-row-top {
-    flex-wrap: wrap;
-  }
-}
-
-/* Projeto */
-.importar-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 180px;
-  flex: 1;
-}
-
-/* Arquivo — label + input */
-.importar-field-file {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 260px;
-}
-
-/* Label arquivo */
-.importar-field-file label {
-  white-space: nowrap;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #065f46;
-  letter-spacing: 0.04em;
-}
-
-/* Input file refinado */
-.importar-field-file input[type="file"] {
-  width: 180px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  cursor: pointer;
-}
-
-.importar-field-file input[type="file"]:hover {
-  background: #f1f5f9;
-}
-
-/* Botão IA */
-.importar-actions-top {
-  display: flex;
-  justify-content: flex-end;
-  flex-shrink: 0;
-}
-
-/* ======================================================
-   4) CARDS INTERNOS — Texto / Tarefas
-   ====================================================== */
-
+/* CARDS INTERNOS */
 .importar-card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 26px;
-  border: 1px solid rgba(15, 118, 110, 0.12);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(249, 250, 251, 0.98)
+  ) !important;
+  border-radius: 18px !important;
+  padding: 26px 26px 20px !important;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
 }
 
-.importar-card-header h2 {
-  color: #065f46;
-  font-size: 1.15rem;
-  font-weight: 600;
+.importar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.18);
 }
 
-.importar-subtitle {
-  color: #6b7280;
-  font-size: 0.82rem;
-}
-
-.importar-placeholder {
-  color: #6b7280;
-  font-style: italic;
-}
-
-/* ======================================================
-   5) GRID PRINCIPAL — Restaurado como estava
-   ====================================================== */
-
+/* GRID PRINCIPAL */
 .importar-main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
-  gap: 26px;
-  margin-top: 16px;
+  margin-top: 10px !important;
+  gap: 26px !important;
 }
 
-@media (max-width: 900px) {
-  .importar-main-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ======================================================
-   6) BOTÕES — Premium Relevo
-   ====================================================== */
-
+/* BOTÕES — redefinidos após o reset */
 .btn-relevo {
-  border-radius: 999px;
-  padding: 10px 22px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
 }
 
 .btn-relevo.primario {
-  background: #0f766e;
-  color: #ffffff;
-  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.28);
+  background: #0f766e !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.28) !important;
 }
 
-.btn-relevo.primario:hover {
-  background: #0b5f58;
+.btn-relevo.primario:hover:not(:disabled) {
+  background: #0b5f58 !important;
 }
 
 .btn-relevo.fantasma {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  color: #ffffff;
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(6px) !important;
 }
 
-/* ======================================================
-   7) FOOTER — Alinhamento perfeito
-   ====================================================== */
+.btn-relevo.fantasma:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
 
+/* FOOTER */
 .importar-footer-actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 28px 4px;
-  margin-top: 40px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  justify-content: space-between;
+  padding: 20px 8px !important;
+  margin-top: 40px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.importar-footer-actions button {
+  margin-inline: 8px !important;
 }
 
 .importar-footer-right {
-  display: flex;
-  justify-content: flex-end;
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+  .importar-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .importar-row-top {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+/* ===============================
+   Ajuste do Card Superior
+   =============================== */
+
+/* Força alinhamento horizontal e espaçamento harmônico */
+.importar-row-top {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  gap: 24px !important;
+}
+
+/* Cada campo ocupa espaço proporcional */
+.importar-row-top .importar-field {
   flex: 1;
+}
+
+/* A área do upload deve ocupar a mesma largura visual dos demais campos */
+.importar-field-file {
+  flex: 1.2 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* BOTÃO IA alinhado ao final da linha */
+.importar-actions-top {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  flex: 0.6 !important;
+}
+
+/* ===============================
+   Estilização do input[type=file]
+   =============================== */
+.importar-field-file input[type="file"] {
+  padding: 10px 14px !important;
+  font-size: 0.88rem !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 10px !important;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.importar-field-file input[type="file"]:hover {
+  background: #f1f5f9 !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.importar-field-file input[type="file"]::-webkit-file-upload-button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.12s ease;
+}
+
+.importar-field-file input[type="file"]::-webkit-file-upload-button:hover {
+  background: #0b564e;
+}
+/* ===============================
+   Footer – alinhamento perfeito
+   =============================== */
+
+.importar-footer-actions {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 28px 4px !important;
+  margin-top: 40px !important;
+}
+
+/* Evita que o botão da esquerda fique perdido */
+.importar-footer-actions button {
+  margin-inline: 0 !important;
+}
+
+/* Garante que o botão da direita fique encostado apenas no container interno */
+.importar-footer-right {
+  display: flex !important;
+  justify-content: flex-end !important;
+  flex: 1 !important;
+}
+
+/* ===============================
+   Contraste do botão "Limpar tudo"
+   =============================== */
+
+.btn-relevo.fantasma {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.btn-relevo.fantasma:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
 }
