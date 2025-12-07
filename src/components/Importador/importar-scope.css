@@ -244,3 +244,53 @@
   justify-content: flex-end;
   flex: 1;
 }
+/* ==========================================
+   AJUSTE FINO DA PRIMEIRA LINHA DO CARD TOP
+   ========================================== */
+
+/* Linha superior mais equilibrada */
+.importar-row-top {
+  display: grid !important;
+  grid-template-columns: 1.4fr 1fr auto !important;  /* proporções ajustadas */
+  align-items: center !important;
+  gap: 22px !important;
+}
+
+/* PROJETO — label na mesma linha */
+.importar-field {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* Label do Projeto não ocupa coluna inteira */
+.importar-field > label {
+  white-space: nowrap !important;
+  margin-bottom: 0 !important;
+}
+
+/* Select médio e proporcional */
+.importar-field select {
+  width: 100% !important;
+  max-width: 260px !important;
+}
+
+/* ARQUIVO — mesma proporção do PROJETO */
+.importar-field-file {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.importar-field-file label {
+  white-space: nowrap !important;
+}
+
+.importar-field-file input[type="file"] {
+  width: 220px !important;    /* mais espaço */
+}
+
+/* BOTÃO IA mantém espaço próprio */
+.importar-actions-top {
+  justify-content: flex-end !important;
+}
