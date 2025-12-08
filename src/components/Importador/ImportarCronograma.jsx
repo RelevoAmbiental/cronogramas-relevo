@@ -77,14 +77,26 @@ export default function ImportarCronograma() {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
 
-      const resultado = await response.json();
+      const json = await response.json();
 
-      if (!Array.isArray(resultado)) {
+      // Aceita tanto array puro quanto objeto { texto, tarefas }
+      let texto = "";
+      let tarefas = [];
+
+      if (Array.isArray(json)) {
+        tarefas = json;
+      } else if (json && Array.isArray(json.tarefas)) {
+        tarefas = json.tarefas;
+        texto =
+          json.texto ||
+          json.textoOriginal ||
+          "";
+      } else {
         setErro("A IA retornou um formato inesperado.");
         return;
       }
 
-      const tarefasNormalizadas = resultado.map((t, idx) => ({
+      const tarefasNormalizadas = tarefas.map((t, idx) => ({
         idLocal: `${Date.now()}-${idx}`,
         nome: t.nome || "",
         descricao: t.descricao || "",
@@ -96,7 +108,10 @@ export default function ImportarCronograma() {
         _collapsed: false,
       }));
 
-      setTextoExtraido(JSON.stringify(resultado, null, 2));
+      // texto visível no painel: texto extraído ou JSON das tarefas
+      setTextoExtraido(
+        texto || JSON.stringify(tarefas, null, 2)
+      );
       setTarefasExtraidas(tarefasNormalizadas);
       setMensagem("Tarefas geradas com sucesso pela IA.");
     } catch (err) {
