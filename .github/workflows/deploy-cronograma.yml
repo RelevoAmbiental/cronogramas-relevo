@@ -31,7 +31,7 @@ jobs:
       - name: 🚀 Disparar atualização no portal-relevo
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.RELEVO_GH_PAT }}
+          token: ${{ secrets.PAT_RELEVO_AUTODEPLOY }}
           repository: RelevoAmbiental/portal-relevo
           event-type: cronograma-atualizado
           client-payload: |
