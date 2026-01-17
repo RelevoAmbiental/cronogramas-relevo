@@ -1,0 +1,487 @@
+/* ==========================================================
+   Cronogramas Relevo — UI "Floresta Úmida" (alto contraste)
+   Escopo: .crono-scope (não mexe no Portal)
+   ========================================================== */
+
+.crono-scope {
+  --bg1: #064e3b;
+  --bg2: #0f766e;
+  --text: #0f172a;
+  --muted: #475569;
+  --card: rgba(255, 255, 255, 0.92);
+  --card2: rgba(255, 255, 255, 0.98);
+  --stroke: rgba(2, 44, 34, 0.14);
+  --shadow: 0 18px 42px rgba(2, 6, 23, 0.16);
+  --radius: 20px;
+
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+}
+
+.crono-scope * {
+  box-sizing: border-box;
+}
+
+.crono-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 55%, #0b3a2c 100%);
+  z-index: -2;
+}
+
+.crono-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,0.20), transparent 60%),
+              radial-gradient(900px 520px at 80% 20%, rgba(255,255,255,0.12), transparent 65%);
+  z-index: -1;
+}
+
+.crono-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  margin: 14px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+}
+
+.crono-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.crono-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.crono-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.95);
+  font-weight: 700;
+}
+
+.crono-brand-badge {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.92);
+  color: #064e3b;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.20);
+}
+
+.crono-brand-text {
+  letter-spacing: 0.2px;
+}
+
+.crono-page-title {
+  color: rgba(255,255,255,0.92);
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.crono-user {
+  text-align: right;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.1;
+}
+
+.crono-user-name { font-weight: 700; font-size: 0.95rem; }
+.crono-user-sub { font-size: 0.78rem; opacity: 0.85; }
+
+.crono-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 14px;
+  padding: 0 14px 14px;
+}
+
+.crono-sidenav {
+  position: sticky;
+  top: 86px;
+  align-self: start;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+  padding: 12px;
+  height: calc(100vh - 110px);
+  overflow: auto;
+}
+
+.crono-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crono-navitem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.92);
+  border: 1px solid transparent;
+}
+
+.crono-navitem:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.crono-navitem.active {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.crono-navicon { width: 22px; text-align: center; }
+
+.crono-navhint {
+  margin-top: 12px;
+  padding: 12px 12px;
+  border-radius: 16px;
+  color: rgba(255,255,255,0.86);
+  font-size: 0.84rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px dashed rgba(255,255,255,0.22);
+}
+
+.crono-main {
+  border-radius: var(--radius);
+  padding: 18px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+}
+
+.crono-footer {
+  margin: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  color: rgba(255,255,255,0.88);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.crono-footer-dot { opacity: 0.7; }
+
+/* Pages */
+.crono-page h1 {
+  margin: 0 0 6px;
+  color: rgba(255,255,255,0.95);
+  font-size: 1.6rem;
+}
+
+.crono-page h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 1.12rem;
+}
+
+.crono-page p {
+  margin: 0;
+  color: rgba(255,255,255,0.86);
+}
+
+.crono-pagehead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.crono-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Cards */
+.crono-card {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  color: var(--text);
+}
+
+.crono-card.inner {
+  background: var(--card2);
+  box-shadow: 0 14px 30px rgba(2, 6, 23, 0.12);
+}
+
+.crono-muted { color: var(--muted) !important; margin-bottom: 10px; }
+
+.crono-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.crono-grid.kpi { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.crono-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.crono-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 1120px) {
+  .crono-layout { grid-template-columns: 1fr; }
+  .crono-sidenav { position: fixed; left: 14px; right: 14px; top: 86px; height: auto; max-height: calc(100vh - 110px); transform: translateY(-140%); transition: transform 180ms ease; }
+  .crono-sidenav.open { transform: translateY(0); }
+  .crono-only-mobile { display: inline-flex; }
+  .crono-grid.kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .crono-grid.two { grid-template-columns: 1fr; }
+  .crono-grid.three { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 1121px) {
+  .crono-only-mobile { display: none; }
+}
+
+/* Buttons */
+.crono-btn {
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #0f766e;
+  color: #ffffff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 22px rgba(2,6,23,0.18);
+}
+
+.crono-btn:hover { filter: brightness(1.03); }
+.crono-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.crono-btn.secondary {
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.26);
+  color: rgba(255,255,255,0.92);
+  box-shadow: none;
+}
+
+.crono-btn.danger { background: #b91c1c; }
+
+.crono-btn.tiny {
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.crono-iconbtn {
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.92);
+  border-radius: 14px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+/* Forms */
+.crono-form {
+  display: grid;
+  gap: 10px;
+}
+
+.crono-form label span {
+  display: block;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #064e3b;
+  margin-bottom: 6px;
+}
+
+.crono-form input,
+.crono-form select,
+.crono-form textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: rgba(255,255,255,0.96);
+}
+
+.crono-form textarea { resize: vertical; }
+
+.crono-form.inline {
+  grid-template-columns: 2.2fr 1fr 1fr 1fr auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.crono-form.inline.twoCols { grid-template-columns: 1fr 1fr; }
+
+.crono-form.inline.twoCols .span2 { grid-column: 1 / -1; }
+
+@media (max-width: 1120px) {
+  .crono-form.inline { grid-template-columns: 1fr; }
+}
+
+/* Toolbar */
+.crono-toolbar {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.crono-toolbar-spacer { flex: 1; }
+
+.crono-field label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #064e3b;
+  margin-bottom: 6px;
+}
+
+.crono-field select {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.96);
+}
+
+/* Table */
+.crono-tablewrap { overflow: auto; border-radius: 16px; border: 1px solid rgba(15,23,42,0.10); }
+
+.crono-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+  background: rgba(255,255,255,0.98);
+}
+
+.crono-table th,
+.crono-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(15,23,42,0.10);
+  text-align: left;
+  color: var(--text);
+}
+
+.crono-table th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #064e3b;
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.crono-td-muted { color: var(--muted); padding: 14px; }
+.crono-td-strong { font-weight: 800; }
+
+.crono-row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.crono-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Pills */
+.crono-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  border: 1px solid rgba(15,23,42,0.14);
+  background: rgba(15, 118, 110, 0.08);
+  color: #064e3b;
+}
+
+.crono-pill.concluida { background: rgba(34,197,94,0.14); color: #166534; }
+.crono-pill.em_andamento { background: rgba(59,130,246,0.14); color: #1d4ed8; }
+.crono-pill.pendente { background: rgba(245,158,11,0.16); color: #92400e; }
+.crono-pill.ativo { background: rgba(59,130,246,0.12); color: #1d4ed8; }
+.crono-pill.encerrado { background: rgba(148,163,184,0.22); color: #334155; }
+
+/* KPI */
+.crono-kpi-label { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: #064e3b; }
+.crono-kpi-value { font-size: 2.0rem; font-weight: 900; margin-top: 6px; color: var(--text); }
+
+/* Alerts */
+.crono-alert {
+  border-radius: 16px;
+  padding: 12px 12px;
+  border: 1px solid rgba(15,23,42,0.14);
+  background: rgba(255,255,255,0.95);
+  color: var(--text);
+}
+
+.crono-alert.error { border-color: rgba(185,28,28,0.35); background: rgba(254,242,242,0.95); color: #7f1d1d; }
+.crono-alert.ok { border-color: rgba(34,197,94,0.30); background: rgba(240,253,244,0.95); color: #14532d; }
+
+/* Misc */
+.crono-divider { height: 1px; background: rgba(15,23,42,0.12); margin: 14px 0; }
+.crono-divider.slim { margin: 10px 0; }
+
+.crono-pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(15,23,42,0.12);
+  background: rgba(15, 23, 42, 0.03);
+  max-height: 420px;
+  overflow: auto;
+  color: #0f172a;
+  font-size: 0.86rem;
+}
+
+.crono-list { margin: 0; padding-left: 18px; color: var(--text); }
+.crono-bullet { font-weight: 900; margin-right: 6px; }
+
+/* Import tasks */
+.crono-tasklist { display: grid; gap: 10px; }
+
+.crono-taskcard {
+  border: 1px solid rgba(15,23,42,0.12);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.98);
+  padding: 12px;
+  cursor: pointer;
+}
+
+.crono-taskcard:hover { background: rgba(255,255,255,1); }
+
+.crono-taskhead {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.crono-tasktitle { display: flex; gap: 10px; align-items: center; }
+.crono-tasknum { font-weight: 900; color: #0f766e; }
+
+.crono-taskbody { margin-top: 10px; }
+.crono-taskcard.collapsed .crono-taskbody { display: none; }
+
+.crono-mini { border-radius: 16px; padding: 10px; border: 1px solid rgba(15,23,42,0.10); background: rgba(15,118,110,0.05); }
+.crono-mini-label { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; color: #064e3b; }
+.crono-mini-value { font-weight: 800; margin-top: 4px; }

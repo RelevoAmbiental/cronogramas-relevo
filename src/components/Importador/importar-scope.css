@@ -355,3 +355,38 @@
   align-items: center !important;
   gap: 28px !important;
 }
+/* ========================================================
+   4) CONTRASTE – input de arquivo + alertas
+   ======================================================== */
+
+/* Garante texto escuro dentro do input de arquivo */
+.importar-field-file input[type="file"] {
+  color: #111827 !important;            /* cinza-900 */
+}
+
+/* Container de feedback (erro / sucesso) */
+.importar-feedback {
+  margin-top: 14px;
+}
+
+/* Base dos alerts */
+.importar-alert {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Erro: texto vermelho escuro em fundo rosado-claro */
+.importar-alert.erro {
+  background-color: #fef2f2;           /* red-50 */
+  border: 1px solid #fecaca;           /* red-200 */
+  color: #991b1b;                      /* red-800 */
+}
+
+/* Sucesso: texto verde escuro em fundo verde-claro */
+.importar-alert.sucesso {
+  background-color: #ecfdf5;           /* emerald-50 */
+  border: 1px solid #a7f3d0;           /* emerald-200 */
+  color: #065f46;                      /* emerald-800 */
+}
