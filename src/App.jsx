@@ -1,55 +1,104 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
-import { useUser } from "./context/UserContext";
-import AppShell from "./components/AppShell";
-
-import Dashboard from "./pages/Dashboard";
-import Projetos from "./pages/Projetos";
-import Tarefas from "./pages/Tarefas";
-import Calendario from "./pages/Calendario";
-import Importar from "./pages/Importar";
-
-function Gate() {
-  const { user, loading } = useUser();
-
-  if (loading) {
-    return (
-      <div style={{ padding: 24 }}>
-        <p>Carregando sessão…</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div style={{ padding: 24 }}>
-        <p>
-          Acesso negado. Faça login pelo Portal Relevo e depois volte para o
-          Cronograma.
-        </p>
-      </div>
-    );
-  }
-
+function Shell({ title, children }) {
   return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/projetos" element={<Projetos />} />
-        <Route path="/tarefas" element={<Tarefas />} />
-        <Route path="/calendario" element={<Calendario />} />
-        <Route path="/importar" element={<Importar />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AppShell>
+    <div className="cronograma-scope">
+      <header className="crono-topbar">
+        <div className="crono-brand">
+          <span className="crono-badge">R</span>
+          <div>
+            <div className="crono-title">Cronogramas</div>
+            <div className="crono-subtitle">Portal Relevo</div>
+          </div>
+        </div>
+
+        <nav className="crono-nav">
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/projetos">Projetos</Link>
+          <Link to="/tarefas">Tarefas</Link>
+          <Link to="/importar">Importar</Link>
+          <Link to="/calendario">Calendário</Link>
+        </nav>
+      </header>
+
+      <main className="crono-main">
+        <h1 className="crono-page-title">{title}</h1>
+        <div className="crono-card">{children}</div>
+      </main>
+    </div>
+  );
+}
+
+function Placeholder({ name }) {
+  return (
+    <div>
+      <p>
+        <strong>{name}</strong> (motor v2) — tela em construção.
+      </p>
+      <p>
+        Próximo passo: conectar Firebase (herdado do Portal), modelo de dados e permissões.
+      </p>
+    </div>
   );
 }
 
 export default function App() {
   return (
     <BrowserRouter basename="/cronograma">
-      <Gate />
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <Shell title="Dashboard">
+              <Placeholder name="Dashboard" />
+            </Shell>
+          }
+        />
+        <Route
+          path="/projetos"
+          element={
+            <Shell title="Projetos">
+              <Placeholder name="Projetos" />
+            </Shell>
+          }
+        />
+        <Route
+          path="/tarefas"
+          element={
+            <Shell title="Tarefas">
+              <Placeholder name="Tarefas" />
+            </Shell>
+          }
+        />
+        <Route
+          path="/importar"
+          element={
+            <Shell title="Importar">
+              <Placeholder name="Importar IA" />
+            </Shell>
+          }
+        />
+        <Route
+          path="/calendario"
+          element={
+            <Shell title="Calendário">
+              <Placeholder name="Calendário" />
+            </Shell>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <Shell title="404">
+              <p>Rota não encontrada.</p>
+            </Shell>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }
