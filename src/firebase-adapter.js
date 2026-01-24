@@ -1,17 +1,31 @@
-export function getFirebase() {
-  // O Portal carrega firebase compat e expõe global `firebase`
-  if (!window.firebase) return null;
-  return window.firebase;
-}
+// src/firebase-adapter.js
+// Adapter para usar o Firebase já inicializado pelo Portal (compat).
+// Garante exports estáveis para o resto do app.
 
-export function getDb() {
-  const fb = getFirebase();
-  if (!fb?.firestore) return null;
-  return fb.firestore();
+export function getFirebaseCompat() {
+  const fb = window.firebase;
+  if (!fb) throw new Error("Firebase compat não encontrado em window.firebase.");
+  return fb;
 }
 
 export function getAuth() {
-  const fb = getFirebase();
-  if (!fb?.auth) return null;
+  const fb = getFirebaseCompat();
+  if (!fb.auth) throw new Error("firebase.auth() não disponível (compat).");
   return fb.auth();
+}
+
+export function getFirestore() {
+  const fb = getFirebaseCompat();
+  if (!fb.firestore) throw new Error("firebase.firestore() não disponível (compat).");
+  return fb.firestore();
+}
+
+export function getCurrentUser() {
+  const auth = getAuth();
+  return auth.currentUser;
+}
+
+export function onAuthStateChanged(callback) {
+  const auth = getAuth();
+  return auth.onAuthStateChanged(callback);
 }
