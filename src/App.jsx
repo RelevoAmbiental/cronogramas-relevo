@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import Projetos from "./pages/Projetos";
+import Tarefas from "./pages/Tarefas";
 
 function Shell({ title, children }) {
   return (
@@ -36,9 +38,7 @@ function Placeholder({ name }) {
       <p>
         <strong>{name}</strong> (motor v2) — tela em construção.
       </p>
-      <p>
-        Próximo passo: conectar Firebase (herdado do Portal), modelo de dados e permissões.
-      </p>
+      <p>Próximo passo: conectar Firebase (herdado do Portal), modelo de dados e permissões.</p>
     </div>
   );
 }
@@ -57,22 +57,25 @@ export default function App() {
             </Shell>
           }
         />
+
         <Route
           path="/projetos"
           element={
             <Shell title="Projetos">
-              <Placeholder name="Projetos" />
+              <Projetos />
             </Shell>
           }
         />
+
         <Route
           path="/tarefas"
           element={
             <Shell title="Tarefas">
-              <Placeholder name="Tarefas" />
+              <Tarefas />
             </Shell>
           }
         />
+
         <Route
           path="/importar"
           element={
