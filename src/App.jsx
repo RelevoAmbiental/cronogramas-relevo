@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import Projetos from "./pages/Projetos";
 import Tarefas from "./pages/Tarefas";
 
@@ -45,7 +45,7 @@ function Placeholder({ name }) {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/cronograma">
+   <HashRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
