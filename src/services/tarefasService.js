@@ -9,22 +9,56 @@ function requireUser() {
 
 const nowTs = () => window.firebase.firestore.FieldValue.serverTimestamp();
 
-const STATUS = ["A fazer", "Fazendo", "Concluida"];
+const STATUS_VALIDO = ["A fazer", "Fazendo", "Concluida"];
+
+function normalizeTarefa(doc) {
+  const t = { id: doc.id, ...doc.data() };
+
+  // Compat: se não existir arquivado, assume false
+  if (typeof t.arquivado !== "boolean") t.arquivado = false;
+
+  // Compat: status
+  if (!STATUS_VALIDO.includes(t.status)) {
+    // se veio "todo/doing/done" antigo, tenta mapear
+    if (t.status === "todo") t.status = "A fazer";
+    else if (t.status === "doing") t.status = "Fazendo";
+    else if (t.status === "done") t.status = "Concluida";
+    else t.status = "A fazer";
+  }
+
+  // Nome
+  if (!t.nome) t.nome = t.titulo || "(sem nome)";
+
+  // Ordem
+  if (!Number.isFinite(t.ordem)) t.ordem = 0;
+
+  return t;
+}
+
+function sortTarefas(a, b) {
+  // ordem asc; se empatar, createdAt/criadoEm
+  const o = (a.ordem ?? 0) - (b.ordem ?? 0);
+  if (o !== 0) return o;
+
+  const aT = (a.updatedAt?.toMillis?.() ?? a.criadoEm?.toMillis?.() ?? 0);
+  const bT = (b.updatedAt?.toMillis?.() ?? b.criadoEm?.toMillis?.() ?? 0);
+  return aT - bT;
+}
 
 export async function criarTarefa({
   nome,
   descricao = "",
   status = "A fazer",
-  inicio = null,   // você hoje usa string "YYYY-MM-DD"; vamos aceitar isso
+  inicio = null,
   fim = null,
   ordem = 0,
-  projetoId,       // obrigatório
+  projetoId,
 }) {
   const db = getFirestore();
   const user = requireUser();
 
-  if (!projetoId) throw new Error("projetoId é obrigatório para criar tarefa.");
-  if (!STATUS.includes(status)) throw new Error("Status inválido.");
+  if (!projetoId) throw new Error("projetoId é obrigatório.");
+  if (!STATUS_VALIDO.includes(status)) throw new Error("Status inválido.");
 
   const ref = await db.collection("tarefas").add({
     nome: (nome || "").trim(),
@@ -35,8 +69,8 @@ export async function criarTarefa({
     ordem: Number.isFinite(ordem) ? ordem : 0,
 
     projetoId,
+    uid: user.uid,
 
-    uid: user.uid, // manter padrão de ownership
     arquivado: status === "Concluida",
 
     criadoEm: nowTs(),
@@ -54,11 +88,10 @@ export async function atualizarTarefa(tarefaId, patch) {
 
   const safePatch = { ...patch };
 
-  if (safePatch.status && !STATUS.includes(safePatch.status)) {
+  if (safePatch.status && !STATUS_VALIDO.includes(safePatch.status)) {
     throw new Error("Status inválido.");
   }
 
-  // Se concluir, arquiva automaticamente
   if (safePatch.status === "Concluida") safePatch.arquivado = true;
 
   safePatch.updatedAt = nowTs();
@@ -68,12 +101,11 @@ export async function atualizarTarefa(tarefaId, patch) {
 }
 
 export async function arquivarTarefa(tarefaId) {
-  return atualizarTarefa(tarefaId, { arquivado: true, status: "Concluida" });
+  return atualizarTarefa(tarefaId, { status: "Concluida", arquivado: true });
 }
 
 export async function desarquivarTarefa(tarefaId) {
-  // volta para "A fazer" por padrão (você pode mudar isso depois)
-  return atualizarTarefa(tarefaId, { arquivado: false, status: "A fazer" });
+  return atualizarTarefa(tarefaId, { status: "A fazer", arquivado: false });
 }
 
 export async function apagarTarefa(tarefaId) {
@@ -91,19 +123,22 @@ export function listenTarefas({
   const db = getFirestore();
   const user = requireUser();
 
-  let q = db.collection("tarefas").where("uid", "==", user.uid);
+  // ✅ Query mínima SEM index composto:
+  // pega tudo do usuário e filtra no front.
+  return db
+    .collection("tarefas")
+    .where("uid", "==", user.uid)
+    .onSnapshot(
+      (snap) => {
+        let items = snap.docs.map(normalizeTarefa);
 
-  if (projetoId) q = q.where("projetoId", "==", projetoId);
+        if (projetoId) items = items.filter((t) => t.projetoId === projetoId);
 
-  if (!incluirArquivadas) {
-    q = q.where("arquivado", "==", false);
-  }
+        if (!incluirArquivadas) items = items.filter((t) => !t.arquivado);
 
-  // Ordem: se não existir em antigos, ainda assim dá pra ordenar.
-  q = q.orderBy("ordem", "asc");
-
-  return q.onSnapshot(
-    (snap) => onData(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    (err) => onError?.(err)
-  );
+        items.sort(sortTarefas);
+        onData(items);
+      },
+      (err) => onError?.(err)
+    );
 }
