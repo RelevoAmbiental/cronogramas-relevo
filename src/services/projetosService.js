@@ -9,13 +9,35 @@ function requireUser() {
 
 const nowTs = () => window.firebase.firestore.FieldValue.serverTimestamp();
 
+function normalizeProjeto(doc) {
+  const p = { id: doc.id, ...doc.data() };
+
+  // Compat: se não existir arquivado, assume false
+  if (typeof p.arquivado !== "boolean") p.arquivado = false;
+
+  // Compat: garantir campos que você usa
+  if (!p.status) p.status = "ativo";
+  if (!p.nome) p.nome = p.titulo || "(sem nome)";
+
+  return p;
+}
+
+function sortProjetos(a, b) {
+  // tenta updatedAt, senão criadoEm, senão 0
+  const aT =
+    (a.updatedAt?.toMillis?.() ?? a.criadoEm?.toMillis?.() ?? 0);
+  const bT =
+    (b.updatedAt?.toMillis?.() ?? b.criadoEm?.toMillis?.() ?? 0);
+
+  return bT - aT; // desc
+}
+
 export async function criarProjeto({
   nome,
   descricao = "",
-  status = "ativo", // "ativo" | "pausado" | "concluido"
+  status = "ativo",
   cliente = "Relevo Consultoria",
   cor = "#0a4723",
-  dataInicio = null, // opcional (string ou timestamp, conforme você decidir depois)
 }) {
   const db = getFirestore();
   const user = requireUser();
@@ -26,15 +48,14 @@ export async function criarProjeto({
     status,
     cliente: (cliente || "").trim(),
     cor: (cor || "").trim(),
-    dataInicio: dataInicio || null,
 
-    uid: user.uid, // compat com seu padrão atual
+    uid: user.uid,
     ownerEmail: user.email || "",
 
     arquivado: status === "concluido",
 
-    criadoEm: nowTs(),   // compat com seu padrão atual
-    updatedAt: nowTs(),  // novo (melhora ordenação e tracking)
+    criadoEm: nowTs(),
+    updatedAt: nowTs(),
   });
 
   return ref.id;
@@ -45,13 +66,7 @@ export async function atualizarProjeto(projetoId, patch) {
   requireUser();
 
   const safePatch = { ...patch };
-
-  // Se mudar status pra concluído, arquiva automaticamente
   if (safePatch.status === "concluido") safePatch.arquivado = true;
-  if (safePatch.arquivado === false && safePatch.status === "concluido") {
-    // governança básica: não faz sentido
-    safePatch.status = "ativo";
-  }
 
   safePatch.updatedAt = nowTs();
 
@@ -59,19 +74,16 @@ export async function atualizarProjeto(projetoId, patch) {
 }
 
 export async function arquivarProjeto(projetoId) {
-  return atualizarProjeto(projetoId, { arquivado: true, status: "concluido" });
+  return atualizarProjeto(projetoId, { status: "concluido", arquivado: true });
 }
 
 export async function desarquivarProjeto(projetoId) {
-  return atualizarProjeto(projetoId, { arquivado: false, status: "ativo" });
+  return atualizarProjeto(projetoId, { status: "ativo", arquivado: false });
 }
 
 export async function apagarProjeto(projetoId) {
   const db = getFirestore();
   requireUser();
-
-  // Observação: tarefas ligadas continuam existindo (por projetoId).
-  // Depois a gente decide se quer delete em cascata via Function.
   await db.collection("projetos").doc(projetoId).delete();
 }
 
@@ -79,18 +91,22 @@ export function listenProjetos({ incluirArquivados = false, onData, onError }) {
   const db = getFirestore();
   const user = requireUser();
 
-  let q = db.collection("projetos").where("uid", "==", user.uid);
+  // ✅ Query mínima SEM index composto:
+  // Só filtra por uid e o resto faz no front.
+  return db
+    .collection("projetos")
+    .where("uid", "==", user.uid)
+    .onSnapshot(
+      (snap) => {
+        let items = snap.docs.map(normalizeProjeto);
 
-  if (!incluirArquivados) {
-    q = q.where("arquivado", "==", false);
-  }
+        if (!incluirArquivados) {
+          items = items.filter((p) => !p.arquivado);
+        }
 
-  // Se updatedAt ainda não existir em docs antigos, pode dar erro de ordem.
-  // Solução: não ordenar agora, ou ordenar por criadoEm (que já existe).
-  q = q.orderBy("criadoEm", "desc");
-
-  return q.onSnapshot(
-    (snap) => onData(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    (err) => onError?.(err)
-  );
+        items.sort(sortProjetos);
+        onData(items);
+      },
+      (err) => onError?.(err)
+    );
 }
