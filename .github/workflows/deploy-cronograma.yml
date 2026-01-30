@@ -16,6 +16,12 @@ jobs:
       - name: 🧬 Checkout do repositório
         uses: actions/checkout@v4
 
+      - name: 🧾 Contexto do build
+        run: |
+          echo "branch: $GITHUB_REF"
+          echo "sha: $GITHUB_SHA"
+          echo "actor: $GITHUB_ACTOR"
+
       - name: 🔧 Configurar Node.js
         uses: actions/setup-node@v4
         with:
@@ -27,6 +33,12 @@ jobs:
 
       - name: 🏗️ Build
         run: npm run build
+
+      - name: ✅ Build OK (confirmar dist/)
+        run: |
+          ls -la
+          ls -la dist || true
+          ls -la dist/assets || true
 
       - name: 🚀 Disparar atualização no portal-relevo
         uses: peter-evans/repository-dispatch@v3
