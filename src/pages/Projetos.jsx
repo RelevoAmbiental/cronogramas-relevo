@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { onAuthStateChanged } from "../firebase-adapter";
 import {
   criarProjeto,
@@ -7,6 +7,73 @@ import {
   apagarProjeto,
   desarquivarProjeto,
 } from "../services/projetosService";
+
+/**
+ * ColorPicker
+ * - Exibe apenas um swatch + caret
+ * - Ao clicar, abre popover com paleta 3x4
+ * - Fecha ao clicar fora ou ESC
+ */
+function ColorPicker({ value, onChange, colors, title = "Selecionar cor" }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    function handleDown(e) {
+      if (!open) return;
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    function handleKey(e) {
+      if (open && e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", handleDown);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleDown);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open]);
+
+  const selected = colors.find((c) => c.key === value) || colors[0];
+
+  return (
+    <div className="crono-colorwrap" ref={ref}>
+      <button
+        type="button"
+        className="crono-colorbtn"
+        title={title}
+        aria-label={title}
+        onClick={() => setOpen((s) => !s)}
+      >
+        <span className="crono-colorswatch" style={{ background: selected?.hex }} />
+        <span className="crono-colorcaret" aria-hidden="true">
+          ▾
+        </span>
+      </button>
+
+      {open ? (
+        <div className="crono-colorpop" role="menu" aria-label="Paleta de cores">
+          <div className="crono-colorgrid">
+            {colors.map((c) => (
+              <button
+                key={c.key}
+                type="button"
+                className={"crono-color " + (value === c.key ? "is-selected" : "")}
+                onClick={() => {
+                  onChange(c.key);
+                  setOpen(false);
+                }}
+                title={c.label}
+                aria-label={`Cor: ${c.label}`}
+                style={{ background: c.hex }}
+              />
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export default function Projetos() {
   const [user, setUser] = useState(null);
@@ -45,10 +112,7 @@ export default function Projetos() {
     []
   );
 
-  const STATUS_FLOW = useMemo(
-    () => ["planejado", "execucao", "acompanhar", "arquivado"],
-    []
-  );
+  const STATUS_FLOW = useMemo(() => ["planejado", "execucao", "acompanhar", "arquivado"], []);
 
   function corHexFromKey(keyOrHex) {
     if ((keyOrHex || "").startsWith("#")) return keyOrHex;
@@ -57,9 +121,7 @@ export default function Projetos() {
 
   function corKeyFromHex(hex) {
     if (!hex) return "verde-escuro";
-    const found = CORES.find(
-      (c) => c.hex.toLowerCase() === String(hex).toLowerCase()
-    );
+    const found = CORES.find((c) => c.hex.toLowerCase() === String(hex).toLowerCase());
     return found?.key || "verde-escuro";
   }
 
@@ -191,14 +253,7 @@ export default function Projetos() {
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ opacity: 0.85 }}>
           {user ? (
             <>
@@ -245,54 +300,36 @@ export default function Projetos() {
 
           <input
             value={form.cliente}
-            onChange={(e) =>
-              setForm((s) => ({ ...s, cliente: e.target.value }))
-            }
+            onChange={(e) => setForm((s) => ({ ...s, cliente: e.target.value }))}
             placeholder="Nome do cliente"
             className="crono-input"
           />
 
           <input
             value={form.numeroProposta}
-            onChange={(e) =>
-              setForm((s) => ({ ...s, numeroProposta: e.target.value }))
-            }
+            onChange={(e) => setForm((s) => ({ ...s, numeroProposta: e.target.value }))}
             placeholder="Nº da proposta"
             className="crono-input"
           />
 
-          {/* Paleta de cores 3x4 */}
-          <div className="crono-colorpicker" title="Cor do projeto">
-            {CORES.map((c) => (
-              <button
-                key={c.key}
-                type="button"
-                className={
-                  "crono-color " + (form.cor === c.key ? "is-selected" : "")
-                }
-                onClick={() => setForm((s) => ({ ...s, cor: c.key }))}
-                aria-label={`Selecionar cor: ${c.label}`}
-                title={c.label}
-                style={{ background: c.hex }}
-              />
-            ))}
-          </div>
+          <ColorPicker
+            value={form.cor}
+            onChange={(newKey) => setForm((s) => ({ ...s, cor: newKey }))}
+            colors={CORES}
+            title="Cor do projeto"
+          />
 
           <input
             type="date"
             value={form.prazoExecucao}
-            onChange={(e) =>
-              setForm((s) => ({ ...s, prazoExecucao: e.target.value }))
-            }
+            onChange={(e) => setForm((s) => ({ ...s, prazoExecucao: e.target.value }))}
             className="crono-input"
             title="Prazo de execução"
           />
 
           <select
             value={form.status}
-            onChange={(e) =>
-              setForm((s) => ({ ...s, status: e.target.value }))
-            }
+            onChange={(e) => setForm((s) => ({ ...s, status: e.target.value }))}
             className="crono-input"
             title="Status"
           >
@@ -303,20 +340,14 @@ export default function Projetos() {
             ))}
           </select>
 
-          <button
-            className="crono-btn"
-            onClick={handleCriar}
-            disabled={!user || !form.nome.trim()}
-          >
+          <button className="crono-btn" onClick={handleCriar} disabled={!user || !form.nome.trim()}>
             Criar
           </button>
         </div>
 
         <textarea
           value={form.descricao}
-          onChange={(e) =>
-            setForm((s) => ({ ...s, descricao: e.target.value }))
-          }
+          onChange={(e) => setForm((s) => ({ ...s, descricao: e.target.value }))}
           placeholder="Descrição"
           className="crono-input"
           style={{ minHeight: 72 }}
@@ -334,30 +365,17 @@ export default function Projetos() {
                 padding: 12,
                 borderRadius: 14,
                 border: "1px solid rgba(255,255,255,0.18)",
-                background: p.arquivado
-                  ? "rgba(255,255,255,0.04)"
-                  : "transparent",
+                background: p.arquivado ? "rgba(255,255,255,0.04)" : "transparent",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  alignItems: "center",
-                }}
-              >
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
                 <div>
-                  <div style={{ fontWeight: 900, fontSize: 16 }}>
-                    {p.nome || "(sem nome)"}
-                  </div>
+                  <div style={{ fontWeight: 900, fontSize: 16 }}>{p.nome || "(sem nome)"}</div>
                   <div style={{ opacity: 0.85, fontSize: 12, marginTop: 2 }}>
                     {p.cliente || "—"}
                     {p.numeroProposta ? ` · Proposta: ${p.numeroProposta}` : ""}
                     {` · ${statusLabel(st)}`}
-                    {p.prazoExecucao
-                      ? ` · Prazo: ${formatPrazo(p.prazoExecucao)}`
-                      : ""}
+                    {p.prazoExecucao ? ` · Prazo: ${formatPrazo(p.prazoExecucao)}` : ""}
                   </div>
                 </div>
 
@@ -373,9 +391,7 @@ export default function Projetos() {
                 />
               </div>
 
-              {p.descricao ? (
-                <div style={{ marginTop: 8, opacity: 0.92 }}>{p.descricao}</div>
-              ) : null}
+              {p.descricao ? <div style={{ marginTop: 8, opacity: 0.92 }}>{p.descricao}</div> : null}
 
               <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {!p.arquivado ? (
@@ -385,11 +401,7 @@ export default function Projetos() {
                 ) : (
                   <button
                     className="crono-btn"
-                    onClick={() =>
-                      desarquivarProjeto(p.id).catch((e) =>
-                        setErro(String(e?.message || e))
-                      )
-                    }
+                    onClick={() => desarquivarProjeto(p.id).catch((e) => setErro(String(e?.message || e)))}
                   >
                     Reabrir
                   </button>
@@ -403,9 +415,7 @@ export default function Projetos() {
                   className="crono-btn crono-btn-danger"
                   onClick={() => {
                     if (confirm("Apagar projeto? (tarefas ficarão vinculadas por projetoId)")) {
-                      apagarProjeto(p.id).catch((e) =>
-                        setErro(String(e?.message || e))
-                      );
+                      apagarProjeto(p.id).catch((e) => setErro(String(e?.message || e)));
                     }
                   }}
                 >
@@ -419,21 +429,9 @@ export default function Projetos() {
 
       {/* Modal de edição */}
       {editOpen ? (
-        <div
-          className="crono-modal-overlay"
-          onMouseDown={(e) =>
-            e.target === e.currentTarget && setEditOpen(false)
-          }
-        >
+        <div className="crono-modal-overlay" onMouseDown={(e) => e.target === e.currentTarget && setEditOpen(false)}>
           <div className="crono-modal" role="dialog" aria-modal="true" aria-label="Editar projeto">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 12,
-                alignItems: "center",
-              }}
-            >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
               <div style={{ fontWeight: 900, fontSize: 16 }}>Editar projeto</div>
               <button className="crono-btn" onClick={() => setEditOpen(false)}>
                 Fechar
@@ -443,64 +441,43 @@ export default function Projetos() {
             <div style={{ marginTop: 12 }} className="crono-form-grid">
               <input
                 value={editForm.nome}
-                onChange={(e) =>
-                  setEditForm((s) => ({ ...s, nome: e.target.value }))
-                }
+                onChange={(e) => setEditForm((s) => ({ ...s, nome: e.target.value }))}
                 placeholder="Nome do projeto"
                 className="crono-input"
               />
 
               <input
                 value={editForm.cliente}
-                onChange={(e) =>
-                  setEditForm((s) => ({ ...s, cliente: e.target.value }))
-                }
+                onChange={(e) => setEditForm((s) => ({ ...s, cliente: e.target.value }))}
                 placeholder="Nome do cliente"
                 className="crono-input"
               />
 
               <input
                 value={editForm.numeroProposta}
-                onChange={(e) =>
-                  setEditForm((s) => ({ ...s, numeroProposta: e.target.value }))
-                }
+                onChange={(e) => setEditForm((s) => ({ ...s, numeroProposta: e.target.value }))}
                 placeholder="Nº da proposta"
                 className="crono-input"
               />
 
-              {/* Paleta de cores 3x4 */}
-              <div className="crono-colorpicker" title="Cor do projeto">
-                {CORES.map((c) => (
-                  <button
-                    key={c.key}
-                    type="button"
-                    className={
-                      "crono-color " +
-                      (editForm.cor === c.key ? "is-selected" : "")
-                    }
-                    onClick={() => setEditForm((s) => ({ ...s, cor: c.key }))}
-                    aria-label={`Selecionar cor: ${c.label}`}
-                    title={c.label}
-                    style={{ background: c.hex }}
-                  />
-                ))}
-              </div>
+              <ColorPicker
+                value={editForm.cor}
+                onChange={(newKey) => setEditForm((s) => ({ ...s, cor: newKey }))}
+                colors={CORES}
+                title="Cor do projeto"
+              />
 
               <input
                 type="date"
                 value={editForm.prazoExecucao}
-                onChange={(e) =>
-                  setEditForm((s) => ({ ...s, prazoExecucao: e.target.value }))
-                }
+                onChange={(e) => setEditForm((s) => ({ ...s, prazoExecucao: e.target.value }))}
                 className="crono-input"
                 title="Prazo de execução"
               />
 
               <select
                 value={editForm.status}
-                onChange={(e) =>
-                  setEditForm((s) => ({ ...s, status: e.target.value }))
-                }
+                onChange={(e) => setEditForm((s) => ({ ...s, status: e.target.value }))}
                 className="crono-input"
                 title="Status"
               >
@@ -512,17 +489,10 @@ export default function Projetos() {
               </select>
 
               <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                <button
-                  className="crono-btn"
-                  onClick={salvarEdicao}
-                  disabled={!editForm.nome.trim()}
-                >
+                <button className="crono-btn" onClick={salvarEdicao} disabled={!editForm.nome.trim()}>
                   Salvar
                 </button>
-                <button
-                  className="crono-btn crono-btn-danger"
-                  onClick={() => setEditOpen(false)}
-                >
+                <button className="crono-btn crono-btn-danger" onClick={() => setEditOpen(false)}>
                   Cancelar
                 </button>
               </div>
@@ -530,9 +500,7 @@ export default function Projetos() {
 
             <textarea
               value={editForm.descricao}
-              onChange={(e) =>
-                setEditForm((s) => ({ ...s, descricao: e.target.value }))
-              }
+              onChange={(e) => setEditForm((s) => ({ ...s, descricao: e.target.value }))}
               placeholder="Descrição"
               className="crono-input"
               style={{ minHeight: 96, marginTop: 10, width: "100%" }}
@@ -551,10 +519,11 @@ export default function Projetos() {
           outline:none;
           min-height: 42px;
         }
+
         .crono-form-grid{
           display:grid;
           gap:10px;
-          grid-template-columns: 2fr 2fr 1.2fr 180px 1.1fr 1.2fr 160px;
+          grid-template-columns: 2fr 2fr 1.2fr 140px 1.1fr 1.2fr 160px;
           align-items: center;
         }
         @media (max-width: 980px){
@@ -563,6 +532,7 @@ export default function Projetos() {
         @media (max-width: 560px){
           .crono-form-grid{ grid-template-columns: 1fr; }
         }
+
         .crono-btn{
           padding:10px 12px;
           border-radius:12px;
@@ -573,10 +543,12 @@ export default function Projetos() {
           min-height: 42px;
         }
         .crono-btn:disabled{opacity:.5; cursor:not-allowed;}
+
         .crono-btn-danger{
           border-color: rgba(255,120,120,0.35);
           background: rgba(255,120,120,0.16);
         }
+
         .crono-modal-overlay{
           position: fixed;
           inset: 0;
@@ -597,14 +569,55 @@ export default function Projetos() {
           box-shadow: 0 14px 60px rgba(0,0,0,0.55);
         }
 
-        /* ✅ Paleta clicável 3x4 */
-        .crono-colorpicker{
+        /* Swatch + popover */
+        .crono-colorwrap{
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          width: 100%;
+        }
+        .crono-colorbtn{
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          border-radius: 12px;
+          border: 1px solid rgba(255,255,255,0.22);
+          background: rgba(255,255,255,0.10);
+          color: #fff;
+          cursor: pointer;
+          min-height: 42px;
+          width: 100%;
+          justify-content: center;
+        }
+        .crono-colorswatch{
+          width: 24px;
+          height: 24px;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.25);
+          box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        }
+        .crono-colorcaret{
+          opacity: .8;
+          font-size: 12px;
+        }
+        .crono-colorpop{
+          position: absolute;
+          top: calc(100% + 10px);
+          left: 0;
+          z-index: 9999;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,0.18);
+          background: rgba(12, 28, 22, 0.92);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          padding: 10px;
+          box-shadow: 0 14px 60px rgba(0,0,0,0.55);
+        }
+        .crono-colorgrid{
           display: grid;
           grid-template-columns: repeat(4, 34px);
           gap: 10px;
-          align-items: center;
-          justify-content: start;
-          padding: 6px 2px;
         }
         .crono-color{
           width: 34px;
