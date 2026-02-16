@@ -10,12 +10,6 @@ import {
   desarquivarTarefa,
 } from "../services/tarefasService";
 
-/**
- * Ajustes finos:
- * 1) Remove título duplicado dentro do card (fica só o <h1> da página)
- * 2) "Todos os projetos" não pode virar valor "Todos" (truthy) — deve ser "" (sem filtro)
- */
-
 const STATUS_OPCOES = ["A fazer", "Fazendo", "Acompanhando"]; // exibidas como ativas
 const STATUS_TODOS = ["A fazer", "Fazendo", "Acompanhando", "Concluida"]; // incluindo arquivadas/concluídas
 
@@ -420,8 +414,7 @@ export default function Tarefas() {
 
   return (
     <div className="crono-main">
-      <h1 className="crono-page-title">Tarefas</h1>
-
+     
       <div className="crono-card">
         <div className="crono-topbar">
           <div className="crono-topbar-left">
@@ -774,7 +767,7 @@ export default function Tarefas() {
         }
         .crono-field-label{ font-size: 13px; margin: 0 0 4px 2px; opacity:.85; }
         .crono-input{
-          font-size: 15px;
+          font-size: 14px;
           padding: 10px 12px;
           border-radius: 12px;
           width: 100%;
