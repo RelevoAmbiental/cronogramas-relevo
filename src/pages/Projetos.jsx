@@ -513,6 +513,20 @@ export default function Projetos() {
           padding: 14px;
           box-shadow: 0 14px 60px rgba(0,0,0,0.55);
         }
+        <div className="crono-colorpicker" title="Cor do projeto">
+          {CORES.map((c) => (
+            <button
+              key={c.key}
+              type="button"
+              className={"crono-color " + (editForm.cor === c.key ? "is-selected" : "")}
+              onClick={() => setEditForm((s) => ({ ...s, cor: c.key }))}
+              aria-label={`Selecionar cor: ${c.label}`}
+              title={c.label}
+              style={{ background: c.hex }}
+            />
+          ))}
+        </div>
+
       `}</style>
     </div>
   );
