@@ -401,3 +401,109 @@ export default function Projetos() {
               >
                 {CORES.map((c) => (
                   <option key={c.key} value={c.key}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="date"
+                value={editForm.prazoExecucao}
+                onChange={(e) => setEditForm((s) => ({ ...s, prazoExecucao: e.target.value }))}
+                className="crono-input"
+                title="Prazo de execução"
+              />
+
+              <select
+                value={editForm.status}
+                onChange={(e) => setEditForm((s) => ({ ...s, status: e.target.value }))}
+                className="crono-input"
+                title="Status"
+              >
+                {STATUS.map((s) => (
+                  <option key={s.key} value={s.key}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+
+              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                <button className="crono-btn" onClick={salvarEdicao} disabled={!editForm.nome.trim()}>
+                  Salvar
+                </button>
+                <button className="crono-btn crono-btn-danger" onClick={() => setEditOpen(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              value={editForm.descricao}
+              onChange={(e) => setEditForm((s) => ({ ...s, descricao: e.target.value }))}
+              placeholder="Descrição"
+              className="crono-input"
+              style={{ minHeight: 96, marginTop: 10, width: "100%" }}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      <style>{`
+        .crono-input{
+          padding:10px 12px;
+          border-radius:12px;
+          border:1px solid rgba(255,255,255,0.22);
+          background: rgba(0,0,0,0.15);
+          color:#fff;
+          outline:none;
+          min-height: 42px;
+        }
+        .crono-form-grid{
+          display:grid;
+          gap:10px;
+          grid-template-columns: 2fr 2fr 1.2fr 1.1fr 1.1fr 1.2fr 160px;
+          align-items: center;
+        }
+        @media (max-width: 980px){
+          .crono-form-grid{ grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 560px){
+          .crono-form-grid{ grid-template-columns: 1fr; }
+        }
+        .crono-btn{
+          padding:10px 12px;
+          border-radius:12px;
+          border:1px solid rgba(255,255,255,0.22);
+          background: rgba(255,255,255,0.12);
+          color:#fff;
+          cursor:pointer;
+          min-height: 42px;
+        }
+        .crono-btn:disabled{opacity:.5; cursor:not-allowed;}
+        .crono-btn-danger{
+          border-color: rgba(255,120,120,0.35);
+          background: rgba(255,120,120,0.16);
+        }
+        .crono-modal-overlay{
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.55);
+          display: grid;
+          place-items: center;
+          padding: 18px;
+          z-index: 9999;
+        }
+        .crono-modal{
+          width: min(980px, 100%);
+          border-radius: 18px;
+          border: 1px solid rgba(255,255,255,0.18);
+          background: rgba(12, 28, 22, 0.92);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          padding: 14px;
+          box-shadow: 0 14px 60px rgba(0,0,0,0.55);
+        }
+      `}</style>
+    </div>
+  );
+}
