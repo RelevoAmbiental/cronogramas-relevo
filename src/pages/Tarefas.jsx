@@ -411,8 +411,7 @@ export default function Tarefas() {
   if (!user) {
     return (
       <div className="crono-main">
-        <h1 className="crono-page-title">Tarefas</h1>
-        <div className="crono-card">
+       <div className="crono-card">
           <p>Faça login no Portal para acessar as tarefas.</p>
         </div>
       </div>
@@ -754,11 +753,12 @@ export default function Tarefas() {
         .crono-muted{ opacity:.75; }
         .crono-error{ margin: 10px 0; padding: 10px; border-radius: 10px; background: rgba(255,120,120,.18); border: 1px solid rgba(180,40,40,.25); }
         .crono-filters-row{
-          display:grid;
-          grid-template-columns: 220px 200px 260px 220px auto;
-          gap:10px;
-          align-items:center;
-          margin-bottom:10px;
+          display: flex;
+          gap: 10px;
+          flex-wrap: nowrap; /* Impede a quebra de linha */
+          align-items: center;
+          margin-bottom: 10px;
+          overflow-x: auto;
         }
         .crono-filter-hint{ justify-self:end; opacity:.85; }
         .crono-form-grid{
@@ -774,7 +774,7 @@ export default function Tarefas() {
         }
         .crono-field-label{ font-size: 13px; margin: 0 0 4px 2px; opacity:.85; }
         .crono-input{
-          font-size: 15px; /* +1 */
+          font-size: 15px;
           padding: 10px 12px;
           border-radius: 12px;
           width: 100%;
