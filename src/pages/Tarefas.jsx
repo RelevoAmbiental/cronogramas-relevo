@@ -765,16 +765,16 @@ export default function Tarefas() {
           display:flex; gap:10px; flex-wrap:wrap; align-items:center;
           margin: 8px 0;
         }
-        .crono-field-label{ font-size: 13px; margin: 0 0 4px 2px; opacity:.85; }
+        .crono-field-label{ font-size: 12px; margin: 0 0 4px 2px; opacity:.85; }
         .crono-input{
-          font-size: 13px;
+          font-size: 12px;
           padding: 10px 12px;
           border-radius: 12px;
           width: 100%;
           box-sizing: border-box;
         }
         .crono-btn{
-          font-size: 13px;
+          font-size: 12px;
           padding: 10px 12px;
           border-radius: 12px;
           cursor:pointer;
@@ -790,8 +790,8 @@ export default function Tarefas() {
           background: rgba(255,255,255,.55);
           margin: 10px 0;
         }
-        .crono-task-title{ font-weight: 800; font-size: 16px; }
-        .crono-task-meta{ font-size: 13px; opacity: .75; margin-top: 2px;}
+        .crono-task-title{ font-weight: 800; font-size: 14px; }
+        .crono-task-meta{ font-size: 11px; opacity: .75; margin-top: 2px;}
         .crono-task-desc{ margin-top: 8px; opacity: .9; }
         .crono-task-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; justify-content:flex-end; }
         .crono-btn-danger{ }
