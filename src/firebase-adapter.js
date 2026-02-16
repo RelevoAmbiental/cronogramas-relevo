@@ -29,3 +29,17 @@ export function onAuthStateChanged(callback) {
   const auth = getAuth();
   return auth.onAuthStateChanged(callback);
 }
+export function getFunctions(region = "us-central1") {
+  const fb = getFirebaseCompat();
+  if (!fb.functions) {
+    throw new Error(
+      "firebase.functions() não disponível (compat). Verifique se o container do Portal carregou firebase-functions-compat.js."
+    );
+  }
+  return fb.app().functions(region);
+}
+
+export function httpsCallable(name, region = "us-central1") {
+  const fn = getFunctions(region);
+  return fn.httpsCallable(name);
+}
