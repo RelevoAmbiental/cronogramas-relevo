@@ -20,10 +20,16 @@ export default function Projetos() {
       { key: "verde-escuro", label: "Verde escuro", hex: "#0a4723" },
       { key: "verde", label: "Verde", hex: "#116b3a" },
       { key: "oliva", label: "Oliva", hex: "#5c7c2a" },
+      { key: "turquesa", label: "Turquesa", hex: "#1abc9c" },
+  
       { key: "azul", label: "Azul", hex: "#1e5aa8" },
+      { key: "azul-escuro", label: "Azul escuro", hex: "#0d3b66" },
       { key: "roxo", label: "Roxo", hex: "#6b3fa0" },
+      { key: "rosa", label: "Rosa", hex: "#d63384" },
+  
       { key: "laranja", label: "Laranja", hex: "#d6791d" },
-      { key: "vermelho", label: "Vermelho", hex: "#b53838" },
+      { key: "amarelo", label: "Amarelo", hex: "#f4b400" },
+      { key: "vinho", label: "Vinho", hex: "#7b2d26" },
       { key: "cinza", label: "Cinza", hex: "#5a6b76" },
     ],
     []
@@ -239,18 +245,20 @@ export default function Projetos() {
             className="crono-input"
           />
 
-          <select
-            value={form.cor}
-            onChange={(e) => setForm((s) => ({ ...s, cor: e.target.value }))}
-            className="crono-input"
-            title="Cor"
-          >
+          <div className="crono-colorpicker" title="Cor do projeto">
             {CORES.map((c) => (
-              <option key={c.key} value={c.key}>
-                {c.label}
-              </option>
+              <button
+                key={c.key}
+                type="button"
+                className={"crono-color " + (form.cor === c.key ? "is-selected" : "")}
+                onClick={() => setForm((s) => ({ ...s, cor: c.key }))}
+                aria-label={`Selecionar cor: ${c.label}`}
+                title={c.label}
+                style={{ background: c.hex }}
+              />
             ))}
-          </select>
+          </div>
+
 
           <input
             type="date"
@@ -393,18 +401,20 @@ export default function Projetos() {
                 className="crono-input"
               />
 
-              <select
-                value={editForm.cor}
-                onChange={(e) => setEditForm((s) => ({ ...s, cor: e.target.value }))}
-                className="crono-input"
-                title="Cor"
-              >
-                {CORES.map((c) => (
-                  <option key={c.key} value={c.key}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
+            <div className="crono-colorpicker" title="Cor do projeto">
+              {CORES.map((c) => (
+                <button
+                  key={c.key}
+                  type="button"
+                  className={"crono-color " + (editForm.cor === c.key ? "is-selected" : "")}
+                  onClick={() => setEditForm((s) => ({ ...s, cor: c.key }))}
+                  aria-label={`Selecionar cor: ${c.label}`}
+                  title={c.label}
+                  style={{ background: c.hex }}
+                />
+              ))}
+            </div>
+
 
               <input
                 type="date"
