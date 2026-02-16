@@ -2,6 +2,7 @@ import React from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Projetos from "./pages/Projetos";
 import Tarefas from "./pages/Tarefas";
+import Importar from "./pages/Importar";
 
 /**
  * Shell (limpo)
@@ -70,8 +71,8 @@ export default function App() {
         <Route
           path="/importar"
           element={
-            <Shell title="Importar">
-              <Placeholder name="Importar IA" />
+            <Shell title="Importar IA">
+              <Importar />
             </Shell>
           }
         />
