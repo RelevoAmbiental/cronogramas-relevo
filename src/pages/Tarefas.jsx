@@ -774,7 +774,7 @@ export default function Tarefas() {
           box-sizing: border-box;
         }
         .crono-btn{
-          font-size: 15px;
+          font-size: 13px;
           padding: 10px 12px;
           border-radius: 12px;
           cursor:pointer;
