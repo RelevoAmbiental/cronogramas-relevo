@@ -2,7 +2,10 @@ name: Build Cronograma e disparar atualização do Portal
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - cronograma-v2-reset
+      - main
+      - master
   workflow_dispatch:
 
 permissions:
