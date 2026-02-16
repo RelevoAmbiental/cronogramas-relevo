@@ -15,29 +15,34 @@ function normalizeProjeto(doc) {
   // Compat: se não existir arquivado, assume false
   if (typeof p.arquivado !== "boolean") p.arquivado = false;
 
-  // Compat: garantir campos que você usa
-  if (!p.status) p.status = "ativo";
+  // Compat: migração de status antigos
+  // antigo: ativo/concluido
+  if (!p.status) p.status = p.arquivado ? "arquivado" : "planejado";
+  if (p.status === "ativo") p.status = "planejado";
+  if (p.status === "concluido") p.status = "arquivado";
+
+  // Compat: garantir campos padrão
   if (!p.nome) p.nome = p.titulo || "(sem nome)";
+  if (!p.cliente) p.cliente = "Relevo Consultoria";
+  if (!p.cor) p.cor = "#0a4723";
 
   return p;
 }
 
 function sortProjetos(a, b) {
-  // tenta updatedAt, senão criadoEm, senão 0
-  const aT =
-    (a.updatedAt?.toMillis?.() ?? a.criadoEm?.toMillis?.() ?? 0);
-  const bT =
-    (b.updatedAt?.toMillis?.() ?? b.criadoEm?.toMillis?.() ?? 0);
-
-  return bT - aT; // desc
+  const aT = a.updatedAt?.toMillis?.() ?? a.criadoEm?.toMillis?.() ?? 0;
+  const bT = b.updatedAt?.toMillis?.() ?? b.criadoEm?.toMillis?.() ?? 0;
+  return bT - aT;
 }
 
 export async function criarProjeto({
   nome,
   descricao = "",
-  status = "ativo",
+  status = "planejado",
   cliente = "Relevo Consultoria",
+  numeroProposta = "",
   cor = "#0a4723",
+  prazoExecucao = "",
 }) {
   const db = getFirestore();
   const user = requireUser();
@@ -47,12 +52,15 @@ export async function criarProjeto({
     descricao: (descricao || "").trim(),
     status,
     cliente: (cliente || "").trim(),
+    numeroProposta: (numeroProposta || "").trim(),
     cor: (cor || "").trim(),
+    // string YYYY-MM-DD (input type=date) ou texto livre curto
+    prazoExecucao: (prazoExecucao || "").trim(),
 
     uid: user.uid,
     ownerEmail: user.email || "",
 
-    arquivado: status === "concluido",
+    arquivado: status === "arquivado",
 
     criadoEm: nowTs(),
     updatedAt: nowTs(),
@@ -66,7 +74,10 @@ export async function atualizarProjeto(projetoId, patch) {
   requireUser();
 
   const safePatch = { ...patch };
-  if (safePatch.status === "concluido") safePatch.arquivado = true;
+
+  // mantém consistência entre status e booleano arquivado
+  if (safePatch.status === "arquivado") safePatch.arquivado = true;
+  if (safePatch.status && safePatch.status !== "arquivado") safePatch.arquivado = false;
 
   safePatch.updatedAt = nowTs();
 
@@ -74,11 +85,11 @@ export async function atualizarProjeto(projetoId, patch) {
 }
 
 export async function arquivarProjeto(projetoId) {
-  return atualizarProjeto(projetoId, { status: "concluido", arquivado: true });
+  return atualizarProjeto(projetoId, { status: "arquivado", arquivado: true });
 }
 
 export async function desarquivarProjeto(projetoId) {
-  return atualizarProjeto(projetoId, { status: "ativo", arquivado: false });
+  return atualizarProjeto(projetoId, { status: "planejado", arquivado: false });
 }
 
 export async function apagarProjeto(projetoId) {
@@ -91,7 +102,7 @@ export function listenProjetos({ incluirArquivados = false, onData, onError }) {
   const db = getFirestore();
   const user = requireUser();
 
-  // ✅ Query mínima SEM index composto:
+  // Query mínima SEM index composto:
   // Só filtra por uid e o resto faz no front.
   return db
     .collection("projetos")
