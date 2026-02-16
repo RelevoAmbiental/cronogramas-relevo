@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { onAuthStateChanged } from "../firebase-adapter";
 import {
   criarProjeto,
@@ -9,8 +9,8 @@ import {
 } from "../services/projetosService";
 
 /**
- * ColorPicker
- * - Exibe apenas um swatch + caret
+ * ColorPicker (compact)
+ * - Exibe apenas um quadrado (swatch)
  * - Ao clicar, abre popover com paleta 3x4
  * - Fecha ao clicar fora ou ESC
  */
@@ -45,10 +45,10 @@ function ColorPicker({ value, onChange, colors, title = "Selecionar cor" }) {
         aria-label={title}
         onClick={() => setOpen((s) => !s)}
       >
-        <span className="crono-colorswatch" style={{ background: selected?.hex }} />
-        <span className="crono-colorcaret" aria-hidden="true">
-          ▾
-        </span>
+        <span
+          className="crono-colorswatch"
+          style={{ background: selected?.hex }}
+        />
       </button>
 
       {open ? (
@@ -58,7 +58,9 @@ function ColorPicker({ value, onChange, colors, title = "Selecionar cor" }) {
               <button
                 key={c.key}
                 type="button"
-                className={"crono-color " + (value === c.key ? "is-selected" : "")}
+                className={
+                  "crono-color " + (value === c.key ? "is-selected" : "")
+                }
                 onClick={() => {
                   onChange(c.key);
                   setOpen(false);
@@ -79,7 +81,6 @@ export default function Projetos() {
   const [user, setUser] = useState(null);
   const [erro, setErro] = useState("");
   const [mostrarArquivados, setMostrarArquivados] = useState(false);
-
   const [items, setItems] = useState([]);
 
   const CORES = useMemo(
@@ -112,7 +113,10 @@ export default function Projetos() {
     []
   );
 
-  const STATUS_FLOW = useMemo(() => ["planejado", "execucao", "acompanhar", "arquivado"], []);
+  const STATUS_FLOW = useMemo(
+    () => ["planejado", "execucao", "acompanhar", "arquivado"],
+    []
+  );
 
   function corHexFromKey(keyOrHex) {
     if ((keyOrHex || "").startsWith("#")) return keyOrHex;
@@ -121,7 +125,9 @@ export default function Projetos() {
 
   function corKeyFromHex(hex) {
     if (!hex) return "verde-escuro";
-    const found = CORES.find((c) => c.hex.toLowerCase() === String(hex).toLowerCase());
+    const found = CORES.find(
+      (c) => c.hex.toLowerCase() === String(hex).toLowerCase()
+    );
     return found?.key || "verde-escuro";
   }
 
@@ -253,7 +259,14 @@ export default function Projetos() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
         <div style={{ opacity: 0.85 }}>
           {user ? (
             <>
@@ -288,69 +301,89 @@ export default function Projetos() {
         </div>
       )}
 
-      {/* Cadastro */}
+      {/* Cadastro (2 linhas + descrição) */}
       <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
-        <div className="crono-form-grid">
-          <input
-            value={form.nome}
-            onChange={(e) => setForm((s) => ({ ...s, nome: e.target.value }))}
-            placeholder="Nome do projeto"
-            className="crono-input"
-          />
+        <div className="crono-form-rows">
+          <div className="crono-form-row row-1">
+            <input
+              value={form.nome}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, nome: e.target.value }))
+              }
+              placeholder="Nome do projeto"
+              className="crono-input"
+            />
 
-          <input
-            value={form.cliente}
-            onChange={(e) => setForm((s) => ({ ...s, cliente: e.target.value }))}
-            placeholder="Nome do cliente"
-            className="crono-input"
-          />
+            <input
+              value={form.cliente}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, cliente: e.target.value }))
+              }
+              placeholder="Nome do cliente"
+              className="crono-input"
+            />
 
-          <input
-            value={form.numeroProposta}
-            onChange={(e) => setForm((s) => ({ ...s, numeroProposta: e.target.value }))}
-            placeholder="Nº da proposta"
-            className="crono-input"
-          />
+            <input
+              value={form.numeroProposta}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, numeroProposta: e.target.value }))
+              }
+              placeholder="Nº da proposta"
+              className="crono-input"
+            />
 
-          <ColorPicker
-            value={form.cor}
-            onChange={(newKey) => setForm((s) => ({ ...s, cor: newKey }))}
-            colors={CORES}
-            title="Cor do projeto"
-          />
+            <ColorPicker
+              value={form.cor}
+              onChange={(newKey) => setForm((s) => ({ ...s, cor: newKey }))}
+              colors={CORES}
+              title="Cor do projeto"
+            />
+          </div>
 
-          <input
-            type="date"
-            value={form.prazoExecucao}
-            onChange={(e) => setForm((s) => ({ ...s, prazoExecucao: e.target.value }))}
-            className="crono-input"
-            title="Prazo de execução"
-          />
+          <div className="crono-form-row row-2">
+            <input
+              type="date"
+              value={form.prazoExecucao}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, prazoExecucao: e.target.value }))
+              }
+              className="crono-input"
+              title="Prazo de execução"
+            />
 
-          <select
-            value={form.status}
-            onChange={(e) => setForm((s) => ({ ...s, status: e.target.value }))}
-            className="crono-input"
-            title="Status"
-          >
-            {STATUS.filter((s) => s.key !== "arquivado").map((s) => (
-              <option key={s.key} value={s.key}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+            <select
+              value={form.status}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, status: e.target.value }))
+              }
+              className="crono-input"
+              title="Status"
+            >
+              {STATUS.filter((s) => s.key !== "arquivado").map((s) => (
+                <option key={s.key} value={s.key}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
 
-          <button className="crono-btn" onClick={handleCriar} disabled={!user || !form.nome.trim()}>
-            Criar
-          </button>
+            <button
+              className="crono-btn"
+              onClick={handleCriar}
+              disabled={!user || !form.nome.trim()}
+            >
+              Criar
+            </button>
+          </div>
         </div>
 
         <textarea
           value={form.descricao}
-          onChange={(e) => setForm((s) => ({ ...s, descricao: e.target.value }))}
+          onChange={(e) =>
+            setForm((s) => ({ ...s, descricao: e.target.value }))
+          }
           placeholder="Descrição"
           className="crono-input"
-          style={{ minHeight: 72 }}
+          style={{ minHeight: 84 }}
         />
       </div>
 
@@ -365,17 +398,30 @@ export default function Projetos() {
                 padding: 12,
                 borderRadius: 14,
                 border: "1px solid rgba(255,255,255,0.18)",
-                background: p.arquivado ? "rgba(255,255,255,0.04)" : "transparent",
+                background: p.arquivado
+                  ? "rgba(255,255,255,0.04)"
+                  : "transparent",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  alignItems: "center",
+                }}
+              >
                 <div>
-                  <div style={{ fontWeight: 900, fontSize: 16 }}>{p.nome || "(sem nome)"}</div>
+                  <div style={{ fontWeight: 900, fontSize: 16 }}>
+                    {p.nome || "(sem nome)"}
+                  </div>
                   <div style={{ opacity: 0.85, fontSize: 12, marginTop: 2 }}>
                     {p.cliente || "—"}
                     {p.numeroProposta ? ` · Proposta: ${p.numeroProposta}` : ""}
                     {` · ${statusLabel(st)}`}
-                    {p.prazoExecucao ? ` · Prazo: ${formatPrazo(p.prazoExecucao)}` : ""}
+                    {p.prazoExecucao
+                      ? ` · Prazo: ${formatPrazo(p.prazoExecucao)}`
+                      : ""}
                   </div>
                 </div>
 
@@ -391,17 +437,33 @@ export default function Projetos() {
                 />
               </div>
 
-              {p.descricao ? <div style={{ marginTop: 8, opacity: 0.92 }}>{p.descricao}</div> : null}
+              {p.descricao ? (
+                <div style={{ marginTop: 8, opacity: 0.92 }}>{p.descricao}</div>
+              ) : null}
 
-              <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <div
+                style={{
+                  marginTop: 10,
+                  display: "flex",
+                  gap: 8,
+                  flexWrap: "wrap",
+                }}
+              >
                 {!p.arquivado ? (
-                  <button className="crono-btn" onClick={() => evoluirStatusProjeto(p)}>
+                  <button
+                    className="crono-btn"
+                    onClick={() => evoluirStatusProjeto(p)}
+                  >
                     Evoluir status
                   </button>
                 ) : (
                   <button
                     className="crono-btn"
-                    onClick={() => desarquivarProjeto(p.id).catch((e) => setErro(String(e?.message || e)))}
+                    onClick={() =>
+                      desarquivarProjeto(p.id).catch((e) =>
+                        setErro(String(e?.message || e))
+                      )
+                    }
                   >
                     Reabrir
                   </button>
@@ -414,8 +476,14 @@ export default function Projetos() {
                 <button
                   className="crono-btn crono-btn-danger"
                   onClick={() => {
-                    if (confirm("Apagar projeto? (tarefas ficarão vinculadas por projetoId)")) {
-                      apagarProjeto(p.id).catch((e) => setErro(String(e?.message || e)));
+                    if (
+                      confirm(
+                        "Apagar projeto? (tarefas ficarão vinculadas por projetoId)"
+                      )
+                    ) {
+                      apagarProjeto(p.id).catch((e) =>
+                        setErro(String(e?.message || e))
+                      );
                     }
                   }}
                 >
@@ -429,81 +497,123 @@ export default function Projetos() {
 
       {/* Modal de edição */}
       {editOpen ? (
-        <div className="crono-modal-overlay" onMouseDown={(e) => e.target === e.currentTarget && setEditOpen(false)}>
-          <div className="crono-modal" role="dialog" aria-modal="true" aria-label="Editar projeto">
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+        <div
+          className="crono-modal-overlay"
+          onMouseDown={(e) =>
+            e.target === e.currentTarget && setEditOpen(false)
+          }
+        >
+          <div
+            className="crono-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Editar projeto"
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                alignItems: "center",
+              }}
+            >
               <div style={{ fontWeight: 900, fontSize: 16 }}>Editar projeto</div>
               <button className="crono-btn" onClick={() => setEditOpen(false)}>
                 Fechar
               </button>
             </div>
 
-            <div style={{ marginTop: 12 }} className="crono-form-grid">
-              <input
-                value={editForm.nome}
-                onChange={(e) => setEditForm((s) => ({ ...s, nome: e.target.value }))}
-                placeholder="Nome do projeto"
-                className="crono-input"
-              />
+            <div className="crono-form-rows" style={{ marginTop: 12 }}>
+              <div className="crono-form-row row-1">
+                <input
+                  value={editForm.nome}
+                  onChange={(e) =>
+                    setEditForm((s) => ({ ...s, nome: e.target.value }))
+                  }
+                  placeholder="Nome do projeto"
+                  className="crono-input"
+                />
 
-              <input
-                value={editForm.cliente}
-                onChange={(e) => setEditForm((s) => ({ ...s, cliente: e.target.value }))}
-                placeholder="Nome do cliente"
-                className="crono-input"
-              />
+                <input
+                  value={editForm.cliente}
+                  onChange={(e) =>
+                    setEditForm((s) => ({ ...s, cliente: e.target.value }))
+                  }
+                  placeholder="Nome do cliente"
+                  className="crono-input"
+                />
 
-              <input
-                value={editForm.numeroProposta}
-                onChange={(e) => setEditForm((s) => ({ ...s, numeroProposta: e.target.value }))}
-                placeholder="Nº da proposta"
-                className="crono-input"
-              />
+                <input
+                  value={editForm.numeroProposta}
+                  onChange={(e) =>
+                    setEditForm((s) => ({ ...s, numeroProposta: e.target.value }))
+                  }
+                  placeholder="Nº da proposta"
+                  className="crono-input"
+                />
 
-              <ColorPicker
-                value={editForm.cor}
-                onChange={(newKey) => setEditForm((s) => ({ ...s, cor: newKey }))}
-                colors={CORES}
-                title="Cor do projeto"
-              />
+                <ColorPicker
+                  value={editForm.cor}
+                  onChange={(newKey) =>
+                    setEditForm((s) => ({ ...s, cor: newKey }))
+                  }
+                  colors={CORES}
+                  title="Cor do projeto"
+                />
+              </div>
 
-              <input
-                type="date"
-                value={editForm.prazoExecucao}
-                onChange={(e) => setEditForm((s) => ({ ...s, prazoExecucao: e.target.value }))}
-                className="crono-input"
-                title="Prazo de execução"
-              />
+              <div className="crono-form-row row-2">
+                <input
+                  type="date"
+                  value={editForm.prazoExecucao}
+                  onChange={(e) =>
+                    setEditForm((s) => ({ ...s, prazoExecucao: e.target.value }))
+                  }
+                  className="crono-input"
+                  title="Prazo de execução"
+                />
 
-              <select
-                value={editForm.status}
-                onChange={(e) => setEditForm((s) => ({ ...s, status: e.target.value }))}
-                className="crono-input"
-                title="Status"
-              >
-                {STATUS.map((s) => (
-                  <option key={s.key} value={s.key}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
+                <select
+                  value={editForm.status}
+                  onChange={(e) =>
+                    setEditForm((s) => ({ ...s, status: e.target.value }))
+                  }
+                  className="crono-input"
+                  title="Status"
+                >
+                  {STATUS.map((s) => (
+                    <option key={s.key} value={s.key}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
 
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                <button className="crono-btn" onClick={salvarEdicao} disabled={!editForm.nome.trim()}>
-                  Salvar
-                </button>
-                <button className="crono-btn crono-btn-danger" onClick={() => setEditOpen(false)}>
-                  Cancelar
-                </button>
+                <div className="crono-actions">
+                  <button
+                    className="crono-btn"
+                    onClick={salvarEdicao}
+                    disabled={!editForm.nome.trim()}
+                  >
+                    Salvar
+                  </button>
+                  <button
+                    className="crono-btn crono-btn-danger"
+                    onClick={() => setEditOpen(false)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             </div>
 
             <textarea
               value={editForm.descricao}
-              onChange={(e) => setEditForm((s) => ({ ...s, descricao: e.target.value }))}
+              onChange={(e) =>
+                setEditForm((s) => ({ ...s, descricao: e.target.value }))
+              }
               placeholder="Descrição"
               className="crono-input"
-              style={{ minHeight: 96, marginTop: 10, width: "100%" }}
+              style={{ minHeight: 110, marginTop: 10, width: "100%" }}
             />
           </div>
         </div>
@@ -518,19 +628,7 @@ export default function Projetos() {
           color:#fff;
           outline:none;
           min-height: 42px;
-        }
-
-        .crono-form-grid{
-          display:grid;
-          gap:10px;
-          grid-template-columns: 2fr 2fr 1.2fr 140px 1.1fr 1.2fr 160px;
-          align-items: center;
-        }
-        @media (max-width: 980px){
-          .crono-form-grid{ grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 560px){
-          .crono-form-grid{ grid-template-columns: 1fr; }
+          width: 100%;
         }
 
         .crono-btn{
@@ -541,6 +639,7 @@ export default function Projetos() {
           color:#fff;
           cursor:pointer;
           min-height: 42px;
+          white-space: nowrap;
         }
         .crono-btn:disabled{opacity:.5; cursor:not-allowed;}
 
@@ -549,6 +648,55 @@ export default function Projetos() {
           background: rgba(255,120,120,0.16);
         }
 
+        /* ===== Cadastro/Modal em 2 linhas ===== */
+        .crono-form-rows{
+          display: grid;
+          gap: 10px;
+        }
+
+        .crono-form-row{
+          display: grid;
+          gap: 10px;
+          align-items: center;
+          min-width: 0;
+        }
+        .crono-form-row > *{ min-width: 0; }
+
+        /* Desktop: 1ª linha com 4 campos (cor é compacta).
+           2ª linha com prazo, status e botão. */
+        @media (min-width: 980px){
+          .crono-form-row.row-1{
+            grid-template-columns: 2fr 2fr 1.2fr 44px;
+          }
+          .crono-form-row.row-2{
+            grid-template-columns: 1.2fr 1.2fr 160px;
+          }
+        }
+
+        /* Tablet: 2 colunas */
+        @media (max-width: 979px){
+          .crono-form-row.row-1,
+          .crono-form-row.row-2{
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        /* Mobile: 1 coluna */
+        @media (max-width: 560px){
+          .crono-form-row.row-1,
+          .crono-form-row.row-2{
+            grid-template-columns: 1fr;
+          }
+        }
+
+        .crono-actions{
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          flex-wrap: wrap;
+        }
+
+        /* ===== Modal ===== */
         .crono-modal-overlay{
           position: fixed;
           inset: 0;
@@ -567,28 +715,27 @@ export default function Projetos() {
           -webkit-backdrop-filter: blur(10px);
           padding: 14px;
           box-shadow: 0 14px 60px rgba(0,0,0,0.55);
+          overflow: hidden;
         }
 
-        /* Swatch + popover */
+        /* ===== ColorPicker compacto ===== */
         .crono-colorwrap{
           position: relative;
           display: inline-flex;
           align-items: center;
-          width: 100%;
+          justify-content: center;
+          width: 44px; /* garante alinhamento no grid */
         }
         .crono-colorbtn{
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 8px 10px;
+          width: 42px;
+          height: 42px;
+          display: inline-grid;
+          place-items: center;
           border-radius: 12px;
           border: 1px solid rgba(255,255,255,0.22);
           background: rgba(255,255,255,0.10);
-          color: #fff;
           cursor: pointer;
-          min-height: 42px;
-          width: 100%;
-          justify-content: center;
+          padding: 0;
         }
         .crono-colorswatch{
           width: 24px;
@@ -597,10 +744,7 @@ export default function Projetos() {
           border: 1px solid rgba(255,255,255,0.25);
           box-shadow: 0 8px 22px rgba(0,0,0,0.25);
         }
-        .crono-colorcaret{
-          opacity: .8;
-          font-size: 12px;
-        }
+
         .crono-colorpop{
           position: absolute;
           top: calc(100% + 10px);
