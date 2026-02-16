@@ -30,13 +30,29 @@ export default function Importar() {
   const [salvoMsg, setSalvoMsg] = useState("");
 
   useEffect(() => {
-    const unsub = listenProjetos((items) => {
-      setProjetos(items || []);
-      if (!projetoId && items?.length) setProjetoId(items[0].id);
-    });
+    let unsub;
+  
+    try {
+      unsub = listenProjetos({
+        incluirArquivados: true,
+        onData: (items) => {
+          const list = items || [];
+          setProjetos(list);
+          setProjetoId((prev) => prev || (list[0]?.id || ""));
+        },
+        onError: (err) => {
+          console.error("Erro ao ouvir projetos:", err);
+          setErro(err?.message || "Erro ao carregar projetos.");
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      setErro(e?.message || "Erro ao inicializar listener de projetos.");
+    }
+  
     return () => unsub?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const canRun = useMemo(() => !!projetoId && !!file && !loading, [projetoId, file, loading]);
 
