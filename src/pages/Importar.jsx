@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { httpsCallable } from "../firebase-adapter";
+import { httpsCallable, onAuthStateChanged } from "../firebase-adapter";
 import { listenProjetos } from "../services/projetosService";
 import { criarTarefa } from "../services/tarefasService";
 
@@ -29,9 +29,27 @@ export default function Importar() {
   const [salvando, setSalvando] = useState(false);
   const [salvoMsg, setSalvoMsg] = useState("");
 
+  // ✅ Gate de autenticação (evita corrida na Importar)
+  const [authReady, setAuthReady] = useState(false);
+  const [userUid, setUserUid] = useState("");
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged((u) => {
+      if (u?.uid) {
+        setUserUid(u.uid);
+        setAuthReady(true);
+        return;
+      }
+      setUserUid("");
+      setAuthReady(true);
+    });
+
+    return () => unsub?.();
+  }, []);
+
   useEffect(() => {
     let unsub;
-  
+
     try {
       unsub = listenProjetos({
         incluirArquivados: true,
@@ -49,12 +67,14 @@ export default function Importar() {
       console.error(e);
       setErro(e?.message || "Erro ao inicializar listener de projetos.");
     }
-  
+
     return () => unsub?.();
   }, []);
 
-
-  const canRun = useMemo(() => !!projetoId && !!file && !loading, [projetoId, file, loading]);
+  const canRun = useMemo(
+    () => authReady && !!userUid && !!projetoId && !!file && !loading,
+    [authReady, userUid, projetoId, file, loading]
+  );
 
   async function onInterpretar() {
     setErro("");
@@ -64,18 +84,25 @@ export default function Importar() {
     setTarefas([]);
 
     try {
+      // ✅ garante token fresco para Callable (evita unauthenticated intermitente)
+      const u = window.firebase?.auth?.().currentUser;
+      if (!u?.uid) throw new Error("Usuário não autenticado.");
+      await u.getIdToken(true);
+
       const base64 = await fileToBase64(file);
       const call = httpsCallable("interpretarArquivo", "us-central1");
+
       const resp = await call({
         fileBase64: base64,
-        mimeType: file.type || "application/octet-stream",
-        fileName: file.name || "arquivo",
+        mimeType: file?.type || "application/octet-stream",
+        fileName: file?.name || "arquivo",
       });
 
       const payload = resp?.data || {};
       setTexto(String(payload.texto || ""));
       setTarefas(Array.isArray(payload.tarefas) ? payload.tarefas : []);
     } catch (e) {
+      console.error(e);
       setErro(e?.message || "Erro ao interpretar arquivo.");
     } finally {
       setLoading(false);
@@ -85,9 +112,12 @@ export default function Importar() {
   async function onSalvarTarefas() {
     setErro("");
     setSalvoMsg("");
-    if (!projetoId) return setErro("Selecione um projeto.");
 
+    if (!authReady) return setErro("Aguardando autenticação...");
+    if (!userUid) return setErro("Usuário não autenticado.");
+    if (!projetoId) return setErro("Selecione um projeto.");
     if (!tarefas.length) return setErro("Não há tarefas para salvar.");
+
     setSalvando(true);
 
     try {
@@ -113,6 +143,7 @@ export default function Importar() {
 
       setSalvoMsg("Tarefas criadas com sucesso ✅");
     } catch (e) {
+      console.error(e);
       setErro(e?.message || "Erro ao salvar tarefas.");
     } finally {
       setSalvando(false);
@@ -121,10 +152,27 @@ export default function Importar() {
 
   return (
     <div className="crono-importar">
-      <div className="crono-row" style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr 1fr" }}>
+      {!authReady ? (
+        <div className="crono-alert" style={{ marginBottom: 12 }}>
+          Carregando sessão...
+        </div>
+      ) : !userUid ? (
+        <div className="crono-alert error" style={{ marginBottom: 12 }}>
+          Usuário não autenticado.
+        </div>
+      ) : null}
+
+      <div
+        className="crono-row"
+        style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr 1fr" }}
+      >
         <label className="crono-field">
           <span className="crono-label">Projeto</span>
-          <select value={projetoId} onChange={(e) => setProjetoId(e.target.value)} className="crono-input">
+          <select
+            value={projetoId}
+            onChange={(e) => setProjetoId(e.target.value)}
+            className="crono-input"
+          >
             {projetos.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.nome || "(sem nome)"}
