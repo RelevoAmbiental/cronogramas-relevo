@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { httpsCallable, onAuthStateChanged } from "../firebase-adapter";
+import { onAuthStateChanged } from "../firebase-adapter";
 import { listenProjetos } from "../services/projetosService";
 import { criarTarefa } from "../services/tarefasService";
+
+// ✅ Gateway IA (Cloud Run) — evita IAM/CORS direto no browser contra Cloud Functions private
+// Você pode sobrescrever via Vite: VITE_GATEWAY_IA_URL="https://...run.app"
+const GATEWAY_URL = (import.meta?.env?.VITE_GATEWAY_IA_URL || "https://gateway-ia-182759626683.us-central1.run.app").replace(/\/$/, "");
 
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
@@ -83,22 +87,42 @@ export default function Importar() {
     setTexto("");
     setTarefas([]);
 
+    if (!authReady) {
+      setLoading(false);
+      return setErro("Aguardando autenticação...");
+    }
+    if (!userUid) {
+      setLoading(false);
+      return setErro("Usuário não autenticado.");
+    }
+    if (!file) {
+      setLoading(false);
+      return setErro("Selecione um arquivo.");
+    }
+
     try {
-      // ✅ garante token fresco para Callable (evita unauthenticated intermitente)
-      const u = window.firebase?.auth?.().currentUser;
-      if (!u?.uid) throw new Error("Usuário não autenticado.");
-      await u.getIdToken(true);
-
       const base64 = await fileToBase64(file);
-      const call = httpsCallable("interpretarArquivo", "us-central1");
 
-      const resp = await call({
-        fileBase64: base64,
-        mimeType: file?.type || "application/octet-stream",
-        fileName: file?.name || "arquivo",
+      const resp = await fetch(`${GATEWAY_URL}/interpretarArquivo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileBase64: base64,
+          mimeType: file?.type || "application/octet-stream",
+          fileName: file?.name || "arquivo",
+        }),
       });
 
-      const payload = resp?.data || {};
+      const payload = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        throw new Error(
+          payload?.error ||
+            payload?.message ||
+            `Falha no gateway (${resp.status})`
+        );
+      }
+
       setTexto(String(payload.texto || ""));
       setTarefas(Array.isArray(payload.tarefas) ? payload.tarefas : []);
     } catch (e) {
